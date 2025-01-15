@@ -37,8 +37,8 @@ I’ve just built a new image for my wildfire application. How should I tag this
 - d) Wildfire-app:rhwajklfbfbfewa
 
 I want to deploy a database. How should I deploy it?
-- a) Using a Deployment or DeploymentConfig with the rolling deployment option
-- b) Using a Deployment or DeploymentConfig with the recreate deployment option
+- a) Using a Deployment with the rolling deployment option
+- b) Using a Deployment with the recreate deployment option
 - c) Using a StatefulSet
 - d) "Hey Alexa, deploy my database"
 
