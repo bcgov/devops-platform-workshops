@@ -8,11 +8,11 @@ How are pods and containers related to each other?
 - c) Only one pod runs inside a container
 - d) Only one container runs inside a pod
 
-I want two pods to communicate with each other. What needs to be true for this to happen?
-- a) Both pods need to be running on the same node
-- b) Both pods need to be running in the same namespace
-- c) Both pods need to be running in the same container
-- d) Record numbers of salmon are in the strait
+I want two pods to communicate with each other. Which of these scenarios would allow this?
+- a) Both pods are running on the same node
+- b) Both pods are running in the same namespace
+- c) Both pods are running in the same container
+- d) Record numbers of orcas are in the Georgia Strait
 
 ## BCGov-specific patterns
 
