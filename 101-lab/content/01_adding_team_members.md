@@ -51,4 +51,11 @@ oc policy add-role-to-user [role] [username]
 
 - View: This is the basic role that provides users with read access to your project. __Secrets are not viewable__ with this privilege.
 
+## Username 
+
+Usernames should be entered in lowercase. The syntax is as follows:
+
+- **Email** `emailaddress@gov.bc.ca`
+- **Github** `username@github` note: don't include .com after github here!
+
 Next page - [OCP4 Web Console](./01b_web_console_overview.md)
