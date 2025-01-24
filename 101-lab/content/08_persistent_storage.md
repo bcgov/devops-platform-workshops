@@ -90,7 +90,7 @@ RWO storage (which was selected above) can only be attached to a single pod at a
 
 <kbd>![](./images/06_persistent_storage_08.png)</kbd>
 
-- Switch to recreate
+- Switch to recreate, making sure to remove the lines relating to rolling deployment.
 
 ### RWX Storage
 __Objective__: Cause MongoDB to corrupt its data file by using the wrong storage class for MongoDB.
@@ -150,7 +150,8 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` PVC and change th
     ```
   - Change the deployment strategy to use `Recreate` deployment strategy
     ```oc:cli
-    oc -n [-dev] patch deployment/mongodb-[username] -p '{"spec":{"strategy":{"activeDeadlineSeconds":21600,"recreateParams":{"timeoutSeconds":600},"resources":{},"type":"Recreate"}}}'
+    oc -n d8f105-dev patch deployment mongodb-[username] --type=merge -p '{"spec":{"strategy":{"type":"Recreate"}}}'
+
     ```
   - Go to the `mongodb-[username]` DeploymentConfig and `Resume Rollouts` (under `Actions` menu on the top right side)
     ```oc:cli
