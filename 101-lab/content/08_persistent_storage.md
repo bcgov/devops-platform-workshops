@@ -90,7 +90,7 @@ RWO storage (which was selected above) can only be attached to a single pod at a
 
 <kbd>![](./images/06_persistent_storage_08.png)</kbd>
 
-- Switch to recreate, making sure to remove the lines relating to rolling deployment.
+- Change the strategy type to Rolling
 
 ### RWX Storage
 __Objective__: Cause MongoDB to corrupt its data file by using the wrong storage class for MongoDB.
