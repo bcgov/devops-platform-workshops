@@ -23,7 +23,7 @@ Adjust the settings to match the images below:
 Single pod applications are not highly-available and can be abruptly terminated if the pod crashes or due to regularly 
 scheduled platform maintenance. In order to simulate the effect on an application: 
 
-- Navigate to the pod under Administrator > Workloads > Pods, select your Rocketchat pod, select `Actions`(on the right hand side) and `Delete Pod`
+- Navigate to the pod, select `Actions`(on the right hand side) and `Delete Pod`
     - Select `Delete pod immediately`
 
 <kbd>![](./images/04_app_availability_01.png)</kbd>
