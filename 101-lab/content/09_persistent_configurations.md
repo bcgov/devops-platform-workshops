@@ -54,6 +54,8 @@ metadata:
 
 - Using the pod terminal in the Web Console or `oc rsh`, explore the path of the mounted configMap
 
+- You can use `exit` to leave the rsh (**r**emote**sh**ell) session 
+
 <kbd>![](./images/07_persistent_config_06.png)</kbd>
 
 #### Changing Config Map Content
