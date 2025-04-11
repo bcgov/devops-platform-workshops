@@ -150,7 +150,7 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` PVC and change th
     ```
   - Change the deployment strategy to use `Recreate` deployment strategy
     ```oc:cli
-    oc -n d8f105-dev patch deployment mongodb-[username] --type=merge -p '{"spec":{"strategy":{"type":"Recreate"}}}'
+    oc -n [-dev] patch deployment mongodb-[username] --type=merge -p '{"spec":{"strategy":{"type":"Recreate"}}}'
 
     ```
   - Go to the `mongodb-[username]` DeploymentConfig and `Resume Rollouts` (under `Actions` menu on the top right side)
