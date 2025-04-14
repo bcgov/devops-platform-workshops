@@ -96,13 +96,13 @@
 - All of the above
 
 
-## Kibana Logging
+## Loki Logging
 
-1\. How long are logs stored in Kibana? 
+1\. How long are logs stored in Loki?
 
-- Logs are stored indefinitely 
+- Logs are stored indefinitely
 - Log stores build up annually but then are burned in the winter
-- Logs are stored for 3 days 
+- Logs are stored for 3 days
 - Logs are stored for 14 days
 
 ## Network Policy & ACS
