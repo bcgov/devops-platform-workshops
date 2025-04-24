@@ -122,7 +122,7 @@ metadata:
 - From the cli, review the secret with `oc -n [-dev] describe secret rocketchat-[username]-secret`
 
 ```
-oc [-dev] describe secret rocketchat-[username]-secret
+oc -n [-dev] describe secret rocketchat-[username]-secret
 Name:         rocketchat-[username]-secret
 Namespace:    [namespace]
 Labels:       <none>
