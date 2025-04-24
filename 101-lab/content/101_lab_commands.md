@@ -15,8 +15,10 @@ oc scale deployment/rocketchat-mattspencer --replicas=0
 oc scale deployment/rocketchat-mattspencer --replicas=1
 oc -n d8f105-dev tag d8f105-tools/rocketchat-mattspencer:dev rocketchat-mattspencer:dev
 oc -n d8f105-dev set image deployment/rocketchat-mattspencer rocketchat-mattspencer=rocketchat-mattspencer:dev
-oc -n d8f105-dev new-app --search mongodb-ephemeral -l ocp101=participant
-oc -n d8f105-dev new-app --template=openshift/mongodb-ephemeral -p MONGODB_VERSION=3.6 -p DATABASE_SERVICE_NAME=mongodb-mattspencer -p MONGODB_USER=dbuser -p MONGODB_PASSWORD=dbpass -p MONGODB_DATABASE=rocketchat --name=rocketchat-mattspencer -l ocp101=participant
+oc -n d8f105-dev process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml --parameters=true
+oc -n d8f105-dev process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_USER=dbuser MONGODB_PASSWORD=dbpass MONGODB_ADMIN_PASSWORD=admindbpass MONGODB_DATABASE=rocketchat MONGODB_NAME=mongodb-mattspencer -l ocp101=participant | oc -n d8f105-dev create -f - --dry-run=client
+oc -n d8f105-dev process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_USER=dbuser MONGODB_PASSWORD=dbpass MONGODB_ADMIN_PASSWORD=admindbpass MONGODB_DATABASE=rocketchat MONGODB_NAME=mongodb-mattspencer -l ocp101=participant | oc -n d8f105-dev create -f -
+
 oc -n d8f105-dev set env deployment/rocketchat-mattspencer "MONGO_URL=mongodb://dbuser:dbpass@mongodb-mattspencer:27017/rocketchat"
 ```
 _STRETCH_ 
