@@ -28,6 +28,7 @@ You are not alone! The lab for the live training has touch points scheduled alon
 ## Table of Contents: 
 
 * [Overview](./00_overview.md)
+* [Adding Team Members](./01_adding_team_members.md)
 * [Setup](./01_setup.md)
 * [Adding User Access](./01_adding_team_members.md)
 * [OCP4 Web Console](./01b_web_console_overview.md)
