@@ -107,6 +107,6 @@ If you can see that you'll only be deleting your own objects, then proceed witho
 
 Now that we've deleted all of our objects that we created in the [-dev] namespace, let's use our template to recreate them. 
 
-`oc -n [-dev] process -f template.yaml | oc create -f - `
+`oc -n [-dev] process -f template.yaml | oc -n [dev] create -f - `
 
 After some time, once your mongodb restarts and rocketchat application is back up and running, you should see your application is recreated and functioning. 
