@@ -24,4 +24,4 @@ required to deploy a project
 
 During this workshop you will be interacting with both views.
 
-Next page - [Builds](./02_builds.md)
+Next page - * [Adding Team Members](./01_adding_team_members.md)
