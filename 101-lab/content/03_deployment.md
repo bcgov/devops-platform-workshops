@@ -110,7 +110,7 @@ Deploying images from another namespace can run you into some issues that are ea
 
 ### Why Build in Tools Then?
 
-Your Tools namespace has quota that can be best utilized for your CI (Continuous Integration) and devops workloads. Since building an image is apart of the CI pipeline you can run your builds there without impacting the cpu or memory availability for deployment workloads. 
+Your Tools namespace has quota that can be best utilized for your CI (Continuous Integration) and devops workloads. Since building an image is a part of the CI pipeline you can run your builds there without impacting the cpu or memory availability for deployment workloads. 
 
 When you ran `oc new-app` a new imagestream was created in your `dev` namespace with an image that points to your `tools` namespace. To import the image from one namespace to another you can:
 
