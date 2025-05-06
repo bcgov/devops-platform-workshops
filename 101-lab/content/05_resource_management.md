@@ -31,7 +31,7 @@ Since the Rocket.Chat application was built from scratch and not deployed from a
   ```oc:cli
   oc -n [-dev] set resources deployment/rocketchat-[username] --requests=cpu="65m",memory="100Mi" --limits=cpu="65m",memory="100Mi"
   ```
-- Monitor the startup events of your pod and measure the time it takes to start
+- Monitor the startup events of your pod and measure the time it takes to start. We'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finihsed shutting down after the last step. This will give us a consistent starting point to time from.   
   ```oc:cli
   # Restart deployment; and observe
   oc -n [-dev] rollout restart deployment/rocketchat-[username]
@@ -47,7 +47,7 @@ You may notice your pod starts to crash loop. This is most likely because the `l
   oc -n [-dev] set resources deployment/rocketchat-[username] --requests=cpu="1000m",memory="512Mi" --limits=cpu="1000m",memory="1024Mi"
   ```
 
-- Monitor the status and speed of the new deployment
+- Monitor the startup events of your pod and measure the time it takes to start. Again, we'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finihsed shutting down after the last step. This will give us a consistent starting point to compare to our previous timing. 
   ```oc:cli
   # Start new deployment; and
   oc -n [-dev] rollout restart deployment/rocketchat-[username]
