@@ -155,11 +155,11 @@ In order to use deploy these objects, we are a going to use a template stored in
 
 The template we're going to use is located at: https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml
 
-If you browse this file, you'll notice in contains the YAML that defines our deployment, service and secret. We can apply parameters to this template to adjust particular values. 
+If you browse this file, you'll notice it contains the YAML that defines our deployment, service and secret. We can apply parameters to this template to adjust particular values. 
 
 ### From CLI
 
-  - Note, any data stored in our database will be lost upon pod destruction. We're only using this ephemeral template for testing an we'll add storage later. 
+  - Note, any data stored in our database will be lost upon pod destruction. We're only using this ephemeral template for testing and we'll add storage later. 
 
   - List available parameters of the template
 
@@ -181,7 +181,7 @@ service/mongodb-mattspencer created (dry run)
 Now, let's run the command for real by removing the dry run. 
 
 ```oc:cli
- oc -n [dev] process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_USER=dbuser MONGODB_PASSWORD=dbpass MONGODB_ADMIN_PASSWORD=admindbpass MONGODB_DATABASE=rocketchat MONGODB_NAME=mongodb-[username] -l ocp101=participant | oc -n [dev] create -f - 
+ oc -n [-dev] process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_USER=dbuser MONGODB_PASSWORD=dbpass MONGODB_ADMIN_PASSWORD=admindbpass MONGODB_DATABASE=rocketchat MONGODB_NAME=mongodb-[username] -l ocp101=participant | oc -n [-dev] create -f - 
 ```
 
 Your output should be similar to: 
