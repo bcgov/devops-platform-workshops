@@ -13,10 +13,9 @@ If you're doing the self-paced training, you can instead request a temporary pro
 
 Make sure you're in the 'Private Cloud OpenShift' tab, then click 'Request a new product'. 
 
-Check the box to choose a 'temporary product set'. Please note, your project will be deleted after 30 days, so don't create this until right before you plan to start working on the lab. 
+Check the box to choose a 'temporary product set'. You'll need to add another person as the 'technical lead' on your project, so consider a member of your team for this role. Please note, your project will be deleted after 30 days, so don't create this until right before you plan to start working on the lab. Once you submit this request, it may take a few minutes for the namespaces to be provisioned and your access granted. The registry will automatically provision your access to the 'temporary product set' to your IDIR email, so please use the IDIR login method when accessing OpenShift via the web console or `oc` command line tool.  
 
-You can skip the remaining steps in this section if you're doing the self paced lab, but take note of the instructions below for adding team members. You may need to do this in the future as people join your team and need access. The registry will automatically provision your access to the 'temporary product set' to your IDIR email, so please use the IDIR login method when accessing OpenShift.  
-
+You can skip the remaining steps in this section if you're doing the self-paced lab, but take note of the instructions below for adding team members. You may need to do this in the future as your teams' access needs change. 
 
 ## Team Permissions (live training)
 
