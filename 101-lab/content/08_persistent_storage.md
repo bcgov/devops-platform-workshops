@@ -163,7 +163,7 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` to match our 'rec
     ```oc:cli
     oc -n [-dev] rollout resume deployment/mongodb-[username]
     ```
-  - Check if a new deployment is being rollout. If not, please do a manual deployment by clicking on `Deploy`
+  - Check if a new deployment is being rolled out. If not, please do a manual deployment by clicking on `Deploy`
     ```oc:cli
       oc -n [-dev] rollout restart deployment/mongodb-[username]
     ```
