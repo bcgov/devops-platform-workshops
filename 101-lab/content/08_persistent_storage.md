@@ -80,23 +80,28 @@ __Objective__: Cause deployment error by using the wrong deployment strategy for
 
 RWO storage (which was selected above) can only be attached to a single pod at a time, which causes issues in certain deployment strategies. 
 
-- Ensure your `mongodb-[username]` deployment strategy is set to `RollingUpdate' and then scale down to zero replicas, then back up to 1.
+- Ensure your `mongodb-[username]` deployment strategy is set to `RollingUpdate' by editing the YAML for the deployment, then run the command `oc -n [-dev] rollout restart deployment mongodb-[username]` 
+
 
 <kbd>![](./images/06_persistent_storage_07.png)</kbd>
 
 - Notice and investigate the issue
 
-> rolling deployments will start up a new version of your application pod before killing the previous one. There is a brief moment where two pods for the mongo application exist at the same time. Because the storage type is __RWO__ it is unable to mount to two pods at the same time. This will cause the rolling deployment to hang and eventually time out. 
+> Rolling deployments will start up a new version of your application pod before killing the previous one. There is a brief moment where two pods for the mongo application exist at the same time. Because the storage type is __RWO__ it is unable to mount to two pods at the same time. This will cause the rolling deployment to hang and eventually time out. 
 
 <kbd>![](./images/06_persistent_storage_08.png)</kbd>
 
-- Change the strategy type to Rolling
+- Change the strategy type back to Recreate and remove the lines:
+```
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+```
 
 ### RWX Storage
 __Objective__: Cause MongoDB to corrupt its data file by using the wrong storage class for MongoDB.
 
 RWX storage allows multiple pods to access the same PV at the same time. 
-
 
 - Scale down `mongodb-[username]` to 0 pods
   ```oc:cli
@@ -120,13 +125,17 @@ RWX storage allows multiple pods to access the same PV at the same time.
   ```oc:cli
   oc -n [-dev] scale deployment/mongodb-[username] --replicas=1
   ```
+- Resume rollout
+```
+oc -n [-dev] rollout resume deployment/mongodb-[username]
+```
 
 ### Fixing it
 __Objective__: Fix corrupted MongoDB storage by using the correct storage class for MongoDB.
 
-After using the `RWX` PVC with rolling deployment, you got to a point where your mongodb is now corrupted. That happens because MongoDB does NOT support multiple processes/pods reading/writing to the same location/mount (`/var/lib/mongodb/data`) of single/shared pvc.
+After using the `RWX` PVC with rolling deployment, you got to a point where your mongodb is now corrupted. That happens because MongoDB does NOT support multiple processes/pods reading/writing to the same location/mount (`/var/lib/mongodb/data`) of single/shared PVC.
 
-To fix that we will need to replace the `RWX` PVC with a `RWO` PVC and change the deployment strategy from `Rolling` to `Recreate` as follow:
+To fix that we will need to replace the `RWX` PVC with a `RWO` to match our 'recreate' deployment strategy. 
   - Scale down `rocketchat-[username]` to 0 pods
     ```oc:cli
     oc -n [-dev] scale deployment/rocketchat-[username] --replicas=0
@@ -148,18 +157,15 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` PVC and change th
     ```oc:cli
     oc -n [-dev] set volume deployment/mongodb-[username] --add --name=mongodb-[username]-data -m /var/lib/mongodb/data -t pvc --claim-name=mongodb-[username]-file
     ```
-  - Change the deployment strategy to use `Recreate` deployment strategy
-    ```oc:cli
-    oc -n [-dev] patch deployment mongodb-[username] --type=merge -p '{"spec":{"strategy":{"type":"Recreate"}}}'
-
-    ```
-  - Go to the `mongodb-[username]` DeploymentConfig and `Resume Rollouts` (under `Actions` menu on the top right side)
+  - Confirm the deployment strategy is set to `Recreate` as described in an earlier step
+    
+  - Go to the `mongodb-[username]` DeploymentConfig and `Resume Rollouts` (under `Actions` menu on the top right side) or use the oc command 
     ```oc:cli
     oc -n [-dev] rollout resume deployment/mongodb-[username]
     ```
   - Check if a new deployment is being rollout. If not, please do a manual deployment by clicking on `Deploy`
     ```oc:cli
-      oc -n [-dev] rollout latest deployment/mongodb-[username]
+      oc -n [-dev] rollout restart deployment/mongodb-[username]
     ```
   - Scale up `mongodb-[username]` to 1 pod, and wait for the pod to become ready
     ```oc:cli
