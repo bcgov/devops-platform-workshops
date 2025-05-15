@@ -143,5 +143,6 @@ oc -n [-dev] get pods  | grep rocketchat-[username]
 oc -n [-dev] port-forward [pod name from above] 8000:3000
 ```
 - Navigate to http://127.0.0.1:8000
+- When you're done, stop the `port-forward` command running with 'ctrl-c'.
 
 Next page - [Logging and Visualizations](./12_logging_and_visualizations.md)
