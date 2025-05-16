@@ -107,7 +107,7 @@ It may be necessary, from time to time, to override the initial command/entrypoi
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
     - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing the example URL with your WebHook URL, add the following section of code under `spec: -> template: -> spec: -> containers:`
+- After replacing the example URL with your WebHook URL, add the following section of code under `spec: -> template: -> spec: -> containers: -> resources:`
 
 ```YAML
 command:  ["/bin/sh", "-c", "c=$(curl -X POST -H 'Content-Type: application/json' --data '{\"text\": \"'\"$HOSTNAME\"' is AN OVERRIDING COMMAND! \"}' https://chat.pathfinder.gov.bc.ca/hooks/xxx/xxx)"]
