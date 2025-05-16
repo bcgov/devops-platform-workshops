@@ -16,7 +16,7 @@ OpenShift build components.
 Ensure that all team members have edit rights into the project. Once complete, 
 each member can create their own Rocket.Chat docker build. 
 
-**Note** In this lab, we'll use square brackets to indicate when you need to replace part of a command and omit the square brackets. If you see `[-tools]` in a command, replace that part of the command with the name of your tools namespace. When `[-dev]` is indicated, replace this part of the command with your dev namespace's name. In the example below, `oc project [-tools]` would become `oc project d8f105-tools` or the name of the tools namespace you are using for this training. We also use [username] as a unique inditifier throughout the lab, and this can be any unique username so long as you use it consistently throughout the lab. 
+**Note** In this lab, we'll use square brackets to indicate when you need to replace part of a command and omit the square brackets. If you see `[-tools]` in a command, replace that part of the command with the name of your tools namespace. When `[-dev]` is indicated, replace this part of the command with your dev namespace's name. In the example below, `oc project [-tools]` would become `oc project d8f105-tools` or the name of the tools namespace you are using for this training. We also use [username] as a unique inditifier throughout the lab, and this can be any unique username so long as you use it consistently throughout the lab. Note that this username can not contain following characters: `. ~ @ | ></{}[];:'"`
 
 - To start, switch to the __Tools Project__
 
