@@ -29,7 +29,7 @@ The Openshift 201 Lab is divided into the following topics:
     * [Java Application (Maven)](./pipelines.md)
 * [Resource Management](./resource-mgmt.md) 
 * [Network Policy & ACS](./network-policy.md)
-* [Application Logging with Kibana](./logging.md)
+* [Application Logging with Loki](./logging.md)
 * [Best Practices for Image Management](./image-management.md)
 * [Pod Auto Scaling](./rh201-pod-auto-scale.md)
 * [Post Outage Checkup](./post-outage-checkup.md)

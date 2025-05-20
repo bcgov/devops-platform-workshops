@@ -1,26 +1,28 @@
-# Application Logging with Kibana
+# Application Logging with Loki
 
-<kbd>[![Video Walkthrough Thumbnail](././images/logging/logging-with-kibana.png)](https://youtu.be/VnpelRzTjOw)</kbd>
+<kbd>[![Video Walkthrough Thumbnail](././images/logging/logging-with-loki.png)](TBD)</kbd>
 
 [Video walkthrough](https://youtu.be/VnpelRzTjOw)
 
-## Objectives:
+## Objectives
 
-After completing this section, you should know how to view application logs in Kibana, navigate the list of fields, and create/save queries.
+After completing this section, you should know how to view application logs in Loki, navigate the list of fields, and create/save queries.
 
 ## Setup
+
 We will setup a sample application that will produce a log entry every 5 seconds.
 
-### Create a new application 
+### Create a new application
+
 ```bash
  oc -n [-dev] new-app --name logging-app \
  --context-dir=openshift-201/materials/logging \
  https://github.com/BCDevOps/devops-platform-workshops
-
 ```
 
 You should see output similar to the follow:
-<pre>
+
+```text
 ...<em>output omitted</em>...
     imagestream.image.openshift.io "logging-app-jmacdonald" created
     buildconfig.build.openshift.io "logging-app-jmacdonald" created
@@ -28,104 +30,172 @@ You should see output similar to the follow:
     service "logging-app-jmacdonald" created
 --> Success
 ...<em>output omitted</em>...
-</pre>
-
+```
 
 ### Follow Build
+
 Use the `oc -n [-dev] logs` command to check the build logs from the `logging-app` build:
+
 ```bash
 oc -n [-dev] logs -f bc/logging-app
 ```
-<pre>
+
+```text
 ...<em>output omitted</em>...
 Writing manifest to image destination
 Storing signatures
 ...<em>output omitted</em>...
 Push successful
-</pre>
+```
 
-## Kibana
+## Loki
 
-### Accessing Kibana
-You can access Kibana directly at this [url](https://kibana-openshift-logging.apps.silver.devops.gov.bc.ca/) or it is also accessible from the OpenShift console.
+### Accessing Logs
 
-Note: If you receive an unauthorized error (e.g. `{"statusCode":401,"error":"Unauthorized","message":"Authentication Exception"}`), follow steps here to fix: https://stackoverflow.developer.gov.bc.ca/a/119/16
+You can access Loki in the OpenShift console in the Developer mode under Observe -> Logs.
 
-Select the running pod that was just created:
+<kbd>![loki-logs-1](images/logging/loki-logs-01.png)</kbd>
+
+Or, you can access it from a pods tabs.
+
+Select the running pod that was just created
 
 <kbd>![pod-logs-1](images/logging/pod-logs-01.png)</kbd>
 
-Navigate to the Logs tab and click the `Show in Kibana` link
+Navigate to the Aggregated Logs tab
 
 <kbd>![pod-logs-2](images/logging/pod-logs-02.png)</kbd>
 
-### First time Setup
-If this is your first time logging in to Kibana you may see a screen to setup a search index.  See the steps in the Logging and Visualizations 101 lab [here](https://github.com/BCDevOps/devops-platform-workshops/blob/master/101-lab/content/12_logging_and_visualizations.md#logging-and-visualizations).
-
-
 ### View Logs
-To view logs click on the `Discover` tab on the left navigation pane.
-
-<kbd>![kibana-discover](images/logging/kibana-discover.png)</kbd>
 
 By default you will see something like this:
 
-<kbd>![kibana-main](images/logging/kibana-main.png)</kbd>
+<kbd>![loki-main](images/logging/loki-main.png)</kbd>
 
-1. Index Pattern you created above.
-2. Fields selected to show (`_source` is selected by default)
-3. Available Fields to add to your display
-4. Log entries that match the filter, search, etc.
-5. Current activity given the time frame chosen
-6. Search bar used to search for specific entries
-7. Time frame chosen for the logs shown (default is last 15 minutes)
+1. You can select to filter on the content of logs, or by namespace, pod, or container name.
+2. Current applied filters
+3. This will show a bar chart of the number of logs per time period that match your filter
+4. Time range to show logs for
+5. Set the page to refresh the log results every X time period
+6. Adds the namespace, pod, and container names to all the log entries displayed below
+7. Some detailed stats on how your query was performed
+8. Button to run the query again
+9. Show the LogQL query being used
+10. Log entries that match the filter, search, etc.
 
-### Fields
-Let's select 2 fields for viewing from the `Available fields` panel on the left.
+### Histogram
 
-1. `kubernetes.container_name` - this is the name of the container running in kubernetes.  This should be `logging-app`
-2. `message` - is the message from our application
+If you click on `Show Histogram` a bar chart will appear. It is color coded to the log level tag of each log message.
 
-Your screen should look similar to following:
+<kbd>![loki-histogram](images/logging/loki-histogram.png)</kbd>
 
-<kbd>![kibana-selected-fields](images/logging/kibana-selected-fields.png)</kbd>
+### Log Levels
 
-### Queries
+The log level of that is tagged onto any log line comes from some regular expressions run on the logs as they are collected. If you are creating your own log messages in your app, you can include the appropriate keywords to help differentiate your logs.
 
-Let's say we are only interested in the messages with the number 10 in them.  Change the search terms to be the following:
+```text
+    if match!(.message, r'Warning|WARN|^W[0-9]+|level=warn|Value:warn|"level":"warn"|<warn>') {
+      .level = "warn"
+    } else if match!(.message, r'Error|ERROR|^E[0-9]+|level=error|Value:error|"level":"error"|<error>') {
+      .level = "error"
+    } else if match!(.message, r'Critical|CRITICAL|^C[0-9]+|level=critical|Value:critical|"level":"critical"|<critical>') {
+      .level = "critical"
+    } else if match!(.message, r'Debug|DEBUG|^D[0-9]+|level=debug|Value:debug|"level":"debug"|<debug>') {
+      .level = "debug"
+    } else if match!(.message, r'Notice|NOTICE|^N[0-9]+|level=notice|Value:notice|"level":"notice"|<notice>') {
+      .level = "notice"
+    } else if match!(.message, r'Alert|ALERT|^A[0-9]+|level=alert|Value:alert|"level":"alert"|<alert>') {
+      .level = "alert"
+    } else if match!(.message, r'Emergency|EMERGENCY|^EM[0-9]+|level=emergency|Value:emergency|"level":"emergency"|<emergency>') {
+      .level = "emergency"
+    } else if match!(.message, r'(?i)\b(?:info)\b|^I[0-9]+|level=info|Value:info|"level":"info"|<info>') {
+      .level = "info"
+    }
 ```
-kubernetes.container_name:"logging-app" AND message:10
+
+### Resources
+
+If you click the `Show Resources` link, then the namespace name, pod name, and container name will show up below each log line. Clicking on the resource will take you to that item in the web console.
+
+<kbd>![loki-resources](images/logging/loki-resources.png)</kbd>
+
+### Query
+
+If you click on `Show Query` you will see the LogQL query being used. You can then adjust it and make more complex queries than the basic filters support.
+
+```text
+{ log_type="application", kubernetes_namespace_name="be1c6b-dev" } | json
 ```
-__NOTE__ if you aren't seeing results it may have been more than 15 minutes since the entry with the number 10 was logged.  If so, change the timeframe in the upper right corner to `Last 30 minutes` or higher if needed.
 
-<kbd>![kibana-search-10](images/logging/kibana-search-10.png)</kbd>
+You can read all about LogQL on the [Loki docs](https://grafana.com/docs/loki/latest/query/log_queries/) site.
 
-Notice Kibana highlights your search term.
+The indexed fields you can query inside stream selector are:
 
-If you want to save your query (including the selected fields) click the save button at the top.
+- kubernetes_namespace_name
+- kubernetes_pod_name
+- kubernetes_container_name
+- log_type=application
 
-<kbd>![kibana-save-search](images/logging/kibana-save-search.png)</kbd>
+All other filtering should be done after the `json` bit.
 
-### Filters
-If you plan on doing a Google type search you can use a query.  If you are selecting a possible value from a drop down like the `kubernetes.container_name` it can be faster to use a filter.
+You can do a case insensitive search on the message string like this
 
-Clear out the text in your search bar and then click the `Add a filter +` button just below the search bar:
+```text
+{ log_type="application", kubernetes_namespace_name="be1c6b-dev" } |~ `(?i)hello` | json
+```
 
-<kbd>![kibana-add-filter](images/logging/kibana-add-filter.png)</kbd>
+### Alerting
 
-Choose the `kubernetes.container_name` for the field, `is` as the operator and `logging-app` as the value and then click save.
+You can create an alert based on log data using LogQL [metric queries](https://grafana.com/docs/loki/latest/query/metric_queries/).
 
-<kbd>![kibana-filter](images/logging/kibana-filter.png)</kbd>
+Your namespace already contains an AlertmanagerConfig object that will direct alerts as emails to your Product Owner and Tech Leads.
 
-You should now only see your entries in the list similar to the query we performed above.  You can also save this filter by clicking the save button at the top just like we did with the query.
+```yaml
+apiVersion: loki.grafana.com/v1
+kind: AlertingRule
+metadata:
+  labels:
+    openshift.io/loki: "true" # This is required for Loki to pick up the config
+    app: "logging-app"
+  name: logging-app-alerts
+  namespace: be1c6b-dev
+spec:
+  groups:
+  - interval: 1m
+    name: LoggingAlerts
+    rules:
+    - alert: TooManyHellos
+      annotations:
+        description: A longer description and possibly a link to how to fix it goes here
+        summary: The logging app is generating too many Hellos
+      # Get the rate of Hellos per second over the last minute from each
+      # logging pod, sum those together. If they are higher than 0.1 Hellos per second
+      # for more than 5 minutes, generate an alert
+      expr: |
+        sum(rate({ kubernetes_namespace_name="be1c6b-dev", log_type="application", kubernetes_pod_name=~"logging-app-.+" } |= ` Hello ` [1m])) > 0.1
+      for: 5m
+      labels:
+        namespace: be1c6b-dev
+        severity: critical
+  tenantID: application
+```
+
+After a minute or two the alert will show up in the Observe section, and then after a little bit it will switch to Firing.
+
+<kbd>![loki-alert-1](images/logging/loki-alert-1.png)</kbd>
+
+If you select the alert, you'll get to see a graph of the metric query, and the summary and description you provided for the alert.
+
+<kbd>![loki-alert-2](images/logging/loki-alert-2.png)</kbd>
 
 ## Conclusion
-There are many fields available to choose from.  Feel free to experiment with adding other fields to your results.  For example you could add the `kubernetes.container_image` to your list if you are interested in looking at which version of the app the logs are from.
 
-The queries we did in this lab are pretty simple.  Take a look at the [Kibana Query Language](https://www.elastic.co/guide/en/kibana/current/kuery-query.html) for more information on how to write complex queries.
+Loki is a powerful tool for observing your application. The queries we did in this lab are pretty simple. Take a look at the [LogQL examples](https://grafana.com/docs/loki/latest/query/query_examples/) for more information on how to write complex queries.
 
 ### Clean up
+
 To clean up the lab environment run the following command to delete all of the resources we created:
+
 ```bash
 oc -n [-dev] delete all -l app=logging-app
 
@@ -133,4 +203,5 @@ deployment.apps "logging-app" deleted
 buildconfig.build.openshift.io "logging-app" deleted
 imagestream.image.openshift.io "logging-app" deleted
 ```
+
 Next topic - [Best Practices of Image Management](https://github.com/BCDevOps/devops-platform-workshops/blob/master/openshift-201/image-management.md)
