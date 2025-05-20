@@ -19,6 +19,8 @@ oc -n [-dev] get deployment,route,service,configmap,pvc,secrets -l app=rocketcha
 ```
 The command above will save the YAML definitions for these objects on your local machine in a file named `template.yaml`. 
 
+For Windows users using WSL, you can access the file in `\\wsl$\Ubuntu`. 
+
 **Note:** we've also created some objects in the [-tools] namespace including our buildconfig and imagestream, but for the purposes of this demonstration we're not going to add them to our template.
 
 ## Remove unnecessary information
