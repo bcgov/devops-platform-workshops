@@ -70,15 +70,15 @@ Next, let's search through the file for the places where our username or namespa
 
 The `oc process` command is used to process a **template** into a **resource list**. The `-f` flag used to indicate that we need to process a file.  
 
-The `oc create` command can be used to create new objects in OpenShift, again using the `-f` flag. 
+The `oc create` or `oc apply` commands can be used to create new objects in OpenShift, again using the `-f` flag. We'll use oc apply, which will either modify existing objects or create new objects that don't exist. 
 
-Below, we can use the pipe character `|` to take the output from the `oc process` command and feed it into the `oc create` command. We add `--dry run=client` to get a simulated output before actually running the command. This way, we can check that our template is working correctly: 
+Below, we can use the pipe character `|` to take the output from the `oc process` command and feed it into the `oc apply` command. We add `--dry run=server` to get a simulated output before actually running the command. This way, we can check that our template is working correctly: 
 
-`oc -n [-dev] process -f template.yaml | oc -n [dev] create -f - --dry-run=client`
+`oc -n [-dev] process -f template.yaml | oc -n [dev] apply -f - --dry-run=server`
 
 Your output should look similar to the below. **Note, any object that already exists with these same names will not be created by oc create**: 
 ```
-oc -n d8f105-dev process -f template.yaml | oc -n [dev] apply -f - --dry-run=client  
+oc -n d8f105-dev process -f template.yaml | oc -n [dev] apply -f - --dry-run=server  
 
 deployment.apps/rocketchat-mattspencer configured (dry run)
 deployment.apps.openshift.io/mongodb-mattspencer configured (dry run)
@@ -101,7 +101,7 @@ Let's create a situation where all of the objects that we'd previously created i
 
 Before deleting objects, it's also good practice to do a dry run to make sure you're only deleing the objects you intend to: 
 
-`oc -n [-dev] delete deployment,route,service,configmap,pvc,secrets -l app=rocketchat-[username] --dry-run=client`
+`oc -n [-dev] delete deployment,route,service,configmap,pvc,secrets -l app=rocketchat-[username] --dry-run=server`
 
 If you can see that you'll only be deleting your own objects, then proceed without the dry-run flag: 
 
