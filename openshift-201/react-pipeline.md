@@ -44,7 +44,7 @@ The following shows the [`react-build`](https://github.com/bcgov/pipeline-templa
 
 1. The task that fetches the git repository. Provided the workspace, the result of this task will be stored in the workspace. In this case, the contents of the git repo will be stored in the directory `/workspace/source`
 2. 'Fixes' the directory for the next task
-3. This calls on a [`Clustertask`](https://tekton.dev/docs/pipelines/tasks/#task-vs-clustertask) that uses the s2i strategy to build an image of the application.
+3. This calls on a [`task`](https://docs.redhat.com/en/documentation/red_hat_openshift_pipelines/1.18/html-single/creating_cicd_pipelines/index#resolver-cluster-tasks-ref_remote-pipelines-tasks-resolvers) that uses the s2i strategy to build an image of the application.
 4. The last task deploys the application from an imagestream
 
 The details of the pipeline are as follows:
@@ -70,10 +70,10 @@ This is checking the `runDeploy` parameter defined in the `Pipeline` and if `tru
 <br>
 
 ## Breakdown of Tasks
-This pipeline is centered around the `s2i-nodejs` clusterTask, so the other tasks are built around said task to ensure that it works properly. To get a better understanding on how the clusterTasks work, you can use the following commands to view all the provided tasks that are present in the cluster and take a closer look at the `s2i-nodejs` task repectively
+This pipeline is centered around the `s2i-nodejs` Task, so the other tasks are built around said task to ensure that it works properly. To get a better understanding on how the Tasks work, you can use the following commands to view all the provided tasks that are present in the cluster and take a closer look at the `s2i-nodejs` task repectively
 ```bash
-oc get clustertask
-oc get clustertask/s2i-nodejs
+oc -n openshift-pipelines get task
+oc -n openshift-pipelines get task/s2i-nodejs
 ```
 
 ### React Workspace
@@ -90,7 +90,7 @@ To initiate a bash command, we need a proper image and command. The `registry.re
 </br>
 
 ### Building the image with s2i
-After 'fixing' the workspace, the s2i ClusterTask will run, and provide an image in the form of an ImageStream. If an imagestream with the same name is already present, s2i might encounter some problems creating a new one, which is why a unique Image tag should be provided. It is also good practice to provide an identifier as an imageTag, such as 'v1' or '1.0.0' when pushing it through Docker, Openshift, or any other tools.
+After 'fixing' the workspace, the s2i Task will run, and provide an image in the form of an ImageStream. If an imagestream with the same name is already present, s2i might encounter some problems creating a new one, which is why a unique Image tag should be provided. It is also good practice to provide an identifier as an imageTag, such as 'v1' or '1.0.0' when pushing it through Docker, Openshift, or any other tools.
 
 The following example shows the [`react-deploy`](https://github.com/bcgov/pipeline-templates/blob/main/tekton/base/tasks/react-deploy.yaml) task.
 
