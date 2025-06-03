@@ -1,5 +1,5 @@
 # Overview
-Welcome to OpenShift 101!
+Welcome!
 
 In these labs you will explore builds, deployments, as well as some common issues with storage provisioning.
 
