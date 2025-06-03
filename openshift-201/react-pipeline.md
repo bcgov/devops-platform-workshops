@@ -73,7 +73,7 @@ This is checking the `runDeploy` parameter defined in the `Pipeline` and if `tru
 This pipeline is centered around the `s2i-nodejs` Task, so the other tasks are built around said task to ensure that it works properly. To get a better understanding on how the Tasks work, you can use the following commands to view all the provided tasks that are present in the cluster and take a closer look at the `s2i-nodejs` task repectively
 ```bash
 oc -n openshift-pipelines get task
-oc -n openshift-pipelines get task/s2i-nodejs
+oc -n openshift-pipelines get task/s2i-nodejs -o yaml
 ```
 
 ### React Workspace
@@ -83,7 +83,7 @@ The following example shows the [`react-workspace`](https://github.com/bcgov/pip
 <kbd>![task](images/pipelines/react-workspace.png)</kbd>
 
 
-This task is fairly simple, but it shows how to run you bash commands in the pipeline. The idea behind this task is that s2i requires the source code to be in the `root` directory. Since the `fetch-repo` task clones the entire repository instead of just the demo app, we want to move it so that it is located in root. It is important to know that since we provided both `fetch-repo` and `react-worspace` with the same workspace, the location of the cloned git repo will be in `/workspace/source/`, with source being the name of the workspace that we gave to the tasks.
+This task is fairly simple, but it shows how to run you bash commands in the pipeline. The idea behind this task is that s2i requires the source code to be in the `root` directory. Since the `fetch-repo` task clones the entire repository instead of just the demo app, we want to move it so that it is located in root. It is important to know that since we provided both `fetch-repo` and `react-workspace` with the same workspace, the location of the cloned git repo will be in `/workspace/source/`, with source being the name of the workspace that we gave to the tasks.
 
 To initiate a bash command, we need a proper image and command. The `registry.redhat.io/ubi8/ubi-minimal:latest` image provide a lightweight foundation for building and running applications in containers, but it does not recognize your standard bash commands. So, we use `sh -c` to invoke the shell and instruct it to run the `cp` command written as args to accomplish our goal. 
 
