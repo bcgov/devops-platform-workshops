@@ -1,5 +1,5 @@
 # Overview
-Welcome!
+Welcome to OpenShift 101!
 
 In these labs you will explore builds, deployments, as well as some common issues with storage provisioning.
 
@@ -7,7 +7,7 @@ These labs will focus on a single 2-tier application based on the popular open s
 
 ## Special Notes
 
-The training is being delivered in a production Openshift Environment, using the BC Gov's 'Silver' cluster. 
+The training is being delivered in a production OpenShift Environment, using the BC Gov's 'Silver' cluster. 
 
 You'll need an IDIR account to complete this course, so if you don't have one please contact your supervisor to arrange one before starting the course.
 
