@@ -34,6 +34,8 @@ __If you do not have `oc` installed__ or your version is incorrect follow these 
 
 2. Login with your IDIR account (unless you've manually setup access via github)
 
+This [video](https://youtu.be/7tlANUhgGdc) demonstrates the `oc login` process. 
+
 ## Other Requirements
 
 In addition, developers require GIT locally installed and must have a 2FA device to support access to GitHub.
