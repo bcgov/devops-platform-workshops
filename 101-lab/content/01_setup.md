@@ -34,7 +34,7 @@ __If you do not have `oc` installed__ or your version is incorrect follow these 
 
 2. Login with your IDIR account (unless you've manually setup access via github)
 
-This [video](https://youtu.be/7tlANUhgGdc) demonstrates the `oc login` process. 
+This [video](https://youtu.be/7tlANUhgGdc) walkthrough demonstrates the `oc login` process. 
 
 ## Other Requirements
 
