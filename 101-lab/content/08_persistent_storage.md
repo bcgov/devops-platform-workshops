@@ -144,7 +144,7 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` to match our 'rec
     ```oc:cli
     oc -n [-dev] scale deployment/mongodb-[username] --replicas=0
     ```
-  - Go to the `mongodb-[username]` DeploymentConfig and `Pause Rollouts` (under `Actions` menu on the top right side)
+  - Go to the `mongodb-[username]` Deployment and `Pause Rollouts` (under `Actions` menu on the top right side)
     ```oc:cli
       oc -n [-dev] rollout pause deployment/mongodb-[username]
     ```
@@ -159,7 +159,7 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` to match our 'rec
     ```
   - Confirm the deployment strategy is set to `Recreate` as described in an earlier step
     
-  - Go to the `mongodb-[username]` DeploymentConfig and `Resume Rollouts` (under `Actions` menu on the top right side) or use the oc command 
+  - Go to the `mongodb-[username]` Deployment and `Resume Rollouts` (under `Actions` menu on the top right side) or use the oc command 
     ```oc:cli
     oc -n [-dev] rollout resume deployment/mongodb-[username]
     ```
