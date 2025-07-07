@@ -107,7 +107,7 @@ RWX storage allows multiple pods to access the same PV at the same time.
   ```oc:cli
   oc -n [-dev] scale deployment/mongodb-[username] --replicas=0
   ```
-- Create a new PVC as `netapp-file-standard', set the type to RWX and name it `mongodb-[username]-file-rwx`
+- Create a new PVC as `netapp-file-standard`, set the type to RWX and name it `mongodb-[username]-file-rwx`
 <kbd>![](./images/06_persistent_storage_09.png)</kbd>
 
 - Remove the previous storage volume and add your new `mongodb-[username]-file-rwx` storage, mounting at `/var/lib/mongodb/data`
