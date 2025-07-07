@@ -133,7 +133,7 @@ oc -n [-dev] rollout resume deployment/mongodb-[username]
 ### Fixing it
 __Objective__: Fix corrupted MongoDB storage by using the correct storage class for MongoDB.
 
-After using the `RWX` PVC with rolling deployment, you got to a point where your mongodb is now corrupted. That happens because MongoDB does NOT support multiple processes/pods reading/writing to the same location/mount (`/var/lib/mongodb/data`) of single/shared PVC.
+After using the `RWX` PVC with the 'rolling' deployment strategy, we ended up with two pods running. Then, switching after switching to 'recreate' strategy, we still had two pods running and you got to a point where your mongodb is corrupted. That happens because MongoDB does NOT support multiple processes/pods reading/writing to the same location/mount (`/var/lib/mongodb/data`) of single/shared PVC.
 
 To fix that we will need to replace the `RWX` PVC with a `RWO` to match our 'recreate' deployment strategy. 
   - Scale down `rocketchat-[username]` to 0 pods
