@@ -80,7 +80,7 @@ __Objective__: Cause deployment error by using the wrong deployment strategy for
 
 RWO storage (which was selected above) can only be attached to a single pod at a time, which causes issues in certain deployment strategies. 
 
-- Ensure your `mongodb-[username]` deployment strategy is set to `RollingUpdate' by editing the YAML for the deployment, then run the command `oc -n [-dev] rollout restart deployment mongodb-[username]` 
+- Ensure your `mongodb-[username]` deployment strategy is set to `RollingUpdate` by editing the YAML for the deployment, then run the command `oc -n [-dev] rollout restart deployment mongodb-[username]` 
 
 
 <kbd>![](./images/06_persistent_storage_07.png)</kbd>
