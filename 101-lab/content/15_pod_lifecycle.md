@@ -41,7 +41,7 @@ __Objective__: Create an init container
   > If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
 
 
-<kbd>![](./images/12_pod_lifecycle_01.png)</kbd>
+<kbd>![](./images/15_pod_lifecycle_01.png)</kbd>
 
 - After replacing the URL below with the webhook URL from the previous step, add the following section of code under `spec: -> template: -> spec:`. As always with YAML, pay close attention to the formatting and indenting. 
 
@@ -73,7 +73,7 @@ initContainers:
 
 - Explore the `Pod Details` to notice the difference with the Init Container 
 
-<kbd>![](./images/12_pod_lifecycle_02.png)</kbd>
+<kbd>![](./images/15_pod_lifecycle_02.png)</kbd>
 
 In order to obtain logs from the init container, the `oc` command can be used by specifying `-c init`: 
 
