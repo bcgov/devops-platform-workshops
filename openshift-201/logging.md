@@ -54,7 +54,7 @@ Push successful
 
 You can access Loki in the OpenShift console in the Developer mode under Observe -> Logs.
 
-<kbd>![loki-logs-1](images/logging/loki-logs-01.png)</kbd>
+<kbd>![loki-logs-1](images/logging/loki-logs-1.png)</kbd>
 
 Or, you can access it from a pods tabs.
 
