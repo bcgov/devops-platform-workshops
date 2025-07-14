@@ -259,7 +259,7 @@ Click on the newly created application.  We didn't select auto-sync, so all of t
 Delete the 'LICENSEPLATE-helm-default' application.
 
 #### Helm application with local values
-In order to create an Argo CD application that directly processes a remote Helm repository while using a values file from our gitops repository, we will create a multi-source application.  However, the UI does not currently support the creation of multi-source applications, so we will create a YAML manifest and apply it to our tools namespace (you can create applications in any of your namespaces).
+In order to create an Argo CD application that directly processes a remote Helm repository while using a values file from our gitops repository, we will create a multi-source application.  However, the UI does not currently support the creation of multi-source applications, so we will create a YAML manifest and apply it to our dev namespace (you can create applications in any of your namespaces).
 
 First, create a directory in your GitOps repository for the new Helm application.
 ```
@@ -276,9 +276,9 @@ git commit -a -m "Add Helm values file"
 git push origin
 ```
 
-Download the [multi-source application template](gitops_files/app.helm-multi-source.yaml).  Edit the file, replacing the LICENSEPLATE placeholder with your license plate.  Create the application in your tools namespace.
+Download the [multi-source application template](gitops_files/app.helm-multi-source.yaml).  Edit the file, replacing the LICENSEPLATE placeholder with your license plate.  Create the application in your dev namespace.
 ```
-oc -n ${LICENSEPLATE}-tools apply -f app.helm-multi-source.yaml
+oc -n ${LICENSEPLATE}-dev apply -f app.helm-multi-source.yaml
 ```
 
 In the Argo CD UI, click on the new application and view the resources that would be created.  Note the names of the resources ("mariadb").
@@ -479,7 +479,7 @@ Now use the Argo CD UI to create a new app called 'LICENSEPLATE-app-of-apps'.  S
 
 But you will notice that you now have two "app1" apps!
 * `openshift-bcgov-gitops-shared/LICENSEPLATE-app1`
-* `LICENSEPLATE-tools/LICENSEPLATE-app1`
+* `LICENSEPLATE-dev/LICENSEPLATE-app1`
 
 This is because when the "apps in any namespace" feature is in use, the full name of the app is "NAMESPACE/APP_NAME".  Because they are in different namespaces, they are treated as different apps.
 
