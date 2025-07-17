@@ -15,7 +15,7 @@ Create a configMap with arbitrary data and mount it inside of your `rocketchat-[
 <kbd>![](./images/07_persistent_config_02.png)</kbd>
 
 - In the Web Console, go to `+Add` and select `YAML`
-- Paste in the following ConfigMap Code, replace [username] with your username and save 
+- Paste in the following ConfigMap Code, replace [username] with your username and create this object 
 ```yaml
 apiVersion: v1
 data:
