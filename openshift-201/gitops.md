@@ -22,6 +22,11 @@
 - [History and Rollbacks](#history-and-rollbacks)
 - [References](#references)
 
+## Video walkthrough
+A draft video walkthrough of this lab is [available here](https://youtu.be/lu8ODionthM), please share any feedback or inconsistencies with the instructions. 
+
+
+
 ## Objectives
 After completing this section, you should have an understanding of GitOps and how to use Argo CD to manage your applications and other resources.
 
