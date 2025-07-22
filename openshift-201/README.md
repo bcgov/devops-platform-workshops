@@ -24,7 +24,7 @@ Please join the [OpenShift 201 Self-Paced](https://chat.developer.gov.bc.ca/chan
 ### Lab topics:
 
 The Openshift 201 Lab is divided into the following topics:
-* [OpenShift Gitops](/.gitops.md)
+* [OpenShift Gitops](./gitops.md)
 * [Resource Management](./resource-mgmt.md) 
 * [Network Policy & ACS](./network-policy.md)
 * [Application Logging with Kibana](./logging.md)
