@@ -1,0 +1,76 @@
+# GitOpsTeam - create this resource in your tools namespace in order to enable
+#   Argo CD for your project
+apiVersion: warden.devops.gov.bc.ca/v1alpha1
+kind: GitOpsTeam
+metadata:
+  name: gitopsteam-myproject
+  namespace: myproject-tools
+spec:
+  # gitOpsMembers defines the git repo access (tenant-gitops-LICENSEPLATE)
+  # Note that if users listed here are not already members of the GitHub
+  # 'bcgov-c' organization, they will have to accept an email invitation
+  # to join.
+  #
+  # Note:
+  #   Do not append "@github" to GitHub IDs in the gitOpsMembers section
+  #   This section is for GitHub repo access, so only GitHub IDs, no IDIRs
+  #   For GitHub teams, use the appropriate "Teams" lists (e.g., adminTeams)
+  # ------------------------------------------------------------------------
+  gitOpsMembers:
+
+    # Full admin access to the repo, including repo deletion, adding of users
+    # Recommended for people who need full access to the project, including
+    # sensitive and destructive actions like managing security or deleting a
+    # repository.
+    admins:
+      - myGitHubID
+    adminTeams:
+      - ourGitHubTeam
+
+    # Recommended for contributors who actively push to your project.
+    writers:
+      - dev1-githubid
+    writerTeams:
+
+    # Recommended for project managers who need to manage the repository without
+    # access to sensitive or destructive actions.
+    maintainers:
+    maintainerTeams:
+
+    # Recommended for non-code contributors who want to view or discuss your
+    # project.
+    readers:
+    readerTeams:
+
+    # Recommended for contributors who need to manage issues and pull requests
+    # without write access.
+    triage:
+    triageTeams:
+
+  # projectMembers defines access to the Argo CD UI and is based on Keycloak
+  #   groups
+  #
+  # Note:
+  #   GitHub IDs must have "@github" appended to the ID
+  #   You may include IDIR email addresses (UPN) for IDIR-based access
+  #   GitHub IDs are not case sensitive in this section
+  #   Do not use GitHub teams here, just individual IDs
+  # ------------------------------------------------------------------------
+  projectMembers:
+
+    # Project Maintainers have full access to the prod and nonprod ArgoCD
+    # projects.
+    maintainers:
+      - seniorDev@gov.bc.ca
+
+    # Nonprod users have full access to the nonprod ArgoCD project, which can
+    # deploy to the dev, test, and tools namespaces.  They cannot overwrite a
+    # GitOpsTeam or GitOpsAlliance resource.
+    nonprod:
+      - otherDev@gov.bc.ca
+      - contractor1@github
+
+    # Project Readers have read-only access to the Project in the Argo CD UI
+    readers:
+      - projectManager@gov.bc.ca
+

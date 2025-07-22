@@ -320,7 +320,3 @@ If you now look at the pipelines you should see a new `PipelineRun` created and 
 **Note 1:** If your pipeline fails due to exceeding the storage quota on your namespace, delete any preivous 'PipelineRuns' on the namespace. This will delete the associated persistent volume claims (PVCs) which should give you sufficient storage space to run your pipeline.
 
 **Note 2:** if you are creating your own pipelines in the future, you can use the 'pipeline builder' feature of the OpenShift web console. The can be accessed via the 'create' button on the Pipelines window of the web console. Since the 4.10 update, this pipeline builder will filter the tasks to show only those which are supported by the cluster. 
-
-
-Next Topic - [Resource Management](https://github.com/BCDevOps/devops-platform-workshops/blob/master/openshift-201/resource-mgmt.md)
-

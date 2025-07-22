@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mariadb-helm
+spec:
+  destination:
+    namespace: LICENSEPLATE-test
+    server: https://kubernetes.default.svc
+  project: LICENSEPLATE
+  sources:
+    - chart: bitnamicharts/mariadb
+      helm:
+        #releaseName: mariadb
+        valueFiles:
+          - $values/mariadb-helm/values.yaml
+      repoURL: artifacts.developer.gov.bc.ca/docker-helm-oci-remote
+      targetRevision: 20.2.0
+    - ref: values
+      repoURL: https://github.com/bcgov-c/tenant-gitops-LICENSEPLATE.git
+      targetRevision: main
