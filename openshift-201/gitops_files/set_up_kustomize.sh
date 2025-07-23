@@ -65,8 +65,8 @@ kind: Kustomization
 resources:
   - ../../base
   - configmap.yaml
-patchesStrategicMerge:
-  - patch.deployment.yaml
+patches:
+  - path: patch.deployment.yaml
 EOF
 
 cat <<EOF > ${APP_NAME}/overlays/dev/configmap.yaml
@@ -93,8 +93,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base
-patchesStrategicMerge:
-  - patch.deployment.yaml
+patches:
+  - path: patch.deployment.yaml
 EOF
 
 cat <<EOF > ${APP_NAME}/overlays/test/patch.deployment.yaml
