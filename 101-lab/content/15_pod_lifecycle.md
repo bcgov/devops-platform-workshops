@@ -113,7 +113,7 @@ It may be necessary, from time to time, to override the initial command/entrypoi
 command:  ["/bin/sh", "-c", "c=$(curl -X POST -H 'Content-Type: application/json' --data '{\"text\": \"'\"$HOSTNAME\"' is AN OVERRIDING COMMAND! \"}' https://chat.pathfinder.gov.bc.ca/hooks/xxx/xxx)"]
 ```
 
-Your rocketchat deployment YAML should look similar to this (some sections have been collapsed for easier viewing):
+After saving, your rocketchat deployment YAML should look similar to this (some sections have been collapsed for easier viewing):
 
 <kbd>![](./images/15_pod_lifecycle_11.png)</kbd>
 
