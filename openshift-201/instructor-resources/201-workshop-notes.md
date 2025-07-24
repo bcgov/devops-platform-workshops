@@ -174,9 +174,9 @@ Tekton: Pipeline is kind of like a template, the pipeline run takes the paramete
 
 ### Recovery Checklist
 
-## Application Logging with Kibana
+## Application Logging with Loki
 
-### Kibana Logging
+### Loki Logging
 ### Usage
 
 ## Network Policy and ACS
