@@ -38,7 +38,7 @@ __Objective__: Create an init container
 
 - Next the OpenShift Web Console, navigate to `Topology` and select your `rocketchat-[username]` deployment.
 - Navigate to the __YAML__ tab.
-  > If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
+  > If you wish to perform this from the cli with the `oc` tool, type `oc -n [-dev] edit deployment/rocketchat-[username]`
 
 
 <kbd>![](./images/12_pod_lifecycle_01.png)</kbd>
