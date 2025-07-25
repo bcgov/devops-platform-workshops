@@ -86,7 +86,7 @@ Lifecycle hooks can be configured to start and stop a container properly. The li
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
     - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing both URLs below with the webhook URL from the earlier step, add the following section of code under `spec: -> template: -> spec: -> containers: -> resources:`. Again, pay careful attention to the YAML indentation. 
+- After replacing both URLs below with the webhook URL from the earlier step, add the following section of YAML under the first item in `spec: -> template: -> spec: -> containers:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
 ```YAML
 lifecycle:
             postStart:
@@ -116,7 +116,7 @@ command:
   - >
     c=$(curl -X POST -H 'Content-Type: application/json' \
     --data '{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
-    https://chat.pathfinder.gov.bc.ca/hooks/xxx/xxx)
+    https://chat.exampleURL.gov.bc.ca/hooks/xxx/xxx)
 ```
 #command:  ["/bin/sh", "-c", "c=$(curl -X POST -H 'Content-Type: application/json' --data '{\"text\": \"'\"$HOSTNAME\"' is AN OVERRIDING COMMAND! \"}' https://chat.pathfinder.gov.bc.ca/hooks/xxx/xxx)"] 
 
