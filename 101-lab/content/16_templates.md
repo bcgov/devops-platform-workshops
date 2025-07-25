@@ -45,7 +45,7 @@ You could stop at this point if you just want to work with the YAML files as the
 
 ## Parameterizing your template 
 
-In this section, we're going to parameterize our OpenShift objects using the built-in OpenShift templates feature. There are alternatives to using OpenShift templates though, including [HELM](https://helm.sh/). 
+In this section, we're going to parameterize our OpenShift objects using the built-in OpenShift templates feature. Parameters allow us to make parts of our template easily replaceable. There are alternatives to using OpenShift templates though, including [HELM](https://helm.sh/). 
 
 In order to tell OpenShift that we're creating a YAML file that should be used as a template, we need to make some more changes to our `template.yaml` file. 
 
