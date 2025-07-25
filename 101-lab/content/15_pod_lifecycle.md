@@ -4,7 +4,7 @@ A Pod can be extended beyond the normal operation of the container by allowing d
 - add `pre` and `post` lifecycle hooks
 - modify the default `entrypoint` of a container 
 
-<kbd>[![Video Walkthrough Thumbnail](././images/15_pod_lifecycle_thumb.png)](https://youtu.be/T3n3i-ucmkE)</kbd>
+<kbd>[![Video Walkthrough Thumbnail](././images/15_pod_lifecycle_thumb.png)](https://youtu.be/552gtIZfEu4)</kbd>
 
 [Video walkthrough](https://youtu.be/T3n3i-ucmkE)
 
