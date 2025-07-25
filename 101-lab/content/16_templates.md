@@ -64,7 +64,7 @@ parameters:
     required: true
     value: 'dev'
 ```
-Next, let's search through the file for the places where our username or namespace suffix `-dev` is being used and replace them with `${OWNER}` and `${APP_NAMESPACE}`. This way, in the future we can just make changes to a parameter values and they'll be applied throughout our template. Be sure to check carefully, don't just find and replace all! Be sure to save your `template.yaml` file. 
+Next, let's search through the file for the places where our username or namespace suffix `-dev` is being used and replace them with `${OWNER}` and `${APP_NAMESPACE}` respectively. This way, in the future we can just make changes to a parameter values and they'll be applied throughout our template. Be sure to check carefully, don't just find and replace all! Be sure to save your `template.yaml` file. 
 
 ## Test the template
 
