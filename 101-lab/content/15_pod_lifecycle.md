@@ -118,7 +118,6 @@ command:
     --data '{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
     https://chat.exampleURL.gov.bc.ca/hooks/xxx/xxx)
 ```
-#command:  ["/bin/sh", "-c", "c=$(curl -X POST -H 'Content-Type: application/json' --data '{\"text\": \"'\"$HOSTNAME\"' is AN OVERRIDING COMMAND! \"}' https://chat.pathfinder.gov.bc.ca/hooks/xxx/xxx)"] 
 
 After saving, your rocketchat deployment YAML should look similar to this (some sections have been collapsed for easier viewing):
 
