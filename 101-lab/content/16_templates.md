@@ -1,6 +1,6 @@
 # Templates
 
-<kbd>[![Video Walkthrough Thumbnail](././images/16_templates_thumb.png)](https://youtu.be/dJchvJAIVvs)</kbd>
+<kbd>[![Video Walkthrough Thumbnail](././images/16_templates_thumb.png)](https://youtu.be/_zrhCR8bAPM)</kbd>
 
 [Video walkthrough](https://youtu.be/dJchvJAIVvs)
 
