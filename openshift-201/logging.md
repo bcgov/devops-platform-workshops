@@ -1,9 +1,9 @@
 # Application Logging with Loki
 
-<kbd>[![Video Walkthrough Thumbnail](././images/logging/logging-with-loki.png)](TBD)</kbd>
+<!--  <kbd>[![Video Walkthrough Thumbnail](././images/logging/logging-with-loki.png)](TBD)</kbd>
 
 [Video walkthrough](https://youtu.be/VnpelRzTjOw)
-
+-->
 ## Objectives
 
 After completing this section, you should know how to view application logs in Loki, navigate the list of fields, and create/save queries.
@@ -23,13 +23,13 @@ We will setup a sample application that will produce a log entry every 5 seconds
 You should see output similar to the follow:
 
 ```text
-...<em>output omitted</em>...
+...output omitted...
     imagestream.image.openshift.io "logging-app-jmacdonald" created
     buildconfig.build.openshift.io "logging-app-jmacdonald" created
     deployment.apps "logging-app-jmacdonald" created
     service "logging-app-jmacdonald" created
 --> Success
-...<em>output omitted</em>...
+...output omitted...
 ```
 
 ### Follow Build
@@ -41,10 +41,10 @@ oc -n [-dev] logs -f bc/logging-app
 ```
 
 ```text
-...<em>output omitted</em>...
+...output omitted...
 Writing manifest to image destination
 Storing signatures
-...<em>output omitted</em>...
+...output omitted...
 Push successful
 ```
 
@@ -56,9 +56,9 @@ You can access Loki in the OpenShift console in the Developer mode under Observe
 
 <kbd>![loki-logs-1](images/logging/loki-logs-1.png)</kbd>
 
-Or, you can access it from a pods tabs.
+Or, you can access it from a pod's menu tabs.
 
-Select the running pod that was just created
+Select the running pod that was just created by switching to the Administrator view then navigate to `Workloads->Pods` and click on your pod's name. 
 
 <kbd>![pod-logs-1](images/logging/pod-logs-01.png)</kbd>
 
@@ -72,8 +72,9 @@ By default you will see something like this:
 
 <kbd>![loki-main](images/logging/loki-main.png)</kbd>
 
+
 1. You can select to filter on the content of logs, or by namespace, pod, or container name.
-2. Current applied filters
+2. Currently applied filters
 3. This will show a bar chart of the number of logs per time period that match your filter
 4. Time range to show logs for
 5. Set the page to refresh the log results every X time period
@@ -85,13 +86,13 @@ By default you will see something like this:
 
 ### Histogram
 
-If you click on `Show Histogram` a bar chart will appear. It is color coded to the log level tag of each log message.
+Click on `Show Histogram`. A bar chart will appear. It is color coded to the log level tag of each log message.
 
 <kbd>![loki-histogram](images/logging/loki-histogram.png)</kbd>
 
 ### Log Levels
 
-The log level of that is tagged onto any log line comes from some regular expressions run on the logs as they are collected. If you are creating your own log messages in your app, you can include the appropriate keywords to help differentiate your logs.
+The log level of that is tagged onto any log line comes from some regular expressions run on the logs as they are collected. If you were creating your own log messages in your app, you could include the appropriate keywords to help differentiate your logs.
 
 ```text
     if match!(.message, r'Warning|WARN|^W[0-9]+|level=warn|Value:warn|"level":"warn"|<warn>') {
@@ -121,10 +122,10 @@ If you click the `Show Resources` link, then the namespace name, pod name, and c
 
 ### Query
 
-If you click on `Show Query` you will see the LogQL query being used. You can then adjust it and make more complex queries than the basic filters support.
+Click on `Show Query` to see the LogQL query being used by the filters you've selected. You can then adjust it and make more complex queries than the basic filters support.
 
 ```text
-{ log_type="application", kubernetes_namespace_name="be1c6b-dev" } | json
+{ log_type="application", kubernetes_namespace_name="[-dev]" } | json
 ```
 
 You can read all about LogQL on the [Loki docs](https://grafana.com/docs/loki/latest/query/log_queries/) site.
@@ -138,17 +139,27 @@ The indexed fields you can query inside stream selector are:
 
 All other filtering should be done after the `json` bit.
 
-You can do a case insensitive search on the message string like this
+Run a case insensitive search on the message string like this:
 
 ```text
-{ log_type="application", kubernetes_namespace_name="be1c6b-dev" } |~ `(?i)hello` | json
+{ log_type="application", kubernetes_namespace_name="[-dev]" } |~ `(?i)hello` | json
 ```
 
 ### Alerting
 
-You can create an alert based on log data using LogQL [metric queries](https://grafana.com/docs/loki/latest/query/metric_queries/).
+Next we will create an alert based on log data using LogQL [metric queries](https://grafana.com/docs/loki/latest/query/metric_queries/).
 
-Your namespace already contains an AlertmanagerConfig object that will direct alerts as emails to your Product Owner and Tech Leads.
+Your namespace already contains an `AlertmanagerConfig` object that will direct any firing alerts as emails to your Product Owner and Tech Leads. 
+
+Run `oc -n [-dev] get alertmanagerconfig` to get a list of all `AlertmanagerConfig` objects in our namespace- in our case, there's only one. 
+
+```
+NAME                                         AGE
+platform-services-controlled-alert-routing   78m
+```
+Explore this object using `oc -n [-dev] platform-services-controlled-alert-routing` to see who will receive emails triggered by alerts in your namespace. 
+
+Let's create a new alerting rule to fire a new alert if the conditions are met. Use the `+` icon in the OpenShift web console to import the YAML below. Replace the [-dev] mentions with your `-dev` namespace name and create this new `AlertingRule`.
 
 ```yaml
 apiVersion: loki.grafana.com/v1
@@ -158,7 +169,7 @@ metadata:
     openshift.io/loki: "true" # This is required for Loki to pick up the config
     app: "logging-app"
   name: logging-app-alerts
-  namespace: be1c6b-dev
+  namespace: [-dev]
 spec:
   groups:
   - interval: 1m
@@ -172,10 +183,10 @@ spec:
       # logging pod, sum those together. If they are higher than 0.1 Hellos per second
       # for more than 5 minutes, generate an alert
       expr: |
-        sum(rate({ kubernetes_namespace_name="be1c6b-dev", log_type="application", kubernetes_pod_name=~"logging-app-.+" } |= ` Hello ` [1m])) > 0.1
+        sum(rate({ kubernetes_namespace_name="[-dev]", log_type="application", kubernetes_pod_name=~"logging-app-.+" } |= ` Hello ` [1m])) > 0.1
       for: 5m
       labels:
-        namespace: be1c6b-dev
+        namespace: [-dev]
         severity: critical
   tenantID: application
 ```
@@ -194,7 +205,7 @@ Loki is a powerful tool for observing your application. The queries we did in th
 
 ### Clean up
 
-To clean up the lab environment run the following command to delete all of the resources we created:
+Clean up the lab environment by running the following command to delete all of the resources we created in this section based on their label `logging-app`:
 
 ```bash
 oc -n [-dev] delete all -l app=logging-app

@@ -1,7 +1,5 @@
 # Logging and Visualizations
 
-<kbd>[![Video Walkthrough Thumbnail](././images/12_logging_thumb.png)](TBD)</kbd>
-
 ## Loki for Aggregated Logs
 
 The OpenShift platform provides an aggregated logging stack that is automatically configured to centralize and store logs from application pods. These logs are only retained for a short period of time, currently about 14 days, but can be used to help identify issues with application pods.
