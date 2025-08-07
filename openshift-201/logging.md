@@ -183,7 +183,7 @@ spec:
       # logging pod, sum those together. If they are higher than 0.1 Hellos per second
       # for more than 5 minutes, generate an alert
       expr: |
-        sum(rate({ kubernetes_namespace_name="[-dev]", log_type="application", kubernetes_pod_name=~"logging-app-.+" } |= ` Hello ` [1m])) > 0.1
+        sum(rate({ kubernetes_namespace_name="[-dev]", log_type="application", kubernetes_pod_name=~"logging-app-.+" } |= `Hello ` [1m])) > 0.1
       for: 5m
       labels:
         namespace: [-dev]
