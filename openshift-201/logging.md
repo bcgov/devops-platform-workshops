@@ -1,9 +1,9 @@
 # Application Logging with Loki
 
-<!--  <kbd>[![Video Walkthrough Thumbnail](././images/logging/logging-with-loki.png)](TBD)</kbd>
+<kbd>[![Video Walkthrough Thumbnail](././images/logging/logging-with-loki.png)](https://www.youtube.com/watch?v=8V-Bfmz3kiE)</kbd>
 
-[Video walkthrough](https://youtu.be/VnpelRzTjOw)
--->
+[Video walkthrough](https://www.youtube.com/watch?v=8V-Bfmz3kiE)
+
 ## Objectives
 
 After completing this section, you should know how to view application logs in Loki, navigate the list of fields, and create/save queries.
