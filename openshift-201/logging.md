@@ -92,7 +92,7 @@ Click on `Show Histogram`. A bar chart will appear. It is color coded to the log
 
 ### Log Levels
 
-The log level of that is tagged onto any log line comes from some regular expressions run on the logs as they are collected. If you were creating your own log messages in your app, you could include the appropriate keywords to help differentiate your logs.
+The log level that is tagged onto any log line comes from some regular expressions run on the logs as they are collected. If you were creating your own log messages in your app, you could include the appropriate keywords to help differentiate your logs.
 
 ```text
     if match!(.message, r'Warning|WARN|^W[0-9]+|level=warn|Value:warn|"level":"warn"|<warn>') {
