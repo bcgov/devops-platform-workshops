@@ -208,11 +208,12 @@ Loki is a powerful tool for observing your application. The queries we did in th
 Clean up the lab environment by running the following command to delete all of the resources we created in this section based on their label `logging-app`:
 
 ```bash
-oc -n [-dev] delete all -l app=logging-app
+oc -n [-dev] delete all,alertingrules.loki.grafana.com -l app=logging-app
 
 deployment.apps "logging-app" deleted
 buildconfig.build.openshift.io "logging-app" deleted
 imagestream.image.openshift.io "logging-app" deleted
+alertingrule.loki.grafana.com "logging-app-alerts" deleted
 ```
 
 Next topic - [Best Practices of Image Management](https://github.com/BCDevOps/devops-platform-workshops/blob/master/openshift-201/image-management.md)
