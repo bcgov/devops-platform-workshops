@@ -157,7 +157,7 @@ Run `oc -n [-dev] get alertmanagerconfig` to get a list of all `AlertmanagerConf
 NAME                                         AGE
 platform-services-controlled-alert-routing   78m
 ```
-Explore this object using `oc -n [-dev] platform-services-controlled-alert-routing` to see who will receive emails triggered by alerts in your namespace. 
+Explore this object using `oc -n [-dev] platform-services-controlled-alert-routing` to see who will receive emails triggered by alerts in your namespace. This should match the technical lead(s) you set via the [Product Registry](https://registry.developer.gov.bc.ca/). 
 
 Let's create a new alerting rule to fire a new alert if the conditions are met. Use the `+` icon in the OpenShift web console to import the YAML below. Replace the [-dev] mentions with your `-dev` namespace name and create this new `AlertingRule`.
 
