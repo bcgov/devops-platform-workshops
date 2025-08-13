@@ -267,7 +267,7 @@ Delete the 'LICENSEPLATE-helm-default' application.
 #### Helm application with local values
 In order to create an Argo CD application that directly processes a remote Helm repository while using a values file from our gitops repository, we will create a multi-source application.  However, the UI does not currently support the creation of multi-source applications, so we will create a YAML manifest and apply it to our dev namespace (you can create applications in any of your namespaces).
 
-First, create a directory in your GitOps repository for the new Helm application.
+First, create a directory in your GitOps repository (or anywhere you prefer) for the new Helm application.
 ```
 mkdir mariadb-helm
 ```
