@@ -94,9 +94,10 @@ The GitOpsTeam defines the users that will have access to the GitOps repository 
 * Add your GitHub ID in `/spec/projectMembers/maintainers` as `yourID@github`
 * If you have an IDIR account, add it in `/spec/projectMembers/maintainers` as your email address, such as `first.last@gov.bc.ca`
 * Remove the sample user IDs (myGitHubID, seniorDev&#064;gov.bc.ca, etc.)
-* Save the file and apply it, replacing [-tools] with your tools namespace.
+* Save the file and apply it
+* **Note: we don't need to specify a namespace in the apply command, because we've already defined which namespace this template should be applied to in the template itself**
 ```
-oc apply -n [-tools] -f gitopsteam_template.yaml
+oc apply -f gitopsteam_template.yaml
 ```
 
 **Note:** If you are not already a member of the 'bcgov-c' GitHub organization, you will be sent an email invitation to join it.  You will have to join the organization before you can access your repository.
