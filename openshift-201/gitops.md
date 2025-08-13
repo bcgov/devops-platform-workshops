@@ -95,6 +95,7 @@ The GitOpsTeam defines the users that will have access to the GitOps repository 
 * If you have an IDIR account, add it in `/spec/projectMembers/maintainers` as your email address, such as `first.last@gov.bc.ca`
 * Remove the sample user IDs (myGitHubID, seniorDev&#064;gov.bc.ca, etc.)
 * Save the file and apply it, replacing [-tools] with your tools namespace.
+* **Note** that it is the namespace definition in the tempalte, not the command, that sets where the template will be applied. We could run this in any namespace we have access to. 
 ```
 oc apply -n [-tools] -f gitopsteam_template.yaml
 ```
