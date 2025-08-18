@@ -52,7 +52,7 @@ metadata:
 
 - Save the changes which will trigger a new deployment of your `rocketchat-[username]` pod
 
-- Using the pod terminal in the Web Console or `oc rsh`, explore the path of the mounted configMap with `ls -l/opt/configs`. Remember to specify the desired namespace. You can either use `oc project [-dev]` to switch your default namespace, or combine the command with the `-n` flag, in this case `oc rsh -n [-dev] [podname]`. Follow this pattern for other rsh commands in this section.  
+- Using the pod terminal in the Web Console or `oc rsh`, explore the path of the mounted configMap with `ls -l /opt/configs`. Remember to specify the desired namespace. You can either use `oc project [-dev]` to switch your default namespace, or combine the command with the `-n` flag, in this case `oc rsh -n [-dev] [podname]`. Follow this pattern for other rsh commands in this section.  
 
 - You can use `exit` to leave the rsh (**r**emote**sh**ell) session 
 
