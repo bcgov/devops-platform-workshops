@@ -218,7 +218,7 @@ spec:
 ```
 Lets try to access the route from our browser, it should be working.
 
-* https://route-https-ad204f-dev.apps.silver.devops.gov.bc.ca/
+* https://route-https-[-dev].apps.silver.devops.gov.bc.ca/
 
 
 ## Allow only from specific Pod & Port
