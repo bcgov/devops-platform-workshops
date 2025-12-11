@@ -269,13 +269,13 @@ In order to create an Argo CD application that directly processes a remote Helm 
 
 First, create a directory in your GitOps repository (or anywhere you prefer) for the new Helm application.
 ```
-mkdir mariadb-helm
+mkdir mysql-helm
 ```
-Download the 'values.yaml' file from the Git repository that is home to the Helm chart that we are using:
+Download the 'values.yaml' file from this respository. 
 
-https://github.com/bitnami/charts/tree/mariadb/20.2.0/bitnami/mariadb/values.yaml
+openshift-201/gitops_files/values.yaml
 
-Save it to the new mariadb-helm directory.  Add the file, commit, and push to GitHub:
+Save it to the new `mysql-helm` directory.  Add the file, commit, and push to GitHub:
 ```
 git add .
 git commit -a -m "Add Helm values file"
@@ -287,7 +287,7 @@ Download the [multi-source application template](gitops_files/app.helm-multi-sou
 oc -n ${LICENSEPLATE}-dev apply -f app.helm-multi-source.yaml
 ```
 
-In the Argo CD UI, click on the new application and view the resources that would be created.  Note the names of the resources ("mariadb").
+In the Argo CD UI, click on the new application and view the resources that would be created.  Note the names of the resources ("mysql").
 
 Now update the values.yaml file and enter a value for `fullnameOverride` at line 47.  For example:
 ```

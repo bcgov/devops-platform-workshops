@@ -1,0 +1,20 @@
+# MySQL root credentials
+mysql:
+  rootPassword: root123       # Root password for MySQL
+  database: appdb             # The database to create automatically
+  username: appuser           # User with access to the database
+  password: appuser123        # Password for the user
+
+# Persistence settings
+persistence:
+  enabled: true
+  size: 1Gi                   # Storage for database data
+
+# Resource requests (tune as needed)
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
