@@ -1,4 +1,4 @@
-# Web Console
+# Web console
 
 The web console is one way we can interact with OpenShift. You can log in using your login credentials. 
 
