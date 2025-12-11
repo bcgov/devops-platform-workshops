@@ -98,6 +98,7 @@ Check the route you created with:
 
 `oc get route python-html-demo-secure`
 
+*note*: we avoid creating an insecure `http://` route in this section because modern browsers will default to `https` and won't show our page without manually retyping as `http` through a warning page
 
 ### NetworkPolicy
 
