@@ -6,7 +6,7 @@ This file contains some notes on what topics should be covered during each of th
 
 - create a rocketchat channel of the form `#ocp101-YYYY-MM-DD` with date being the date of the training session (the day before kickoff)
 - clean up the `d8f105` namespaces (let's make a script for this?)
-- Post this following message in the RC channel and pin:
+- post this following message in the RC channel and pin:
 
 ```
 Useful links:
