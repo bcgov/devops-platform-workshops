@@ -13,17 +13,18 @@ objects:
       labels:
         app: ${MONGODB_APP_LABEL}
     stringData:
-      database-user: ${MONGODB_USER}
-      database-password: ${MONGODB_PASSWORD}
-      database-admin-password: ${MONGODB_ADMIN_PASSWORD}
+      root-username: ${MONGODB_ROOT_USER}
+      root-password: ${MONGODB_ROOT_PASSWORD}
+      app-username: ${MONGODB_APP_USER}
+      app-password: ${MONGODB_APP_PASSWORD}
       database-name: ${MONGODB_DATABASE}
+
   - apiVersion: v1
     kind: Service
     metadata:
       name: ${MONGODB_NAME}
       labels:
         app: ${MONGODB_APP_LABEL}
-        name: ${MONGODB_NAME}
     spec:
       ports:
         - port: 27017
@@ -31,13 +32,13 @@ objects:
           targetPort: 27017
       selector:
         name: ${MONGODB_NAME}
+
   - apiVersion: apps/v1
     kind: Deployment
     metadata:
       name: ${MONGODB_NAME}
       labels:
         app: ${MONGODB_APP_LABEL}
-        name: ${MONGODB_NAME}
     spec:
       replicas: 1
       selector:
@@ -62,12 +63,12 @@ objects:
                   valueFrom:
                     secretKeyRef:
                       name: ${MONGODB_NAME}
-                      key: database-user
+                      key: root-username
                 - name: MONGO_INITDB_ROOT_PASSWORD
                   valueFrom:
                     secretKeyRef:
                       name: ${MONGODB_NAME}
-                      key: database-admin-password
+                      key: root-password
                 - name: MONGO_INITDB_DATABASE
                   valueFrom:
                     secretKeyRef:
@@ -82,57 +83,50 @@ objects:
                 initialDelaySeconds: 5
                 timeoutSeconds: 5
                 periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 3
               livenessProbe:
                 tcpSocket:
                   port: 27017
                 initialDelaySeconds: 30
                 timeoutSeconds: 1
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 3
               volumeMounts:
                 - name: mongodb-data
                   mountPath: /data/db
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 512Mi
-                limits:
-                  cpu: 500m
-                  memory: 1Gi
           volumes:
             - name: mongodb-data
               emptyDir: {}
 parameters:
-  - name: MONGODB_USER
-    displayName: MongoDB Connection Username
-    description: Username for MongoDB user that will be used for accessing the database.
-    value: dbuser
+  - name: MONGODB_ROOT_USER
+    displayName: MongoDB Root User
+    description: Username for the MongoDB root user created at initialization.
+    value: rootuser
     required: true
-  - name: MONGODB_PASSWORD
-    displayName: MongoDB Connection Password
-    description: Password for the MongoDB connection user.
-    value: dbpass
+  - name: MONGODB_ROOT_PASSWORD
+    displayName: MongoDB Root Password
+    description: Password for the MongoDB root user created at initialization.
+    value: rootpassword
     required: true
-  - name: MONGODB_ADMIN_PASSWORD
-    displayName: MongoDB Admin Password
-    description: Password for the MongoDB admin user.
-    value: admindbpass
+  - name: MONGODB_APP_USER
+    displayName: MongoDB Rocket.Chat User
+    description: Username for the Rocket.Chat application user (created manually).
+    value: rocketchat
+    required: true
+  - name: MONGODB_APP_PASSWORD
+    displayName: MongoDB Rocket.Chat User Password
+    description: Password for the Rocket.Chat application user (created manually).
+    value: rocketchatpass
     required: true
   - name: MONGODB_DATABASE
     displayName: MongoDB Database Name
-    description: Name of the MongoDB database accessed.
+    description: Name of the MongoDB database accessed by Rocket.Chat.
     value: rocketchat
     required: true
   - name: MONGODB_NAME
     displayName: MongoDB Service Name
-    description: The name of the OpenShift Service exposed for this instance.
-    value: mongodb
+    description: The name for the OpenShift Service/Secret/Deployment for this instance.
+    value: mongodb-[username]
     required: true
   - name: MONGODB_APP_LABEL
     displayName: Application Label
     description: The label to use for the app.
-    value: rocketchat
+    value: rocketchat-[username]
     required: true

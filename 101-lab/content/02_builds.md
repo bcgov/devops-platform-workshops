@@ -8,14 +8,14 @@ In this lab, you will import the Rocket.Chat Docker image for use in your OpenSh
 ## The Tools Project
 The tools project is what will hold various support tools for the application. In this case, we'll import the Rocket.Chat image into this project.
 
-## Creating a Docker-Based Build
-The Rocket.Chat docker image is built from the official Rocket.Chat Github [public repository](https://github.com/RocketChat/Rocket.Chat). 
-Leveraging the commandline, you can use the `oc import-image` command to import the Rocket.Chat docker image. 
+## Importing the Rocket.Chat Image
+The Rocket.Chat Docker image is built from the official Rocket.Chat Github [public repository](https://github.com/RocketChat/Rocket.Chat). 
+Leveraging the commandline, you can use the `oc import-image` command to import the Rocket.Chat Docker image. 
 
 Ensure that all team members have edit rights into the project. Once complete, 
 each member can create their own Rocket.Chat docker build. 
 
-**Note** In this lab, we'll use square brackets to indicate when you need to replace part of a command and omit the square brackets. If you see `[-tools]` in a command, replace that part of the command with the name of your tools namespace. When `[-dev]` is indicated, replace this part of the command with your dev namespace's name. In the example below, `oc project [-tools]` would become `oc project d8f105-tools` or the name of the tools namespace you are using for this training. We also use [username] as a unique inditifier throughout the lab, and this can be any unique username so long as you use it consistently throughout the lab. Note that this username can not contain following characters: `. ~ @ | ></{}[];:'"`
+**Note:** In this lab, we'll use square brackets to indicate when you need to replace part of a command and omit the square brackets. If you see `[-tools]` in a command, replace that part of the command with the name of your tools namespace. When `[-dev]` is indicated, replace this part of the command with your dev namespace's name. In the example below, `oc project [-tools]` would become `oc project d8f105-tools` or the name of the tools namespace you are using for this training. We also use [username] as a unique identifier throughout the lab, and this can be any unique username so long as you use it consistently throughout the lab. Note that this username cannot contain following characters: `. ~ @ | ></{}[];:'"`
 
 - To start, switch to the __Tools Project__
 
@@ -23,7 +23,7 @@ each member can create their own Rocket.Chat docker build.
 oc project [-tools]
 ```
 
-- With the `oc` cli, import the Rocket.Chat image
+- With the `oc` cli, import the Rocket.Chat image:
 
 ```oc:cli
 oc -n [-tools] import-image rocketchat-[username]:latest \
@@ -56,7 +56,7 @@ latest
 Volumes:	        /app/uploads
 ```
 
-- You can verify the image was succesfully imported:
+- You can verify the image was successfully imported:
 
 ```oc:cli
 # Check the imagestream exists
