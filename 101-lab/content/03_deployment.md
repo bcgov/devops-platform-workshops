@@ -2,9 +2,9 @@
 Since the build and deploy stages are separate, and we have imported the image from the previous exercise, we can now deploy this 
 image into the dev project. 
 
-<kbd>[![Video Walkthrough Thumbnail](././images/03_deployment_thumb.png)](https://youtu.be/MZHhj0yQn0M)</kbd>
+<!-- <kbd>[![Video Walkthrough Thumbnail](././images/03_deployment_thumb.png)](https://youtu.be/MZHhj0yQn0M)</kbd> -->
 
-[Video walkthrough](https://youtu.be/MZHhj0yQn0M)
+<!-- [Video walkthrough](https://youtu.be/MZHhj0yQn0M) -->
 
 ## The Dev Project
 The dev project is where applications are deployed. In this case, we will deploy RocketChat and MongoDB to the dev namespace.

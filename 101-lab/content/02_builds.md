@@ -1,9 +1,9 @@
 # Builds
 In this lab, you will import the Rocket.Chat Docker image for use in your OpenShift environment.
 
-<kbd>[![Video Walkthrough Thumbnail](././images/02_builds_thumb.png)](https://youtu.be/j7a74_I6MYw)<kbd>
+<!-- <kbd>[![Video Walkthrough Thumbnail](././images/02_builds_thumb.png)](https://youtu.be/j7a74_I6MYw)<kbd>
 
-[Video walkthrough](https://youtu.be/j7a74_I6MYw)
+[Video walkthrough](https://youtu.be/j7a74_I6MYw) -->
 
 ## The Tools Project
 The tools project is what will hold various support tools for the application. In this case, we'll import the Rocket.Chat image into this project.
