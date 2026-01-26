@@ -127,8 +127,6 @@ From the console click the deployment and click __view logs__ beside the failing
 
 <kbd>![](./images/03_deploy_image_08b.png)</kbd>
 
-
-
 - Or from the CLI
 
 ```oc:cli
