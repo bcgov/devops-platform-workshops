@@ -237,7 +237,7 @@ service/mongodb-mattspencer created
   ```
 
 ### Create MongoDB user for RocketChat
-The latest version of MongoDB (8.2) requires authentication and doesn't automatically create application users from environmental variables like previous versions did. We need to authenticate as the root user and then create the application user.
+The latest version of MongoDB (8.2) requires authentication and doesn't automatically create application users from environment variables like previous versions did. We need to authenticate as the root user and then create the application user.
 
 Note: We authenticate to the admin database with root credentials (rootuser/rootpassword from our secret), then use ```getSiblingDB("rocketchat")``` to create the RocketChat user with readWrite role.
 
@@ -406,7 +406,7 @@ Alternatively, you can use the web console to create or manage routes.
 
 ## Update ROOT_URL with the Actual Route
 
-Once you have created your route, update the ROOT_URL  environmental variable to match the actual external URL. 
+Once you have created your route, update the ROOT_URL environment variable to match the actual external URL. 
 
 This is necessary because:
 
@@ -429,7 +429,7 @@ Verify the ROUTE_URL variable is not empty:
 echo "Route URL is: ${ROUTE_URL}"
 ```
 
-If the route URL looks correct, update the ROOT_URL environmental variable:
+If the route URL looks correct, update the ROOT_URL environment variable:
 ```oc:cli
 oc -n [-dev] set env deployment/rocketchat-[username] "ROOT_URL=https://${ROUTE_URL}"
 ```
