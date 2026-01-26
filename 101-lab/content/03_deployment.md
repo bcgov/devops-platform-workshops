@@ -191,10 +191,9 @@ https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-a
 -p MONGODB_APP_PASSWORD=rocketchatpass \
 -p MONGODB_DATABASE=rocketchat \
 -p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username] \
+-p MONGODB_APP_LABEL=rocketchat-[username]\
 -l ocp101=participant \
--l app=rocketchat-[username] \
-| oc -n [-dev] create -f - --dry-run=client
+-l app=rocketchat-[username] | oc -n [-dev] create -f - --dry-run=client
 ```
 
 > When you ran the cli command you should get an output like this:
@@ -208,7 +207,7 @@ service/mongodb-mattspencer created (dry run)
 Now, let's run the command for real by removing the dry run. 
 
 ```oc:cli
- oc -n [-dev] process -f \
+oc -n [-dev] process -f \
 https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-and-RocketChat/101-lab/mongo-ephemeral-template.yaml \
 -p MONGODB_ROOT_USER=rootuser \
 -p MONGODB_ROOT_PASSWORD=rootpassword \
@@ -216,10 +215,10 @@ https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-a
 -p MONGODB_APP_PASSWORD=rocketchatpass \
 -p MONGODB_DATABASE=rocketchat \
 -p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username] \
+-p MONGODB_APP_LABEL=rocketchat-[username]\
 -l ocp101=participant \
--l app=rocketchat-[username] \
-| oc -n [-dev] create -f - 
+-l app=rocketchat-[username] | oc -n [-dev] create -f - 
+
 ```
 
 Your output should be similar to: 
@@ -298,7 +297,6 @@ You can also use the CLI to apply the environment variables:
 oc -n [-dev] set env deployment/rocketchat-[username] \
   "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat" \
   "ROOT_URL=http://rocketchat-[username]:3000"
-
 ```
 
 - Click Save 

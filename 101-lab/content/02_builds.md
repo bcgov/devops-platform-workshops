@@ -31,6 +31,7 @@ oc -n [-tools] import-image rocketchat-[username]:latest \
     --confirm \
     --reference-policy=local
 ```
+- It may take a few minutes to import the Rocket.Chat image.
 
 - The output of the previous command should be similar to the following: 
 
