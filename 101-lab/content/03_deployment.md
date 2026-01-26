@@ -105,10 +105,15 @@ When you ran `oc new-app` a new imagestream was created in your `dev` namespace 
 
 1. Re-tag your tools image tag into this new imagestream
 
-`oc -n [-dev] tag [-tools]/rocketchat-[username]:dev rocketchat-[username]:dev`
+```oc:cli
+oc -n [-dev] tag [-tools]/rocketchat-[username]:dev rocketchat-[username]:dev
+```
 
 2. Modify your Rocket Chat deployment to point to the new image stream.
-`oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=rocketchat-[username]:dev`
+
+```oc:cli
+oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=rocketchat-[username]:dev
+```
 
 ## __Objective 3__: Identify CrashLoopBackOff problem
 
@@ -122,11 +127,13 @@ From the console click the deployment and click __view logs__ beside the failing
 
 <kbd>![](./images/03_deploy_image_08b.png)</kbd>
 
+
+
 - Or from the CLI
 
 ```oc:cli
 # Show your pod's log
-oc -n [-dev] logs -f "$(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o name --no-headers | head -1)"
+oc -n [-dev] logs -f $(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o name --no-headers | head -1)
 ```
 Note: you can follow the logs with `-f` argument
 
@@ -176,7 +183,7 @@ MONGODB_APP_LABEL        The label to use for the app                           
   - From the CLI, `-l` flag will add a label `ocp101=participant` to your deployment.
 
 ```oc:cli
- oc -n [-dev] process -f \
+oc -n [-dev] process -f \
 https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-and-RocketChat/101-lab/mongo-ephemeral-template.yaml \
 -p MONGODB_ROOT_USER=rootuser \
 -p MONGODB_ROOT_PASSWORD=rootpassword \
@@ -188,14 +195,16 @@ https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-a
 -l ocp101=participant \
 -l app=rocketchat-[username] \
 | oc -n [-dev] create -f - --dry-run=client
-
 ```
+
 > When you ran the cli command you should get an output like this:
+
 ```
 deployment.apps/mongodb-mattspencer created (dry run)
 secret/mongodb-mattspencer created (dry run)
 service/mongodb-mattspencer created (dry run)
 ```
+
 Now, let's run the command for real by removing the dry run. 
 
 ```oc:cli
