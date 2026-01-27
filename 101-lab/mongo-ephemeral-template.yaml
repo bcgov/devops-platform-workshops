@@ -1,121 +1,132 @@
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: mongodb-ephemeral-template
+  name: mongodb-ephemeral-82
   annotations:
-    description: "MongoDB ephemeral template"
-    tags: "mongodb,ephemeral"
-parameters:
-- name: MONGODB_USER
-  displayName: MongoDB User
-  description: The MongoDB user
-  required: true
-- name: MONGODB_PASSWORD
-  displayName: MongoDB Password
-  description: The password for the MongoDB user
-  required: true
-- name: MONGODB_ADMIN_PASSWORD
-  displayName: MongoDB Admin Password
-  description: The password for the MongoDB admin user
-  required: true
-- name: MONGODB_DATABASE
-  displayName: MongoDB Database
-  description: The name of the MongoDB database
-  required: true
-- name: MONGODB_NAME
-  displayName: MongoDB Name
-  description: The name used for the Kubernetes objects
-  required: true
+    description: "MongoDB 8.2 database service, with ephemeral storage."
+    tags: "database,mongodb"
 objects:
-- apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    labels:
-      app: ${MONGODB_NAME}
-      template: mongodb-ephemeral-template
-    name: ${MONGODB_NAME}
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
-        name: ${MONGODB_NAME}
-    strategy:
-      type: Recreate
-    template:
-      metadata:
-        labels:
-          name: ${MONGODB_NAME}
-      spec:
-        containers:
-        - name: mongodb
-          image: image-registry.openshift-image-registry.svc:5000/openshift/mongodb:3.6
-          imagePullPolicy: IfNotPresent
-          env:
-          - name: MONGODB_USER
-            valueFrom:
-              secretKeyRef:
-                key: database-user
-                name: ${MONGODB_NAME}
-          - name: MONGODB_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: database-password
-                name: ${MONGODB_NAME}
-          - name: MONGODB_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: database-admin-password
-                name: ${MONGODB_NAME}
-          - name: MONGODB_DATABASE
-            valueFrom:
-              secretKeyRef:
-                key: database-name
-                name: ${MONGODB_NAME}
-          livenessProbe:
-            initialDelaySeconds: 30
-            tcpSocket:
-              port: 27017
-            timeoutSeconds: 1
-          readinessProbe:
-            exec:
-              command:
-              - /bin/sh
-              - -i
-              - -c
-              - mongo 127.0.0.1:27017/$MONGODB_DATABASE -u $MONGODB_USER -p $MONGODB_PASSWORD --eval="quit()"
-            initialDelaySeconds: 3
-            timeoutSeconds: 1
-          resources:
-            limits:
-              memory: 512Mi
-          volumeMounts:
-          - mountPath: /var/lib/mongodb/data
-            name: ${MONGODB_NAME}-data
-        volumes:
-        - emptyDir: {}
-          name: ${MONGODB_NAME}-data
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: ${MONGODB_NAME}
-  stringData:
-    database-admin-password: ${MONGODB_ADMIN_PASSWORD}
-    database-name: ${MONGODB_DATABASE}
-    database-password: ${MONGODB_PASSWORD}
-    database-user: ${MONGODB_USER}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    labels:
-      app: ${MONGODB_NAME}
-      template: mongodb-ephemeral-template
-    name: ${MONGODB_NAME}
-  spec:
-    ports:
-    - name: mongo
-      port: 27017
-      protocol: TCP
-      targetPort: 27017
-    selector:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
       name: ${MONGODB_NAME}
-    type: ClusterIP
+      labels:
+        app: ${MONGODB_APP_LABEL}
+    stringData:
+      root-username: ${MONGODB_ROOT_USER}
+      root-password: ${MONGODB_ROOT_PASSWORD}
+      app-username: ${MONGODB_APP_USER}
+      app-password: ${MONGODB_APP_PASSWORD}
+      database-name: ${MONGODB_DATABASE}
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: ${MONGODB_NAME}
+      labels:
+        app: ${MONGODB_APP_LABEL}
+    spec:
+      ports:
+        - port: 27017
+          protocol: TCP
+          targetPort: 27017
+      selector:
+        name: ${MONGODB_NAME}
+
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ${MONGODB_NAME}
+      labels:
+        app: ${MONGODB_APP_LABEL}
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          name: ${MONGODB_NAME}
+      strategy:
+        type: Recreate
+      template:
+        metadata:
+          labels:
+            name: ${MONGODB_NAME}
+            app: ${MONGODB_APP_LABEL}
+        spec:
+          containers:
+            - name: mongodb
+              image: docker.io/library/mongo:8.2
+              ports:
+                - containerPort: 27017
+                  protocol: TCP
+              env:
+                - name: MONGO_INITDB_ROOT_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${MONGODB_NAME}
+                      key: root-username
+                - name: MONGO_INITDB_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${MONGODB_NAME}
+                      key: root-password
+                - name: MONGO_INITDB_DATABASE
+                  valueFrom:
+                    secretKeyRef:
+                      name: ${MONGODB_NAME}
+                      key: database-name
+              readinessProbe:
+                exec:
+                  command:
+                    - mongosh
+                    - --eval
+                    - db.adminCommand('ping')
+                initialDelaySeconds: 5
+                timeoutSeconds: 5
+                periodSeconds: 10
+              livenessProbe:
+                tcpSocket:
+                  port: 27017
+                initialDelaySeconds: 30
+                timeoutSeconds: 1
+              volumeMounts:
+                - name: mongodb-data
+                  mountPath: /data/db
+          volumes:
+            - name: mongodb-data
+              emptyDir: {}
+parameters:
+  - name: MONGODB_ROOT_USER
+    displayName: MongoDB Root User
+    description: Username for the MongoDB root user created at initialization.
+    value: rootuser
+    required: true
+  - name: MONGODB_ROOT_PASSWORD
+    displayName: MongoDB Root Password
+    description: Password for the MongoDB root user created at initialization.
+    value: rootpassword
+    required: true
+  - name: MONGODB_APP_USER
+    displayName: MongoDB Rocket.Chat User
+    description: Username for the Rocket.Chat application user (created manually).
+    value: rocketchat
+    required: true
+  - name: MONGODB_APP_PASSWORD
+    displayName: MongoDB Rocket.Chat User Password
+    description: Password for the Rocket.Chat application user (created manually).
+    value: rocketchatpass
+    required: true
+  - name: MONGODB_DATABASE
+    displayName: MongoDB Database Name
+    description: Name of the MongoDB database accessed by Rocket.Chat.
+    value: rocketchat
+    required: true
+  - name: MONGODB_NAME
+    displayName: MongoDB Service Name
+    description: The name for the OpenShift Service/Secret/Deployment for this instance.
+    value: mongodb-[username]
+    required: true
+  - name: MONGODB_APP_LABEL
+    displayName: Application Label
+    description: The label to use for the app.
+    value: rocketchat-[username]
+    required: true
