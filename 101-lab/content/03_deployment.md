@@ -147,7 +147,7 @@ In the steps that follow, we will deploy the database and give our RocketChat de
 
 In order to use deploy these objects, we are a going to use a template stored in the OpenShift 101 github repository. Managing OpenShift objects from a GitHub repository is a common strategy to ensure consistency, version control and history. In future you may use methods such as [Tekton Pipelines](https://github.com/bcgov/pipeline-templates/tree/main/tekton#tekton-pipelines), [github actions](https://github.blog/2022-02-02-build-ci-cd-pipeline-github-actions-four-steps/) or [HELM](https://helm.sh/) charts to allow changes to files in a repository to automatically make changes to the objects running in your OpenShift project. 
 
-The template we're going to use is located at: https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-and-RocketChat/101-lab/mongo-ephemeral-template.yaml
+The template we're going to use is located at: https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml
 
 If you browse this file, you'll notice it contains the YAML that defines our deployment, service and secret. We can apply parameters to this template to adjust particular values. 
 
@@ -158,7 +158,7 @@ If you browse this file, you'll notice it contains the YAML that defines our dep
   - List available parameters of the template:
 
 ```oc:cli
-oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-and-RocketChat/101-lab/mongo-ephemeral-template.yaml --parameters=true
+oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml --parameters=true
 ```
 
   - You should see output similar to:
@@ -182,7 +182,7 @@ MONGODB_APP_LABEL        The label to use for the app                           
 
 ```oc:cli
 oc -n [-dev] process -f \
-https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-and-RocketChat/101-lab/mongo-ephemeral-template.yaml \
+https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
 -p MONGODB_ROOT_USER=rootuser \
 -p MONGODB_ROOT_PASSWORD=rootpassword \
 -p MONGODB_APP_USER=rocketchat \
@@ -206,7 +206,7 @@ Now, let's run the command for real by removing the dry run.
 
 ```oc:cli
 oc -n [-dev] process -f \
-https://raw.githubusercontent.com/bcgov/devops-platform-workshops/Update-Mongo-and-RocketChat/101-lab/mongo-ephemeral-template.yaml \
+https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
 -p MONGODB_ROOT_USER=rootuser \
 -p MONGODB_ROOT_PASSWORD=rootpassword \
 -p MONGODB_APP_USER=rocketchat \
