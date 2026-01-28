@@ -1,5 +1,5 @@
-# MySQL root credentials
-mysql:
+# Credentials
+auth:
   rootPassword: root123       # Root password for MySQL
   database: appdb             # The database to create automatically
   username: appuser           # User with access to the database

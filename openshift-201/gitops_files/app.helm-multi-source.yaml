@@ -1,21 +1,23 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mysql-helm
+  name: mariadb-helm
 spec:
   destination:
     namespace: LICENSEPLATE-test
     server: https://kubernetes.default.svc
   project: LICENSEPLATE
-
   sources:
-    - chart: mysql
-      repoURL: https://ymian.github.io/helm-mysql
-      targetRevision: 1.0.0   # pick a version from the repo index
+    # Chart homepage:
+    #   https://artifacthub.io/packages/helm/cloudpirates-mariadb/mariadb
+    - chart: cloudpirates/mariadb
+      repoURL: artifacts.developer.gov.bc.ca/docker-helm-oci-remote
+      # For available versions, see "Chart Versions" on the chart's homepage or:
+      #   https://artifacthub.io/api/v1/packages/helm/cloudpirates-mariadb/mariadb/feed/rss
+      targetRevision: 0.13.2
       helm:
         valueFiles:
-          - $values/mysql-helm/values.yaml
-
+          - $values/mariadb-helm/values.yaml
     - ref: values
       repoURL: https://github.com/bcgov-c/tenant-gitops-LICENSEPLATE.git
       targetRevision: main
