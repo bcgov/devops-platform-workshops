@@ -11,7 +11,7 @@ spec:
     # Chart homepage:
     #   https://artifacthub.io/packages/helm/cloudpirates-mariadb/mariadb
     - chart: cloudpirates/mariadb
-      repoURL: artifacts.developer.gov.bc.ca/docker-helm-oci-remote
+      repoURL: artifacts.developer.gov.bc.ca/helm-oci-virtual
       # For available versions, see "Chart Versions" on the chart's homepage or:
       #   https://artifacthub.io/api/v1/packages/helm/cloudpirates-mariadb/mariadb/feed/rss
       targetRevision: 0.13.2
