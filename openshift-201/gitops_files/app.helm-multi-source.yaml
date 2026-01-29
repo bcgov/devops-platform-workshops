@@ -4,7 +4,7 @@ metadata:
   name: mariadb-helm
 spec:
   destination:
-    namespace: LICENSEPLATE-test
+    namespace: LICENSEPLATE-dev
     server: https://kubernetes.default.svc
   project: LICENSEPLATE
   sources:
