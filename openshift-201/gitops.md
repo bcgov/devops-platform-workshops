@@ -287,7 +287,7 @@ Download the [multi-source application template](gitops_files/app.helm-multi-sou
 oc -n ${LICENSEPLATE}-dev apply -f app.helm-multi-source.yaml
 ```
 
-In the Argo CD UI, click on the new application and view the resources that would be created.  Note the names of the resources ("mysql").
+In the Argo CD UI, click on the new application and view the resources that would be created.  Note the names of the resources ("mariadb-helm").
 
 Now update the values.yaml file and enter a value for `fullnameOverride` at line 47.  For example:
 ```
