@@ -253,8 +253,8 @@ In Argo CD, click 'Applications' then 'New App' and enter the following values:
 - Source
     - Repository URL: artifacts.developer.gov.bc.ca/docker-helm-oci-remote
         - Note: To the right of the Repository URL field is a dropdown that defaults to 'GIT'.  It may automatically update to 'HELM' after selecting the 'artifacts' URL; if not, you can set it manually.
-    - Chart: mysql/charts/mysql
-    - Version (unlabeled field next to Chart): 2.2.6
+    - Chart: cloudpirates/mariadb
+    - Version (unlabeled field next to Chart): 0.13.2
 - Destination:
     - Cluster URL: `https://kubernetes.default.svc`
     - Namespace: LICENSEPLATE-dev
