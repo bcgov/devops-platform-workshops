@@ -298,6 +298,8 @@ Save the file, commit it, and push to the GitOps repository.  View the resources
 
 This is just a simple demonstration of setting your values file in a repo that is separate from the Helm chart.  You can also set Helm values directly in the Argo CD application.  For more details, see the [Argo CD Helm documentation](https://argo-cd.readthedocs.io/en/stable/user-guide/helm/#values).
 
+**Stretch task:** You can also navigate to your `-test` namespace in OpenShift, then click the `mariadb-helm` stateful set. Click on the `pods` tab then the `mariadb-helm` pod's name. Next, click the `terminal` tab. Run the command `mariadb -u root -p`. In another window, navigate to the secret named `mariadb-helm` to get the root password - or find it in your values.yaml file. Run `create database mydatabase;` inside the pod to create a database. View the database using `show databases;`. 
+
 #### Create your own Helm package
 You can, of course, create your own Helm package and host that in your GitOps repo for Argo CD to process.
 
