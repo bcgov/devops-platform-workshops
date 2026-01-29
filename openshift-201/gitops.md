@@ -269,13 +269,13 @@ In order to create an Argo CD application that directly processes a remote Helm 
 
 First, create a directory in your GitOps repository (or anywhere you prefer) for the new Helm application.
 ```
-mkdir mysql-helm
+mkdir mariadb-helm
 ```
 Download the 'values.yaml' file from this respository. 
 
 openshift-201/gitops_files/values.yaml
 
-Save it to the new `mysql-helm` directory.  Add the file, commit, and push to GitHub:
+Save it to the new `mariadb-helm` directory.  Add the file, commit, and push to GitHub:
 ```
 git add .
 git commit -a -m "Add Helm values file"
