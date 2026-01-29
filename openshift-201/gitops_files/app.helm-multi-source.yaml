@@ -4,17 +4,21 @@ metadata:
   name: mariadb-helm
 spec:
   destination:
-    namespace: LICENSEPLATE-test
+    namespace: LICENSEPLATE-dev
     server: https://kubernetes.default.svc
   project: LICENSEPLATE
   sources:
-    - chart: bitnamicharts/mariadb
+    # Chart homepage:
+    #   https://artifacthub.io/packages/helm/cloudpirates-mariadb/mariadb
+    - chart: cloudpirates/mariadb
+      repoURL: artifacts.developer.gov.bc.ca/helm-oci-virtual
+      # For available versions, see "Chart Versions" on the chart's homepage or:
+      #   https://artifacthub.io/api/v1/packages/helm/cloudpirates-mariadb/mariadb/feed/rss
+      targetRevision: 0.13.2
       helm:
-        #releaseName: mariadb
         valueFiles:
           - $values/mariadb-helm/values.yaml
-      repoURL: artifacts.developer.gov.bc.ca/docker-helm-oci-remote
-      targetRevision: 20.2.0
     - ref: values
       repoURL: https://github.com/bcgov-c/tenant-gitops-LICENSEPLATE.git
       targetRevision: main
+
