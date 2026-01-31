@@ -1,23 +1,22 @@
 # Application Availability
 
-<kbd>[![Video Walkthrough Thumbnail](././images/06_application_availability_thumb.png)](https://youtu.be/42UxHJkNLwc)</kbd>
+<!-- <kbd>[![Video Walkthrough Thumbnail](././images/06_application_availability_thumb.png)](https://youtu.be/42UxHJkNLwc)</kbd> -->
 
-[Video walkthrough](https://youtu.be/42UxHJkNLwc)
+<!-- [Video walkthrough](https://youtu.be/42UxHJkNLwc) -->
 
 Prior to beginning this lab, navigate to the public route you created and finish the initial setup of your application. 
-Ensure to select `Keep standlone` on the last page of the initial Rocket.Chat application setup. 
-
 
 Adjust the settings to match the images below:
 
+<kbd>![RocketChat Setup Wizard #1. Name: Adin Litman, Username: alit, Organization Email: adin.litman@gov.bc.ca, Password: **********](./images/04_rc_setup_01.png)</kbd>
+<kbd>![RocketChat Setup Wizard #2. Organization Name: OpenShift 101 Lab, Industry: Education, Size: 11-50 People, Country: Canada](./images/04_rc_setup_02.png)</kbd>
+<kbd>![RocketChat Setup Wizard #3. Admin email: adin.litman@gov.bc.ca](./images/04_rc_setup_03.png)
 
-<kbd>![RocketChat Setup Wizard #1. Name: Matt Spencer, Username: mattspencer, Organization Email: matt.spencer@gov.bc.ca, Password: ********](./images/04_rc_setup_01.png)</kbd>
-<kbd>![RocketChat Setup Wizard #2. Organization Type: Nonprofit, Organization Name: OpenShift 101 Lab, Industry: Help Center, Size: 11-50 People, Country: Canada, Website: *blank*](./images/04_rc_setup_02.png)</kbd>
-<kbd>![RocketChat Setup Wizard #3. Site Name: Matt's Rocketchat, Language: Default, Server Type: Private Team](./images/04_rc_setup_03.png)
-![RocketChat Setup Wizard #4. Keep Standalone.](./images/04_rc_setup_04.png)</kbd>
+After step 3 of 4, you will receive an email verification from Rocket.Chat. In the email, click "Verify registration".
 
+Return to your finished Rocket.Chat, which should now display the Home page. 
 
-
+Note: If you see a message in Rocket.Chat titled "Unique ID change detected", click "configuration update" then "confirm cofiguration update".
 
 ### Single Pod Applications
 Single pod applications are not highly-available and can be abruptly terminated if the pod crashes or due to regularly 
@@ -33,7 +32,6 @@ scheduled platform maintenance. In order to simulate the effect on an applicatio
 - Refresh URL of application
 
 <kbd>![](./images/04_app_availability_03.png)</kbd>
-
 
 ### Scaling Pods
 To increase the availability of an application and defend against unplanned outages or planned maintenance tasks, an 

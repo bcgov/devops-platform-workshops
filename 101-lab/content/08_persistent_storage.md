@@ -16,15 +16,50 @@ Some background information about volumes and volumemounts can be found [here](h
 __Objective__: Observe that by using ephemeral storage causes RocketChat to lose any previous data or configuration after a redeployment.
 
 To understand what will happen when a pod with ephemeral storage is removed,
-- Scale down both the rocketchat and mongo applications to 0 pods
+- Scale down both the rocketchat and mongo applications to 0 pods:
   ```oc:cli
   oc -n [-dev] scale deployment/rocketchat-[username] deployment/mongodb-[username] --replicas=0
   ```
-- Scale back up each application pod to 1 replica
+- Scale back up MongoDB to 1 replica:
   ```oc:cli
-  oc -n [-dev] scale deployment/rocketchat-[username] deployment/mongodb-[username] --replicas=1
+  oc -n [-dev] scale deployment/mongodb-[username] --replicas=1
   ```
+
+- Since MongoDB was using ephemeral storage, its internal data directory was wiped when it was scaled down. This includes the Rocket.Chat application user we created earlier in Module 3 (Deployment). 
+
+- Recreate the Rocket.Chat application user:
+
+```oc:cli
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
+"mongodb://rootuser:rootpassword@localhost:27017/admin" \
+--eval 'db = db.getSiblingDB("rocketchat");
+        try { db.dropUser("rocketchat"); } catch(e) {}
+        db.createUser({
+          user: "rocketchat",
+          pwd: "rocketchatpass",
+          roles: [{ role: "readWrite", db: "rocketchat" }]
+        })'
+```
+
+- Verify the user exists (the output should show the rocketchat user listed):
+
+```oc:cli
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
+"mongodb://rootuser:rootpassword@localhost:27017/admin" \
+--eval 'db.getSiblingDB("rocketchat").getUsers()'
+```
+
+- Now that the application user exists again, Rocket.Chat can authenticate succesfully:
+
+```oc:cli
+# Scale Rocket.Chat back up:
+oc -n [-dev] rollout restart deployment/rocketchat-[username]
+```
+
+Open the Rocket.Chat web application. You should see the Setup Wizard, as all the previous settings were lost due to ephemeral storage.
+
 <kbd>![](./images/06_persistent_storage_02.png)</kbd>
+
 
 ### Adding Storage to Existing Deployment
 __Objective__: Add persistent storage to MongoDB so that it won't lose data created by RocketChat.

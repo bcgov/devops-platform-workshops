@@ -117,15 +117,17 @@ oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=ro
 
 ## __Objective 3__: Identify CrashLoopBackOff problem
 
-Notice that the deployment is still failing. 
+After waiting a few minutes, notice that the deployment is still failing. 
 
 <kbd>![](./images/03_deploy_image_08a.png)</kbd>
 
 Navigate to the pod and review the logs to determine why the container will not start. 
 
-From the console click the deployment and click __view logs__ beside the failing pod
+- From the console click the deployment and click __view logs__ beside the failing pod
 
 <kbd>![](./images/03_deploy_image_08b.png)</kbd>
+
+Note: you can ignore the message above the logs - "an error occured while retrieving the requested logs".
 
 - Or from the CLI
 
@@ -233,7 +235,7 @@ service/mongodb-mattspencer created
   
   You can safely ignore repeated messages as such:
   ```
-  2020-02-06T06:23:41.391+0000 [conn11041]  authenticate db: rocketchat { authenticate: 1, nonce: "xxx", user: "dbuser", key: "xxx" }
+  {"t":{"$date":"2026-01-30T19:25:47.067+00:00"},"s":"I", "c":"ACCESS", "id":10483900,"ctx":"conn63","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:51672","doc":{"application":{"name":"mongosh 2.6.0"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.6.0"},"platform":"Node.js v20.20.0, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"orchestrator":"kubernetes"}}}}}
   ```
 
 ### Create MongoDB user for RocketChat
@@ -283,12 +285,13 @@ a database has been deployed, the app does not know how or where to connect to M
 ```
 mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat
 ```
-<kbd>![](./images/03_deploy_config_01.png)</kbd>
 
 **ROOT_URL:**
 ```
 http://rocketchat-[username]:3000
 ```
+
+<kbd>![](./images/03_deploy_config_01.png)</kbd>
 
 You can also use the CLI to apply the environment variables:
 ```
@@ -412,7 +415,7 @@ This is necessary because:
 
 - We initially set ROOT_URL to ```http://rocketchat-[username]:3000``` (internal service name).
 - Modern RocketChat needs ROOT_URL to match the actual external URL users will access.
-- This prevents routing errors and ensures features like OAuth callbacks work correctly.
+- This prevents routing errors.
 
 First, verify the route exists:
 ```oc:cli
