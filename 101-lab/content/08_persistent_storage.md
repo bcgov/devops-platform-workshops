@@ -200,7 +200,7 @@ RWX storage allows multiple pods to access the same PV at the same time.
 oc -n [-dev] rollout resume deployment/mongodb-[username]
 ```
 
-You should notice that your Rocket.Chat pod is Running but not Ready. This is expected. Rocket.Chat only becomes Ready once it can successfully connect to MongoDB. Because the RWX step interferes with MongoDB's ability to accept connections, Rocket.Chat cannot complete its startup checks and therefore remains not Ready.
+You should notice that your Rocket.Chat pod is either failing or Running but not Ready. 
 
 ### Fixing it
 __Objective__: Fix corrupted MongoDB storage by using the correct storage class for MongoDB.
