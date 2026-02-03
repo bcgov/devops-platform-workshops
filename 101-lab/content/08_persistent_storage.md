@@ -182,13 +182,16 @@ RWX storage allows multiple pods to access the same PV at the same time.
 - Remove the previous storage volume from your MongoDB deployment and add your new `mongodb-[username]-file-rwx` storage, mounting at `/data/db`
 
   <kbd>![](./images/06_persistent_storage_10.png)</kbd>
+- Pause rollouts of your mongo deployment
   ```oc:cli
   oc -n [-dev] rollout pause deployment/mongodb-[username] 
-  
-  # Remove all volumes
+  ```
+- Remove all volumes
+  ```
   oc -n [-dev] get deployment/mongodb-[username] -o jsonpath='{.spec.template.spec.volumes[].name}{"\n"}' | xargs -I {} oc -n [-dev] set volumes deployment/mongodb-[username] --remove '--name={}'
-
-  # Add a new volume by creating a PVC. If the PVC already exists, omit '--claim-class', '--claim-mode', and '--claim-size' arguments
+  ```
+- Add a new volume by creating a PVC. If the PVC already exists, omit '--claim-class', '--claim-mode', and '--claim-size' arguments
+  ```
   oc -n [-dev] set volume deployment/mongodb-[username] --add --name=mongodb-[username]-data -m /data/db -t pvc --claim-name=mongodb-[username]-file-rwx --claim-class=netapp-file-standard --claim-mode=ReadWriteMany --claim-size=1G
   ```
 - Scale up `mongodb-[username]` to 1 pods
