@@ -225,7 +225,6 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` to match our 'rec
     ```
   - Remove all existing volumes on `mongodb-[username]`
     ```oc:cli
-    # Remove all volumes
     oc -n [-dev] get deployment/mongodb-[username] -o jsonpath='{.spec.template.spec.volumes[].name}{"\n"}' | xargs -I {} oc -n [-dev] set volumes deployment/mongodb-[username] --remove '--name={}'
     ```
   - Attach a new volume using the existing `mongodb-[username]-file` PVC
