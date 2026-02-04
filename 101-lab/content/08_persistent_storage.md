@@ -179,16 +179,19 @@ RWX storage allows multiple pods to access the same PV at the same time.
 - Create a new PVC as `netapp-file-standard`, set the type to RWX and name it `mongodb-[username]-file-rwx`
 <kbd>![](./images/06_persistent_storage_09.png)</kbd>
 
-- Remove the previous storage volume and add your new `mongodb-[username]-file-rwx` storage, mounting at `/data/db`
+- Remove the previous storage volume from your MongoDB deployment and add your new `mongodb-[username]-file-rwx` storage, mounting at `/data/db`
 
   <kbd>![](./images/06_persistent_storage_10.png)</kbd>
+- Pause rollouts of your mongo deployment
   ```oc:cli
   oc -n [-dev] rollout pause deployment/mongodb-[username] 
-  
-  # Remove all volumes
+  ```
+- Remove all volumes
+  ```
   oc -n [-dev] get deployment/mongodb-[username] -o jsonpath='{.spec.template.spec.volumes[].name}{"\n"}' | xargs -I {} oc -n [-dev] set volumes deployment/mongodb-[username] --remove '--name={}'
-
-  # Add a new volume by creating a PVC. If the PVC already exists, omit '--claim-class', '--claim-mode', and '--claim-size' arguments
+  ```
+- Add a new volume by creating a PVC. If the PVC already exists, omit '--claim-class', '--claim-mode', and '--claim-size' arguments
+  ```
   oc -n [-dev] set volume deployment/mongodb-[username] --add --name=mongodb-[username]-data -m /data/db -t pvc --claim-name=mongodb-[username]-file-rwx --claim-class=netapp-file-standard --claim-mode=ReadWriteMany --claim-size=1G
   ```
 - Scale up `mongodb-[username]` to 1 pods
@@ -222,7 +225,6 @@ To fix that we will need to replace the `RWX` PVC with a `RWO` to match our 'rec
     ```
   - Remove all existing volumes on `mongodb-[username]`
     ```oc:cli
-    # Remove all volumes
     oc -n [-dev] get deployment/mongodb-[username] -o jsonpath='{.spec.template.spec.volumes[].name}{"\n"}' | xargs -I {} oc -n [-dev] set volumes deployment/mongodb-[username] --remove '--name={}'
     ```
   - Attach a new volume using the existing `mongodb-[username]-file` PVC
