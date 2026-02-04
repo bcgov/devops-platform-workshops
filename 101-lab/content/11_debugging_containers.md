@@ -35,7 +35,7 @@ In this lab, we will test the communication between our pods. A debug pod create
 ```
 [service-name].[namespace].svc.cluster.local
 ```
-You can also find the hostname listed in the web console in the `Adminstrator->Networking->Services` menu.
+You can also find the hostname listed in the web console in the `Administrator->Networking->Services` menu.
 
 - Curl the rocketchat service from your mongodb debug pod. Our rocketchat service has the name `rocketchat-[username]`
     ```
@@ -46,7 +46,7 @@ You can also find the hostname listed in the web console in the `Adminstrator->N
     ```
     oc -n [-dev] scale deployment/rocketchat-[username] --replicas=0
     ```
-- Now switching terminals again, to the mongdb debug pod, we'll try to curl the rokcetchat service:
+- Now switching terminals again, to the mongdb debug pod, we'll try to curl the rocketchat service:
     ```
     curl [servicename].[-dev].svc.cluster.local:3000
     ```
@@ -65,11 +65,11 @@ RSH (**R**emote **SH**ell) is available to all normal pods through the web conso
 `oc rsh` command. This allows you to remotely execute commands from the pod. For more information, you can view the [RedHat documentation](https://docs.openshift.com/container-platform/4.15/nodes/containers/nodes-containers-copying-files.html)
 - With your choice of access, rsh into one of the application pods and test access within the namespace. First, get a list of pods in the dev namespace. 
 ``` 
-oc -n [dev] get pods
+oc -n [-dev] get pods
 ```
 - Take note of the name of your currently running, ready rocketchat pod. Then, use rsh command to start a remote shell from the pod using your pod's name from the previous step's output. 
 ```
-oc -n [dev] rsh [podname]
+oc -n [-dev] rsh [podname]
 ```
 - Explore your userid 
 ```
@@ -84,7 +84,7 @@ pwd
 ```
 ls
 ```
-- Let's use the client URL command (cURL) to see if our pod can connect to external and internal resources. Let's test first test if our pod can get data from Google. 
+- Let's use the client URL command (cURL) to see if our pod can connect to external and internal resources. Let's first test if our pod can get data from Google. 
 ``` 
 curl -L http://www.google.com
 ```
