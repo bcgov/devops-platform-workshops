@@ -10,7 +10,7 @@ The platform default resource configuration is maintained by the Platform Servic
 [Video walkthrough](https://youtu.be/dhLnaUGgnQY)
 
 ## Explore Default Resource Configurations
-Since the Rocket.Chat application was built from scratch and not deployed from a template, explore the current resources allocated to the pods:
+Since the Rocket.Chat application was imported and not deployed from a template, explore the current resources allocated to the pods:
 
 - Navigate to your rocketchat deployment and select the YAML tab
 
