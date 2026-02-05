@@ -1,8 +1,8 @@
 # Debugging Containers
 
-<kbd>[![Video Walkthrough Thumbnail](././images/11_logging_thumb.png)](https://youtu.be/UYbtIXYpMkI)</kbd>
+<!-- <kbd>[![Video Walkthrough Thumbnail](././images/11_logging_thumb.png)](https://youtu.be/UYbtIXYpMkI)</kbd> -->
 
-[Video walkthrough](https://youtu.be/UYbtIXYpMkI)
+<!-- [Video walkthrough](https://youtu.be/UYbtIXYpMkI) -->
 
 ### Accessing Local Logs
 
@@ -29,7 +29,7 @@ In this lab, we will test the communication between our pods. A debug pod create
 - In a new terminal window, start a debug pod for your mongodb deployment. 
 
     ```
-    oc -n [-dev] debug [mongodb-pod-name]
+    oc -n [-dev] debug [mongodb-pod-name] -t -- bash
     ```
 - In openshift, local hostnames follow this format
 ```
@@ -37,18 +37,21 @@ In this lab, we will test the communication between our pods. A debug pod create
 ```
 You can also find the hostname listed in the web console in the `Administrator->Networking->Services` menu.
 
-- Curl the rocketchat service from your mongodb debug pod. Our rocketchat service has the name `rocketchat-[username]`
+- Test connectivity to the RocketChat service from your MongoDB debug pod. We'll use bash's built-in Transmission Control Protocol (TCP) connection feature to send an HTTP request. Our rocketchat service has the name `rocketchat-[username]`
+
+    ```oc:cli
+    exec 3<>/dev/tcp/rocketchat-[username].[-dev].svc.cluster.local/3000; echo -e "GET / HTTP/1.1\r\nHost: rocketchat-[username].[-dev].svc.cluster.local\r\nConnection: close\r\n\r\n" >&3; cat <&3
     ```
-    curl [servicename].[-dev].svc.cluster.local:3000
-    ```
+- If you see ```HTTP/1.1 200 OK``` at the top, the connection was succesful.
 
 - From our original terminal window (not the debug pod), let's scale down the rocketchat deployment:    
     ```
     oc -n [-dev] scale deployment/rocketchat-[username] --replicas=0
     ```
-- Now switching terminals again, to the mongdb debug pod, we'll try to curl the rocketchat service:
-    ```
-    curl [servicename].[-dev].svc.cluster.local:3000
+- Now switching terminals again to the MongoDB debug pod, we'll try to connect again to the rocketchat service. This may take a few minutes to run.
+
+    ```oc:cli
+    exec 3<>/dev/tcp/rocketchat-[username].[-dev].svc.cluster.local/3000; echo -e "GET / HTTP/1.1\r\nHost: rocketchat-[username].[-dev].svc.cluster.local\r\nConnection: close\r\n\r\n" >&3; cat <&3
     ```
 - As expected, since we shut down the rocketchat deployment, we get an error when trying to connect to it. If we were experiencing a problem with our pods in OpenShift, we could use this method to test that they can communicate properly. 
 
@@ -59,6 +62,11 @@ You can also find the hostname listed in the web console in the `Administrator->
 
     Removing debug pod ...
     ```
+
+- Scale back up your RocketChat pod:
+```
+oc -n [-dev] scale deployment/rocketchat-[username] --replicas=1
+```
 
 ### RSH and RSYNC
 RSH (**R**emote **SH**ell) is available to all normal pods through the web console under the `Terminal` tab, as well as through the 
@@ -84,15 +92,15 @@ pwd
 ```
 ls
 ```
-- Let's use the client URL command (cURL) to see if our pod can connect to external and internal resources. Let's first test if our pod can get data from Google. 
+- Let's test connectivity to see if our pod can connect to external and internal resources. Let's first test if our pod can get data from Google. 
 ``` 
-curl -L http://www.google.com
+wget -O- http://www.google.com
 ```
 The output may look jumbled as we're seeing a html file as plain text rather than being displayed graphically as it would in a web browser. 
 
 Now let's try connecting to an internal resource from the pod. We'll get a similar html output here.  
 ```
-curl -L localhost:3000
+wget -O- 127.0.0.1:3000
 ```
 Exit the rsh session. 
 ```
@@ -121,7 +129,7 @@ pwd
 ```
 Next, let's synchronise this new empty folder with the data folder on our mongodb pod. For me, this local path is `/users/matt/lab`. Add the podname and path to your lab folder in the command below.
 ```
-oc -n [-dev] rsync [mongopodname]:/var/lib/mongodb/data [localpath]
+oc -n [-dev] rsync [mongodb-pod-name]:/data/db [your-local-path]
 ```
 Now let's confirm that these files have been copied locally. Let's get a list of folders in the current directory. 
 ```
