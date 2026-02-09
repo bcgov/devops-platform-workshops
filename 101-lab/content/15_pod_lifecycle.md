@@ -16,15 +16,13 @@ Init containers are best used to prepare the pod for normal operation. In this l
 __Objective__: Create an init container
 - Open your Rocketchat web application from its web route, ensuring to log in as the admin user that your previously created. 
 
-- Click on the three-dot icon to see more menu options, and choose 'Administration' 
+- Click on the gear icon in the top right corner and choose 'Workspace'.
 
 <kbd>![](./images/15_pod_lifecycle_03.png)</kbd>
 
-- Using the left navigation menu, select 'Integrations' and choose the 'New Integration' 
+- Using the left navigation menu, select 'Integrations' and click 'New' in the top-right corner. 
 
 <kbd>![](./images/15_pod_lifecycle_04.png)</kbd>
-
-- Next, select the option to create an 'Incoming WebHook' 
 
 <kbd>![](./images/15_pod_lifecycle_05.png)</kbd>
 
@@ -86,7 +84,7 @@ Lifecycle hooks can be configured to start and stop a container properly. The li
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
     - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing both URLs below with the webhook URL from the earlier step, add the following section of YAML under the first item in `spec: -> template: -> spec: -> containers:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
+- After replacing both URLs below with the webhook URL from the earlier step, add the following section of YAML under the first item in `spec: -> template: -> spec: -> containers -> resources:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
 ```YAML
 lifecycle:
             postStart:
