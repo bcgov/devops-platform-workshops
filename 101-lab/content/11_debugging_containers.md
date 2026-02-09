@@ -29,7 +29,7 @@ In this lab, we will test the communication between our pods. A debug pod create
 - In a new terminal window, start a debug pod for your mongodb deployment. 
 
     ```
-    oc -n [-dev] debug [mongodb-pod-name] -t -- bash
+    oc -n [-dev] debug [mongodbpodname] -t -- bash
     ```
 - In openshift, local hostnames follow this format
 ```
@@ -37,12 +37,12 @@ In this lab, we will test the communication between our pods. A debug pod create
 ```
 You can also find the hostname listed in the web console in the `Administrator->Networking->Services` menu.
 
-- Test connectivity to the RocketChat service from your MongoDB debug pod. We'll use bash's built-in Transmission Control Protocol (TCP) connection feature to send an HTTP request. Our rocketchat service has the name `rocketchat-[username]`
+- Test connectivity to the RocketChat service from your MongoDB debug pod. We'll use bash's built-in Transmission Control Protocol (TCP) connection feature to send an HTTP request. Our rocketchat service has the name `rocketchat-[username]`. The following command opens a network connection to RocketChat, sends an HTTP request asking for the homepage, and displays the response:
 
     ```oc:cli
     exec 3<>/dev/tcp/rocketchat-[username].[-dev].svc.cluster.local/3000; echo -e "GET / HTTP/1.1\r\nHost: rocketchat-[username].[-dev].svc.cluster.local\r\nConnection: close\r\n\r\n" >&3; cat <&3
     ```
-- If you see ```HTTP/1.1 200 OK``` at the top, the connection was succesful.
+- If you see ```HTTP/1.1 200 OK``` at the top of the output, the connection was successful.
 
 - From our original terminal window (not the debug pod), let's scale down the rocketchat deployment:    
     ```
@@ -79,11 +79,11 @@ oc -n [-dev] get pods
 ```
 oc -n [-dev] rsh [podname]
 ```
-- Explore your userid 
+- Explore your userID
 ```
  whoami
 ```
-- This command identifies the userid of your rsh session. You can then try other commands to explore the pod. 
+- This command identifies the userID of your rsh session. You can then try other commands to explore the pod. 
 - Now we'll try some other commands from the pod's shell. Try the 'print working directory' command to see the path of the directory you're currently in.
 ```
 pwd
@@ -92,7 +92,7 @@ pwd
 ```
 ls
 ```
-- Let's test connectivity to see if our pod can connect to external and internal resources. Let's first test if our pod can get data from Google. 
+- Let's test connectivity to see if our pod can connect to external and internal resources. Let's first test if our pod can get data from Google. Note: the RocketChat container may not have `curl` installed. We'll use `wget` instead.
 ``` 
 wget -O- http://www.google.com
 ```
@@ -106,12 +106,13 @@ Exit the rsh session.
 ```
 exit
 ```
-Remote Sync(RSYNC) is also available in many pods, available through the `oc rsync` command and can be used to get files from the pod, or to move them from your local to the pod. To get help with this command, you can use `oc rsync -h`. We're going to use it to download the data file from the mongodb pod. 
+Remote Sync (RSYNC) is also available in many pods, available through the `oc rsync` command and can be used to get files from the pod, or to move them from your local to the pod. To get help with this command, you can use `oc rsync -h`. We're going to use it to download a backup from the MongoDB pod onto our local machine. 
+
 - Find the name of your running, ready mongodb pod
 ```
 oc -n [-dev] get pods
 ``` 
-- We want to use rsync to get the mongodb data files, and put them onto our local machine. The mongo pod will store files in the directory `var/lib/mongodb/data`. First, I'll make a new local directory called 'lab'.
+- First, I'll make a new local directory called 'lab'.
 ```
 mkdir lab
 ```
@@ -127,23 +128,50 @@ Then check the path to this directory with
 ```
 pwd
 ```
-Next, let's synchronise this new empty folder with the data folder on our mongodb pod. For me, this local path is `/users/matt/lab`. Add the podname and path to your lab folder in the command below.
+RSH into the MongoDB pod:
 ```
-oc -n [-dev] rsync [mongodbpodname]:/data/db [localpath]
+oc -n [-dev] rsh [mongodbpodname]
 ```
+Inside the MongoDB pod, we'll create a database backup. MongoDB has a built-in backup tool called mongodump that creates a consistent snapshot of the database. Run the following command using the root credentials:
+```oc:cli
+mongodump --username=rootuser --password=rootpassword --authenticationDatabase=admin --out=/tmp/mongodb-backup
+```
+Once complete, exit the RSH session:
+```
+exit
+```
+Now use the oc rsync command to copy the backup from the pod to the new empty folder called 'lab'. You'll need your local path (from the pwd command before). For me, this local path is `/users/matt/lab`. Add the podname and path to your lab folder in the command below:
+```
+oc -n [-dev] rsync [mongodbpodname]:/tmp/mongodb-backup [localpath]
+```
+
+**Note:** At first you'll see a warning that says `WARNING: cannot use rsync: rsync not available in container`. This is normal. When you run this command, OpenShift will first try to use the rsync utility for efficient file transfer. If rsync isn't available in the container (which is common in minimal container images like MongoDB 8.2), OpenShift automatically falls back to using tar instead. 
+
+
 Now let's confirm that these files have been copied locally. Let's get a list of folders in the current directory. 
 ```
 ls
 ```
-Notice the new `data` folder. Let's switch to it. 
+Notice the new `mongodb-backup` folder. Let's switch to it. 
 ```
-cd data
+cd mongodb-backup
 ```
 Let's list the files in this folder. 
 ```
 ls
 ```
-Note that the data files from your mongo pod have been copied locally.
+You should see folders for each database (such as `admin` and `rocketchat` Let's explore the rocketchat database backup:
+```
+cd rocketchat
+
+ls
+```
+
+You should see `.bson` files (containing the actual data) and `.metadata.json` files (containing scheme information) for each collection in the database.
+
+Summary: 
+We used `mongodump` to create a proper MongoDB backup rather than copying raw database files. This approach creates a consistent snapshot of the database even while it's running, and produces portable `.bson` files that can be restored to any MongoDB instance using the `mongorestore` command.
+
 ### Port Forwarding
 The `oc port-forward` command enables users to forward remote ports running in the cluster
 into a local development machine. 
