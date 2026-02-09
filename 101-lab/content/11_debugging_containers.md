@@ -53,7 +53,13 @@ You can also find the hostname listed in the web console in the `Administrator->
     ```oc:cli
     exec 3<>/dev/tcp/rocketchat-[username].[-dev].svc.cluster.local/3000; echo -e "GET / HTTP/1.1\r\nHost: rocketchat-[username].[-dev].svc.cluster.local\r\nConnection: close\r\n\r\n" >&3; cat <&3
     ```
-- As expected, since we shut down the rocketchat deployment, we get an error when trying to connect to it. If we were experiencing a problem with our pods in OpenShift, we could use this method to test that they can communicate properly. 
+- As expected, since we shut down the rocketchat deployment, we get a connection timed out message when trying to connect to it. 
+```
+bash: connect: Connection timed out
+bash: /dev/tcp/rocketchat-[username].d8f105-dev.svc.cluster.local/3000: Connection timed out
+```
+
+If we were experiencing a problem with our pods in OpenShift, we could use this method to test that they can communicate properly. 
 
 - In your debug pod terminal and run the `exit` command. This will remove the debug pod.
     ```
@@ -160,7 +166,7 @@ Let's list the files in this folder.
 ```
 ls
 ```
-You should see folders for each database (such as `admin` and `rocketchat` Let's explore the rocketchat database backup:
+You should see folders for each database (such as `admin` and `rocketchat`). Let's explore the rocketchat database backup:
 ```
 cd rocketchat
 
