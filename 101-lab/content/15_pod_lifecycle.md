@@ -20,13 +20,13 @@ __Objective__: Create an init container
 
 <kbd>![](./images/15_pod_lifecycle_03.png)</kbd>
 
-- Using the left navigation menu, select 'Integrations' and click 'New' in the top-right corner. 
+- Using the left navigation menu, select 'Integrations' and then click 'New' in the top-right corner. 
 
 <kbd>![](./images/15_pod_lifecycle_04.png)</kbd>
 
 <kbd>![](./images/15_pod_lifecycle_05.png)</kbd>
 
-- Configure the WebHook. Be sure to set 'enabled' to 'true', choose to post as the account name you set earlier, choose the default #general channel. Optionally, you can link to an avatar image or set and emoji as the avatar. Be sure to save the settings at the bottom right of the page, and confirm that no errors appear at the top right of the page. 
+- Configure the WebHook. Be sure that 'enabled' is selected, choose to post as the account name you set earlier, choose the default #general channel. Optionally, you can link to an avatar image or set an emoji as the avatar. Be sure to save the settings at the bottom right of the page, and confirm that no errors appear at the top right of the page. 
 
 <kbd>![](./images/15_pod_lifecycle_06.png)</kbd>
 
@@ -34,14 +34,14 @@ __Objective__: Create an init container
 
 <kbd>![](./images/15_pod_lifecycle_07.png)</kbd>
 
-- Next the OpenShift Web Console, navigate to `Topology` and select your `rocketchat-[username]` deployment.
+- Next, in the OpenShift Web Console, navigate to `Topology` and select your `rocketchat-[username]` deployment.
 - Navigate to the __YAML__ tab.
   > If you wish to perform this from the cli with the `oc` tool, type `oc -n [-dev] edit deployment/rocketchat-[username]`
 
 
 <kbd>![](./images/15_pod_lifecycle_01.png)</kbd>
 
-- After replacing the URL below with the webhook URL from the previous step, add the following section of code under `spec: -> template: -> spec:`. As always with YAML, pay close attention to the formatting and indenting. 
+- After replacing the URL below with the webhook URL from the previous step, add the following section of code under `spec: -> template: -> spec:`. As always with YAML, pay close attention to the formatting and indentation. 
 
 ```YAML
 initContainers:
@@ -53,7 +53,7 @@ initContainers:
             - >-
               c=$(curl -X POST -H 'Content-Type: application/json' --data
               '{"text":"Say Hello"}'
-              [YOUR_WEBHOOK_URL])
+              https://YOUR_WEBHOOK_URL)
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
