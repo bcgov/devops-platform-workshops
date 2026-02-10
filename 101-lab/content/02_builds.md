@@ -1,5 +1,5 @@
 # Builds
-In this lab, you will import the Rocket.Chat Docker image for use in your OpenShift environment.
+In this lab, you will import the Rocket.Chat Docker image for use in your OpenShift environment. Although this section is called 'builds', we've temporarily removed image building from this section for now. 
 
 <!-- <kbd>[![Video Walkthrough Thumbnail](././images/02_builds_thumb.png)](https://youtu.be/j7a74_I6MYw)<kbd>
 
