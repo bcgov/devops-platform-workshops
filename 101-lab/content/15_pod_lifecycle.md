@@ -30,7 +30,7 @@ __Objective__: Create an init container
 
 <kbd>![](./images/15_pod_lifecycle_06.png)</kbd>
 
-- Once these settings are saved, navigate to the 'Integrations' page again and take note of the webhook URL that is generated.
+- Once these settings are saved, navigate to the 'Integrations' page again, click on the incoming integration that was just created, and take note of the webhook URL that is generated.
 
 <kbd>![](./images/15_pod_lifecycle_07.png)</kbd>
 
@@ -89,10 +89,24 @@ Lifecycle hooks can be configured to start and stop a container properly. The li
 lifecycle:
             postStart:
               exec:
-                command:  ["/bin/sh", "-c", "c=$(curl -X POST -H 'Content-Type: application/json' --data '{\"text\": \"'\"$HOSTNAME\"' is at the postStart phase, hooray! \"}'  http://YOUR_WEBHOOK_URL)"]
+                command:
+                  - /bin/sh
+                  - '-c'
+                  - |
+                    (wget --header="Content-Type: application/json" \
+                    --post-data='{"text": "'"$HOSTNAME"' is at the postStart phase, hooray!"}' \
+                    -O- https://YOUR_WEBHOOK_URL \
+                    >/dev/null 2>&1 || true) &
             preStop:
               exec:
-                command:  ["/bin/sh", "-c", "c=$(curl -X POST -H 'Content-Type: application/json' --data '{\"text\": \"'\"$HOSTNAME\"' is just about to STOPPPPPP! \"}'  http://YOUR_WEBHOOK_URL)"]        
+                command:
+                  - /bin/sh
+                  - '-c'
+                  - |
+                    (wget --header="Content-Type: application/json" \
+                    --post-data='{"text": "'"$HOSTNAME"' is just about to STOP!"}' \
+                    -O- https://YOUR_WEBHOOK_URL \
+                    >/dev/null 2>&1 || true) &      
 ```
 -  Save your changes to the YAML. It should now look similar to this: 
 
@@ -105,16 +119,16 @@ It may be necessary, from time to time, to override the initial command/entrypoi
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
     - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing the example URL with your WebHook URL, add the following section of code under the first item in `spec: -> template: -> spec: -> containers:`
+- After replacing the example URL with your WebHook URL, add the following section of code under the first item in `spec: -> template: -> spec: -> containers -> resources:`
 
 ```YAML
 command:
-  - /bin/sh
-  - -c
-  - >
-    c=$(curl -X POST -H 'Content-Type: application/json' \
-    --data '{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
-    https://chat.exampleURL.gov.bc.ca/hooks/xxx/xxx)
+            - /bin/sh
+            - '-c'
+            - |
+              wget --header="Content-Type: application/json" \
+              --post-data='{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
+              -O- https://YOUR_WEBHOOK_URL
 ```
 
 After saving, your rocketchat deployment YAML should look similar to this (some sections have been collapsed for easier viewing):
