@@ -41,7 +41,7 @@ __Objective__: Create an init container
 
 <kbd>![](./images/15_pod_lifecycle_01.png)</kbd>
 
-- After replacing the URL below with the webhook URL from the previous step, add the following section of code under `spec: -> template: -> spec:`. As always with YAML, pay close attention to the formatting and indentation. 
+- After replacing 'YOUR_WEBHOOK_URL' in the code below with the webhook URL from the previous step, add the following section of code under `spec: -> template: -> spec:`. As always with YAML, pay close attention to the formatting and indentation. 
 
 ```YAML
 initContainers:
@@ -53,7 +53,7 @@ initContainers:
             - >-
               c=$(curl -X POST -H 'Content-Type: application/json' --data
               '{"text":"Say Hello"}'
-              https://YOUR_WEBHOOK_URL)
+              YOUR_WEBHOOK_URL)
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
@@ -84,7 +84,7 @@ Lifecycle hooks can be configured to start and stop a container properly. The li
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
     - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing both URLs below with the webhook URL from the earlier step, add the following section of YAML under the first item in `spec: -> template: -> spec: -> containers -> resources:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
+- After replacing 'YOUR_WEBHOOK_URL' below with the webhook URL from the earlier step, add the following section of YAML under the first item in `spec: -> template: -> spec: -> containers -> resources:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
 ```YAML
 lifecycle:
             postStart:
@@ -95,7 +95,7 @@ lifecycle:
                   - |
                     (wget --header="Content-Type: application/json" \
                     --post-data='{"text": "'"$HOSTNAME"' is at the postStart phase, hooray!"}' \
-                    -O- https://YOUR_WEBHOOK_URL \
+                    -O- YOUR_WEBHOOK_URL \
                     >/dev/null 2>&1 || true) &
             preStop:
               exec:
@@ -105,7 +105,7 @@ lifecycle:
                   - |
                     (wget --header="Content-Type: application/json" \
                     --post-data='{"text": "'"$HOSTNAME"' is just about to STOP!"}' \
-                    -O- https://YOUR_WEBHOOK_URL \
+                    -O- YOUR_WEBHOOK_URL \
                     >/dev/null 2>&1 || true) &      
 ```
 -  Save your changes to the YAML. It should now look similar to this: 
@@ -119,7 +119,7 @@ It may be necessary, from time to time, to override the initial command/entrypoi
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
     - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing the example URL with your WebHook URL, add the following section of code under the first item in `spec: -> template: -> spec: -> containers -> resources:`
+- After replacing 'YOUR_WEBHOOK_URL' with your WebHook URL, add the following section of code under the first item in `spec: -> template: -> spec: -> containers -> resources:`
 
 ```YAML
 command:
@@ -128,7 +128,7 @@ command:
             - |
               wget --header="Content-Type: application/json" \
               --post-data='{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
-              -O- https://YOUR_WEBHOOK_URL
+              -O- YOUR_WEBHOOK_URL
 ```
 
 After saving, your rocketchat deployment YAML should look similar to this (some sections have been collapsed for easier viewing):
