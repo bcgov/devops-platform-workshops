@@ -281,12 +281,12 @@ a database has been deployed, the app does not know how or where to connect to M
 
 - Add the following environment variables: 
 
-**MONGO_URL:**
+**MONGO_URL**
 ```
 mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat
 ```
 
-**ROOT_URL:**
+**ROOT_URL**
 ```
 http://rocketchat-[username]:3000
 ```
