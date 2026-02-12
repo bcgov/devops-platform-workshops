@@ -91,6 +91,12 @@ secret/mongodb-mattspencer configured (dry run)
 secret/rocketchat-mattspencer-secret configured (dry run)
 ```
 
+**Note:** If your output contains any warnings, such as the one shown below, that is OK. These warnings appear because the objects in this lab were originally created using commands like `oc new-app`, `oc create`, `oc import-image`, and `oc tag`. These commands create the resources, but they do not store the “last applied configuration” annotation that `oc apply` relies on. When you run `oc apply` for the first time, OpenShift notices the annotation is missing, shows a warning, and then automatically adds the annotation for you. Future applies will not show this warning.
+
+```
+Warning: resource services/mongodb-[username] is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by oc apply. oc apply should only be used on resources created declaratively by either oc create --save-config or oc apply. The missing annotation will be patched automatically.
+```
+
 If the dry run looks to be producing a successful output, let's move on to test our template. 
 
 ## Delete objects, recreate them with the template
