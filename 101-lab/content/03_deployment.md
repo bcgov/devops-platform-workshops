@@ -17,8 +17,8 @@ The dev project is where applications are deployed. In this case, we will deploy
 - From the CLI:
 
 ```oc:cli
-# retagging the image stream from latest to dev
-oc -n [-tools] tag rocketchat-[username]:latest rocketchat-[username]:dev
+# retagging the image stream from 8.0.1 to dev
+oc -n [-tools] tag rocketchat-[username]:8.0.1 rocketchat-[username]:dev
 
 # Verify that the `dev` tag has been created
 oc -n [-tools] get imagestreamtag/rocketchat-[username]:dev
