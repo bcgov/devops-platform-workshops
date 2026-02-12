@@ -54,8 +54,6 @@ oc -n [-dev] autoscale deployment/rocketchat-[username] --min 1 --max 10 --cpu-p
 
 - In the home page of Rocket.Chat, under 'Join rooms' click on 'Open directory', then choose the channel #general. Click the blue 'Join' button in the bottom-right
 
-- 
-
 - Review the deployment and try to add or remove replicas by editing its `.spec.replicas` YAML value
 
   <kbd>![Editing a deployment's YAML to change the replica count](./images/07_autoscaling_01.png)</kbd>

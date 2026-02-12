@@ -9,7 +9,8 @@ application data, persistent storage is required.
 
 Some background information about volumes and volume mounts can be found [here](https://kubernetes.io/docs/concepts/storage/volumes/).
 
-- Let's first take a look at our application prior to this lab
+- Your application prior to this module should look similar to: 
+
 <kbd>![](./images/06_persistent_storage_01.png)</kbd>
 
 ### Deleting Pods with Ephemeral Storage
