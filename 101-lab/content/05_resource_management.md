@@ -42,7 +42,7 @@ Since the Rocket.Chat application was imported and not deployed from a template,
   time (oc -n [-dev] rollout restart deployment/rocketchat-[username] && oc -n [-dev] rollout status deployment/rocketchat-[username])
   ```
 
-You may notice your pod starts to crash loop. This is most likely because the `liveness` probe you added from an earlier lab is timing out. This is an important consideration when deciding to tune pod resources. It is always a balance.
+If you experiment with the resource values, you may notice your pod starts to crash loop. This is most likely because the `liveness` probe you added from an earlier lab is timing out. This is an important consideration when deciding to tune pod resources. It is always a balance.
 
 - Remove the limits previously imposed, and set your pod to `1 core` (or `1000 millicores`) for the request and limit
 
@@ -53,7 +53,7 @@ You may notice your pod starts to crash loop. This is most likely because the `l
 - Monitor the startup events of your pod and measure the time it takes to rollout. Again, we'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finished shutting down after the last step. This will give us a consistent starting point to compare to our previous timing. 
 
   ```oc:cli
-  # Restart the deployment and observe how long it takes to finish (this should take around 2-3 minutes)
+  # Restart the deployment and observe how long it takes to finish 
 
   time (oc -n [-dev] rollout restart deployment/rocketchat-[username] && oc -n [-dev] rollout status deployment/rocketchat-[username])
   ```
