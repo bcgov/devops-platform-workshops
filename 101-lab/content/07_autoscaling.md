@@ -11,6 +11,8 @@ Currently CPU and memory metrics are supported, with additional arbitrary metric
 
 [Video walkthrough](https://youtu.be/ot-pE495JLE) 
 
+**Note: The video above shows how to create a webhook using an older version of RocketChat. Please follow the written instructions below webhook creation, as they reflect the current version of RocketChat used in this lab.**
+
 ## Autoscaling Pods
 This lab will provide a simple demonstration of autoscaling based on CPU, as this is configurable in the Web Console. 
 

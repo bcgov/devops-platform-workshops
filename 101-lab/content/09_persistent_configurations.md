@@ -4,6 +4,8 @@
 
 [Video walkthrough](https://youtu.be/g6TyE3rIHeo)
 
+**Note: The written instructions below have been updated since the above video was recorded. If viewing the video, please make sure to follow the steps in the written instructions below.**
+
 In cases where configurations need to change frequently or common configurations should be shared across deployments or pods, it is not ideal to build said configurations into the container image or maintain multiple copies of the configuration. OpenShift supports `configMaps` which can be a standalone object that is easily mounted into pods. In cases where the configuration file or data is sensitive in nature, OpenShift supports `secrets` to handle this sensitive data. 
 
 ### ConfigMaps
