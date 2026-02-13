@@ -1,8 +1,10 @@
 # Application Availability
 
-<!-- <kbd>[![Video Walkthrough Thumbnail](././images/06_application_availability_thumb.png)](https://youtu.be/42UxHJkNLwc)</kbd> -->
+<kbd>[![Video Walkthrough Thumbnail](././images/06_application_availability_thumb.png)](https://youtu.be/42UxHJkNLwc)</kbd> 
 
-<!-- [Video walkthrough](https://youtu.be/42UxHJkNLwc) -->
+[Video walkthrough](https://youtu.be/42UxHJkNLwc)
+
+**Note: The beginning of the video above shows the application setup for an older version of RocketChat. Please follow the written instructions below for the RocketChat setup, as they reflect the current version of RocketChat used in this lab.**
 
 Prior to beginning this lab, navigate to the public route you created and finish the initial setup of your application. 
 

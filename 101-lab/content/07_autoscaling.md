@@ -7,9 +7,9 @@ Autoscaling can be configured on pods to enable OpenShift to add or remove pods 
 
 Currently CPU and memory metrics are supported, with additional arbitrary metrics support intended for the future. 
 
-<!-- <kbd>[![Video Walkthrough Thumbnail](././images/07_autoscaling_thumb.png)](https://youtu.be/ot-pE495JLE)</kbd> -->
+<kbd>[![Video Walkthrough Thumbnail](././images/07_autoscaling_thumb.png)](https://youtu.be/ot-pE495JLE)</kbd> 
 
-<!-- [Video walkthrough](https://youtu.be/ot-pE495JLE) -->
+[Video walkthrough](https://youtu.be/ot-pE495JLE) 
 
 ## Autoscaling Pods
 This lab will provide a simple demonstration of autoscaling based on CPU, as this is configurable in the Web Console. 
