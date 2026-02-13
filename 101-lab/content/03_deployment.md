@@ -1,10 +1,10 @@
 # Deployment
-Since the build and deploy stages are separate, and we have a built image from the previous exercise, we can now deploy this 
+Since the build and deploy stages are separate, and we have imported the image from the previous exercise, we can now deploy this 
 image into the dev project. 
 
-<kbd>[![Video Walkthrough Thumbnail](././images/03_deployment_thumb.png)](https://youtu.be/MZHhj0yQn0M)</kbd>
+<!-- <kbd>[![Video Walkthrough Thumbnail](././images/03_deployment_thumb.png)](https://youtu.be/MZHhj0yQn0M)</kbd> -->
 
-[Video walkthrough](https://youtu.be/MZHhj0yQn0M)
+<!-- [Video walkthrough](https://youtu.be/MZHhj0yQn0M) -->
 
 ## The Dev Project
 The dev project is where applications are deployed. In this case, we will deploy RocketChat and MongoDB to the dev namespace.
@@ -14,11 +14,11 @@ The dev project is where applications are deployed. In this case, we will deploy
 
 > Although we use the tag name `dev` there are better naming conventions! We strongly suggest associating image tags with a version that is meaningful for your project!
 
-- From the CLI
+- From the CLI:
 
 ```oc:cli
-# retagging the image stream from latest to dev
-oc -n [-tools] tag rocketchat-[username]:latest rocketchat-[username]:dev
+# retagging the image stream from 8.0.1 to dev
+oc -n [-tools] tag rocketchat-[username]:8.0.1 rocketchat-[username]:dev
 
 # Verify that the `dev` tag has been created
 oc -n [-tools] get imagestreamtag/rocketchat-[username]:dev
@@ -26,34 +26,22 @@ oc -n [-tools] get imagestreamtag/rocketchat-[username]:dev
 
 ## Create an Image-Based Deployment
 
-__Objective__: Deploy RocketChat from the image previously built.
+__Objective__: Deploy RocketChat from the imported image.
 
-- from the CLI, `-l` flag will add a label `ocp101=participant` to your deployment.
+- From the CLI:
 
 ```oc:cli
 oc -n [-dev] new-app [-tools]/rocketchat-[username]:dev --name=rocketchat-[username]
 ```
 
-- The output should be as follows
+- The output should be as follows:
 
 ```
---> Found image b949f08 (2 hours old) in image stream "[devops-training-namespace]-tools/rocketchat-[username]" under tag "dev" for "[devops-training-namespace]-tools/rocketchat-[username]:dev"
+--> Found image a7ffcd3 (10 days old) in image stream "[-tools]/rocketchat-[username]" under tag "dev" for "[-tools]/rocketchat-[username]:dev"
 
-    Node.js 8 
-    --------- 
-    Node.js 8 available as container is a base platform for building and running various Node.js 8 applications and frameworks. Node.js is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.
-
-    Tags: builder, nodejs, nodejs8
-
-    * This image will be deployed in deployment "rocketchat-[username]"
-    * Ports 3000/tcp, 8080/tcp will be load balanced by service "rocketchat-[username]"
-      * Other containers can access this service through the hostname "rocketchat-[username]"
-    * This image declares volumes and will default to use non-persistent, host-local storage.
-      You can add persistent volumes later by running 'volume deployment/rocketchat-[username] --add ...'
 
 --> Creating resources ...
-    imagestreamtag "rocketchat-[username]:dev" created
-    deployment "rocketchat-[username]" created
+    deployment.apps "rocketchat-[username]" created
     service "rocketchat-[username]" created
 --> Success
     Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
@@ -61,17 +49,18 @@ oc -n [-dev] new-app [-tools]/rocketchat-[username]:dev --name=rocketchat-[usern
     Run 'oc status' to view your app.
 ```
 
-## Speed-up application startup
-__Objective__: Get RocketChat to startup faster by tweaking `Resource Requests and Limits`.
+## Speed-up application start up
+__Objective__: Get RocketChat to start up faster by tweaking `Resource Requests and Limits`.
 
-> Resource adjustment is also something that will be covered in a later exercise
+> Resource adjustment is also something that will be covered in a later exercise.
 
-Increasing the resources (especially CPU) right now will help with faster pod startup.
+Increasing the resources (especially CPU) right now will help with faster pod start up.
 
 - From the terminal, run the follow oc command:
 ```oc:cli
 oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=500m,memory=512Mi' --limits='cpu=1000m,memory=1024Mi'
 ```
+- It may take a few minutes before the pod displays an error.
 
 ## __Objective 1__: Identify ImagePull Problem
 As the Web UI indicated, the `dev` project service accounts do not have the appropriate access to pull the image from the `tools`
@@ -97,7 +86,7 @@ Now that we have identified the issue, next step is to create the rolebinding to
 ```oc:cli
 oc -n [-tools] policy add-role-to-user system:image-puller system:serviceaccount:[-dev]:default
 ```
-**Remember:  if somebody else in the lab has completed this step already and you're not experienceing the ImagePull error, move on to the next step _Objective 2_.**
+**Remember:  if somebody else in the lab has completed this step already and you're not experiencing the ImagePull error, move on to the next step _Objective 2_.**
 
 With the appropriate access in place, you can try bringing up a new pod to see if the issue has been resolved. With Deployments this can be done by
 `oc -n [-dev] scale deployment/rocketchat-[username] --replicas=0` waiting for the pods to scale down to 0 and then to scale back up with `oc scale -n [-dev] deployment/rocketchat-[username] --replicas=1`
@@ -116,30 +105,37 @@ When you ran `oc new-app` a new imagestream was created in your `dev` namespace 
 
 1. Re-tag your tools image tag into this new imagestream
 
-`oc -n [-dev] tag [-tools]/rocketchat-[username]:dev rocketchat-[username]:dev`
+```oc:cli
+oc -n [-dev] tag [-tools]/rocketchat-[username]:dev rocketchat-[username]:dev
+```
 
 2. Modify your Rocket Chat deployment to point to the new image stream.
-`oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=rocketchat-[username]:dev`
+
+```oc:cli
+oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=rocketchat-[username]:dev
+```
 
 ## __Objective 3__: Identify CrashLoopBackOff problem
 
-Notice that the deployment is still failing. 
+After waiting a few minutes, notice that the deployment is still failing. 
 
 <kbd>![](./images/03_deploy_image_08a.png)</kbd>
 
 Navigate to the pod and review the logs to determine why the container will not start. 
 
-From the console click the deployment and click __view logs__ beside the failing pod
+- From the console click the deployment and click __view logs__ beside the failing pod
 
 <kbd>![](./images/03_deploy_image_08b.png)</kbd>
+
+Note: you can ignore the message above the logs - "an error occured while retrieving the requested logs".
 
 - Or from the CLI
 
 ```oc:cli
 # Show your pod's log
-oc -n [-dev] logs -f "$(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o name --no-headers | head -1)"
+oc -n [-dev] logs -f $(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o name --no-headers | head -1)
 ```
-*note* you can follow the logs with `-f` argument
+Note: you can follow the logs with `-f` argument
 
 In OpenShift 4.10, it is now possible to launch a debug terminal from within the web console when a pod is in the `CrashLoopBackOff` state. The debug terminal can be launched from the `logs` window for a pod. This can be useful to gather additional information when troubleshooting.  
 
@@ -153,35 +149,76 @@ In the steps that follow, we will deploy the database and give our RocketChat de
 
 In order to use deploy these objects, we are a going to use a template stored in the OpenShift 101 github repository. Managing OpenShift objects from a GitHub repository is a common strategy to ensure consistency, version control and history. In future you may use methods such as [Tekton Pipelines](https://github.com/bcgov/pipeline-templates/tree/main/tekton#tekton-pipelines), [github actions](https://github.blog/2022-02-02-build-ci-cd-pipeline-github-actions-four-steps/) or [HELM](https://helm.sh/) charts to allow changes to files in a repository to automatically make changes to the objects running in your OpenShift project. 
 
-The template we're going to use is located at: https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml
+The template we're going to use is located at: https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml
 
 If you browse this file, you'll notice it contains the YAML that defines our deployment, service and secret. We can apply parameters to this template to adjust particular values. 
 
 ### From CLI
 
-  - Note, any data stored in our database will be lost upon pod destruction. We're only using this ephemeral template for testing and we'll add storage later. 
+  - Note: any data stored in our database will be lost upon pod destruction. We're only using this ephemeral template for testing and we'll add storage later. 
 
-  - List available parameters of the template
+  - List available parameters of the template:
 
 ```oc:cli
-oc -n [-dev] process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml --parameters=true
+oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml --parameters=true
 ```
+
+  - You should see output similar to:
+  
+  ```
+NAME                     DESCRIPTION                                                      VALUE
+MONGODB_ROOT_USER        Username for the MongoDB root user created at initialization.    rootuser
+MONGODB_ROOT_PASSWORD    Password for the MongoDB root user created at initialization     rootpassword
+MONGODB_APP_USER         Username for the Rocket.Chat application user                    rocketchat
+MONGODB_APP_PASSWORD     Password for the Rocket.Chat application user                    rocketchatpass
+MONGODB_DATABASE         Name of the MongoDB database accessed                            rocketchat
+MONGODB_NAME             The name of the OpenShift Service exposed for this instance      mongodb-[username]
+MONGODB_APP_LABEL        The label to use for the app                                     rocketchat-[username]
+  ```
+
+  - Note: if you are getting an error, try turning off VPN.
 
   - Create MongoDB deployment, service and secret using this template. We'll need to specify some parameters, and add our username to make this object unique. We'll do a dry run first to see if the command will do what we expect. 
 
+  - From the CLI, `-l` flag will add a label `ocp101=participant` to your deployment.
+
 ```oc:cli
- oc -n [-dev] process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_USER=dbuser MONGODB_PASSWORD=dbpass MONGODB_ADMIN_PASSWORD=admindbpass MONGODB_DATABASE=rocketchat MONGODB_NAME=mongodb-[username] -l ocp101=participant -l app=rocketchat-[username]  | oc -n [-dev] create -f - --dry-run=client
+oc -n [-dev] process -f \
+https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
+-p MONGODB_ROOT_USER=rootuser \
+-p MONGODB_ROOT_PASSWORD=rootpassword \
+-p MONGODB_APP_USER=rocketchat \
+-p MONGODB_APP_PASSWORD=rocketchatpass \
+-p MONGODB_DATABASE=rocketchat \
+-p MONGODB_NAME=mongodb-[username] \
+-p MONGODB_APP_LABEL=rocketchat-[username]\
+-l ocp101=participant \
+-l app=rocketchat-[username] | oc -n [-dev] create -f - --dry-run=client
 ```
-> When you ran the cli command you should get an output like this 
+
+> When you ran the cli command you should get an output like this:
+
 ```
 deployment.apps/mongodb-mattspencer created (dry run)
 secret/mongodb-mattspencer created (dry run)
 service/mongodb-mattspencer created (dry run)
 ```
+
 Now, let's run the command for real by removing the dry run. 
 
 ```oc:cli
- oc -n [-dev] process -f https://raw.githubusercontent.com/BCDevOps/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_USER=dbuser MONGODB_PASSWORD=dbpass MONGODB_ADMIN_PASSWORD=admindbpass MONGODB_DATABASE=rocketchat MONGODB_NAME=mongodb-[username] -l ocp101=participant -l app=rocketchat-[username] | oc -n [-dev] create -f - 
+oc -n [-dev] process -f \
+https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
+-p MONGODB_ROOT_USER=rootuser \
+-p MONGODB_ROOT_PASSWORD=rootpassword \
+-p MONGODB_APP_USER=rocketchat \
+-p MONGODB_APP_PASSWORD=rocketchatpass \
+-p MONGODB_DATABASE=rocketchat \
+-p MONGODB_NAME=mongodb-[username] \
+-p MONGODB_APP_LABEL=rocketchat-[username]\
+-l ocp101=participant \
+-l app=rocketchat-[username] | oc -n [-dev] create -f - 
+
 ```
 
 Your output should be similar to: 
@@ -193,16 +230,48 @@ service/mongodb-mattspencer created
 
 ### Verify MongoDB is up
   - Find the mongodb deployment by going back to `Topology`
-  - Wait until MongoDB has been successfully deployed
-  MongoDB will generate a lot of logs. Since MongoDB comes with a readiness probe check for pod/container readiness, to know when it is up and ready.
+  - Wait until MongoDB has been successfully deployed.
+  - MongoDB will generate a lot of logs. Since MongoDB comes with a readiness probe check for pod/container readiness, to know when it is up and ready.
   
   You can safely ignore repeated messages as such:
   ```
-  2020-02-06T06:23:41.391+0000 [conn11041]  authenticate db: rocketchat { authenticate: 1, nonce: "xxx", user: "dbuser", key: "xxx" }
+  {"t":{"$date":"2026-01-30T19:25:47.067+00:00"},"s":"I", "c":"ACCESS", "id":10483900,"ctx":"conn63","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:51672","doc":{"application":{"name":"mongosh 2.6.0"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.6.0"},"platform":"Node.js v20.20.0, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"orchestrator":"kubernetes"}}}}}
   ```
 
+### Create MongoDB user for RocketChat
+The latest version of MongoDB (8.2) requires authentication and doesn't automatically create application users from environment variables like previous versions did. We need to authenticate as the root user and then create the application user.
+
+Note: We authenticate to the admin database with root credentials (rootuser/rootpassword from our secret), then use ```getSiblingDB("rocketchat")``` to create the RocketChat user with readWrite role.
+
+- Create the RocketChat database user (authenticating as root):
+
+```oc:cli
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
+"mongodb://rootuser:rootpassword@localhost:27017/admin" \
+--eval 'db.getSiblingDB("rocketchat").createUser({
+  user: "rocketchat",
+  pwd: "rocketchatpass",
+  roles: [{ role: "readWrite", db: "rocketchat" }]})'
+```
+
+- Verify the user was created:
+
+```oc:cli
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
+"mongodb://rootuser:rootpassword@localhost:27017/admin" \
+--eval 'db.getSiblingDB("rocketchat").getUsers()'
+```
+
+- Test that the application can authenticate: 
+```oc:cli
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
+"mongodb://rocketchat:rocketchatpass@localhost:27017/rocketchat" \
+--eval 'db.adminCommand("ping")'
+```
+You should see ```{ ok: 1 }``` from the ping command, which means the user was created successfully and can authenticate.
+
 ### Environment Variables
-By default your rocketchat deployment has no environment variables defined. So while RocketChat is trying to start and 
+By default your RocketChat deployment has no environment variables defined. So while RocketChat is trying to start and 
 a database has been deployed, the app does not know how or where to connect to MongoDB. We will need to add environment variables to the deployment.
 
 - In the Web Console, navigate to `Topology` and select your rocketchat deployment
@@ -210,16 +279,25 @@ a database has been deployed, the app does not know how or where to connect to M
 - Click the `Environment` tab
 <kbd>![](./images/03_deploy_env_02.png)</kbd>
 
-- Add the following environment variable with the connection string details configured for mongodb for key `MONGO_URL`:
+- Add the following environment variables: 
+
+**MONGO_URL**
 ```
-mongodb://dbuser:dbpass@mongodb-[username]:27017/rocketchat
+mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat
 ```
+
+**ROOT_URL**
+```
+http://rocketchat-[username]:3000
+```
+
 <kbd>![](./images/03_deploy_config_01.png)</kbd>
 
- 
-You can also use the CLI to apply the environment variable.
+You can also use the CLI to apply the environment variables:
 ```
-oc -n [-dev] set env deployment/rocketchat-[username] "MONGO_URL=mongodb://dbuser:dbpass@mongodb-[username]:27017/rocketchat"
+oc -n [-dev] set env deployment/rocketchat-[username] \
+  "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat" \
+  "ROOT_URL=http://rocketchat-[username]:3000"
 ```
 
 - Click Save 
@@ -235,18 +313,18 @@ If you don't have the `jq` tool installed, you can [download it here](https://st
 brew install jq`
 
   ```oc:cli
-  oc -n [-dev] rollout pause deployment/rocketchat-[username] 
+oc -n [-dev] rollout pause deployment/rocketchat-[username] 
 
-  oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_USER", "valueFrom":{"secretKeyRef":{"key":"database-user", "name":"mongodb-[username]"}}}]}]}}}}'
+oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_USER", "valueFrom":{"secretKeyRef":{"key":"app-username", "name":"mongodb-[username]"}}}]}]}}}}'
 
-  oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_PASS", "valueFrom":{"secretKeyRef":{"key":"database-password", "name":"mongodb-[username]"}}}]}]}}}}'
+oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_PASS", "valueFrom":{"secretKeyRef":{"key":"app-password", "name":"mongodb-[username]"}}}]}]}}}}'
 
-  oc -n [-dev] set env deployment/rocketchat-[username] 'MONGO_URL=mongodb://$(MONGO_USER):$(MONGO_PASS)@mongodb-[username]:27017/rocketchat'
+oc -n [-dev] set env deployment/rocketchat-[username] 'MONGO_URL=mongodb://$(MONGO_USER):$(MONGO_PASS)@mongodb-[username]:27017/rocketchat'
 
-  oc -n [-dev] rollout resume deployment/rocketchat-[username] 
+oc -n [-dev] rollout resume deployment/rocketchat-[username] 
 
-  # Check environment variables configuration
-  oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.spec.containers[].env'
+# Check environment variables configuration
+oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.spec.containers[].env'
   ```
 ## Network policies (self-paced training)
 
@@ -329,6 +407,35 @@ Alternatively, you can use the web console to create or manage routes.
 
 <kbd>![rocketchat](./images/03_deploy_route.png)</kbd>
 
+## Update ROOT_URL with the Actual Route
+
+Once you have created your route, update the ROOT_URL environment variable to match the actual external URL. 
+
+This is necessary because:
+
+- We initially set ROOT_URL to ```http://rocketchat-[username]:3000``` (internal service name).
+- Modern RocketChat needs ROOT_URL to match the actual external URL users will access.
+- This prevents routing errors.
+
+First, verify the route exists:
+```oc:cli
+oc -n [-dev] get route rocketchat-[username]
+```
+
+Get the actual route URL:
+```oc:cli
+ROUTE_URL=$(oc -n [-dev] get route rocketchat-[username] -o jsonpath='{.spec.host}')
+```
+
+Verify the ROUTE_URL variable is not empty:
+```oc:cli
+echo "Route URL is: ${ROUTE_URL}"
+```
+
+If the route URL looks correct, update the ROOT_URL environment variable:
+```oc:cli
+oc -n [-dev] set env deployment/rocketchat-[username] "ROOT_URL=https://${ROUTE_URL}"
+```
 
 ## Exploring Health Checks
 

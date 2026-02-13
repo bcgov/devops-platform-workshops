@@ -4,6 +4,8 @@
 
 [Video walkthrough](https://youtu.be/g6TyE3rIHeo)
 
+**Note: The written instructions below have been updated since the above video was recorded. If viewing the video, please make sure to follow the steps in the written instructions below.**
+
 In cases where configurations need to change frequently or common configurations should be shared across deployments or pods, it is not ideal to build said configurations into the container image or maintain multiple copies of the configuration. OpenShift supports `configMaps` which can be a standalone object that is easily mounted into pods. In cases where the configuration file or data is sensitive in nature, OpenShift supports `secrets` to handle this sensitive data. 
 
 ### ConfigMaps
@@ -15,11 +17,11 @@ Create a configMap with arbitrary data and mount it inside of your `rocketchat-[
 <kbd>![](./images/07_persistent_config_02.png)</kbd>
 
 - In the Web Console, go to `+Add` and select `YAML`
-- Paste in the following ConfigMap Code, replace [username] with your username and create this object 
+- Paste in the following ConfigMap code, replace [username] with your username and create this object 
 ```yaml
 apiVersion: v1
 data:
-  data.json: '{ "message": "This is a sample json data")'
+  data.json: '{ "message": "This is a sample json data" }'
   myfile.txt: Hello world
 kind: ConfigMap
 metadata:
@@ -32,21 +34,21 @@ metadata:
   1. You will first need to create a `volume`. This is located under `.spec.template.spec.volumes`
   ```yaml
   - name: rocketchat-[username]-volume
-       configMap:
-         name: rocketchat-[username]-configmap
+    configMap:
+      name: rocketchat-[username]-configmap
   ```
 
   2. Then create a `volumeMount` under `.spec.template.spec.containers.volumeMounts`
   ```yaml
   - name: rocketchat-[username]-volume
-              mountPath: /opt/configs
+    mountPath: /opt/configs
   ```
-> pro tip: if you are not sure what fields are available you can always use oc explain! `oc explain deployment.spec.template.spec.containers.volumeMounts`
+> Pro tip: if you are not sure what fields are available you can always use oc explain! `oc explain deployment.spec.template.spec.containers.volumeMounts`
 
 <kbd>![](./images/07_persistent_config_04.png)</kbd>
 <kbd>![](./images/07_persistent_config_03.png)</kbd>
 
-> it should like similar to this
+> It should look similar to this
 <kbd>![](./images/07_persistent_config_05.png)</kbd>
 
 
@@ -56,20 +58,18 @@ metadata:
 
 - You can use `exit` to leave the rsh (**r**emote**sh**ell) session 
 
-<kbd>![](./images/07_persistent_config_06.png)</kbd>
-
 #### Changing Config Map Content
 When a mounted `configMap` is referenced by a deployment, any changes to that `configMap` will be [automatically applied to the pods created by that deployment](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/#mounted-configmaps-are-updated-automatically). These changes can take up to 2 minutes to be applied.
 
-- Edit your `configMap` to add a new key-value pair that represents another file
+- Edit your `configMap` to add a new key-value pair that represents another file.
 
-Navigate to `Administrator View -> Workloads -> Configmaps` from the console and select your ConfigMap from the list
+Navigate to `Administrator View -> Workloads -> Configmaps` from the console and select your ConfigMap from the list.
 
 
 <kbd>![](./images/07_persistent_config_06.png)</kbd>
 <kbd>![](./images/07_persistent_config_07.png)</kbd>
 
-- Using the pod terminal in the Web Console or `oc rsh`, explore the path of the mounted configMap with `ls -l/opt/configs`
+- Using the pod terminal in the Web Console or `oc rsh`, explore the path of the mounted configMap with `ls -l /opt/configs`.
 
 <kbd>![](./images/07_persistent_config_08.png)</kbd>
 
@@ -119,7 +119,7 @@ metadata:
 - Once the pods have been redeployed the environment variable should be available for them to use. This is a very common pattern that applications can use to hold sensitive information like api keys in memory. You can verify that the environment variable exists by accessing the pod terminal or using `oc rsh` and outputting its value with a simple `echo $SECRET_API_KEY`
 
 
-- From the cli, review the secret with `oc -n [-dev] describe secret rocketchat-[username]-secret`
+- From the CLI, review the secret with `oc -n [-dev] describe secret rocketchat-[username]-secret`
 
 ```
 oc -n [-dev] describe secret rocketchat-[username]-secret
@@ -138,18 +138,21 @@ SECRET_API_KEY:  16 bytes
 - Export the secret to view the contents with `oc -n [-dev] get secret rocketchat-[username]-secret -o yaml`
 
 ```
-oc get -n [-dev] secret rocketchat-[username]-secret -o yaml
 apiVersion: v1
 data:
   SECRET_API_KEY: SSdtIFVMVFJBIFNFQ1JFVA==
 kind: Secret
 metadata:
-  creationTimestamp: null
+  creationTimestamp: "2026-02-03T23:01:23Z"
+  labels:
+    app: rocketchat-[username]
   name: rocketchat-[username]-secret
-  selfLink: /api/v1/namespaces/[namespace]/secrets/rocketchat-[username]-secret
+  namespace: [-dev]
+  resourceVersion: "18062152476"
+  uid: 836adebe-6c19-4c83-bd1d-8de238de9ccd
 type: Opaque
 ```
-> on Mac's and Linux machines that have the base64 binary, you can decode the value as a reference
+> On Mac and Linux machines that have the base64 binary, you can decode the value as a reference
 ```
 echo "SSdtIFVMVFJBIFNFQ1JFVA==" | base64 -d
 ```
@@ -165,7 +168,7 @@ From the web console
 With `oc edit`
 <kbd>![](./images/07_persistent_config_15.png)</kbd>
 
-> take note that you were adding a new value `id_rsa` under a field called `stringData`. Openshift will automatically, encode that as base64 and place it in the `data` field upon saving. You can confirm this with `oc -n [-dev] get secret rocketchat-[username]-secret -o yaml` after saving. 
+> Take note that you were adding a new value `id_rsa` under a field called `stringData`. Openshift will automatically, encode that as base64 and place it in the `data` field upon saving. You can confirm this with `oc -n [-dev] get secret rocketchat-[username]-secret -o yaml` after saving. 
 
  
 - Redeploy the application after secret changes

@@ -4,7 +4,7 @@
 
 [Video walkthrough](https://youtu.be/dJchvJAIVvs)
 
-So far in the lab exercises, we've primarily used the 'new-app' command to create many our OpenShift objects. However, all objects can be created and modified using YAML. Templates can be used to rapidly create multiple OpenShift objects from a single YAML file. This can be useful for testing your application in different environments (dev, test, prod) or for recreating similar applications. It is also helpful to use manifests and templates as a strategy for recovering from an incident. 
+So far in the lab exercises, we've primarily used the 'new-app' command to create many of our OpenShift objects. However, all objects can be created and modified using YAML. Templates can be used to rapidly create multiple OpenShift objects from a single YAML file. This can be useful for testing your application in different environments (dev, test, prod) or for recreating similar applications. It is also helpful to use manifests and templates as a strategy for recovering from an incident. 
 
 In this section, we'll create a template that includes all of the objects we've created for our rocketchat application and mongo database. 
 
@@ -50,7 +50,7 @@ In this section, we're going to parameterize our OpenShift objects using the bui
 In order to tell OpenShift that we're creating a YAML file that should be used as a template, we need to make some more changes to our `template.yaml` file. 
 
 1. On the first line, replace  `apiVersion: v1` with `apiVersion: template.openshift.io/v1`
-2. On the second line, add a new field: `kind: Template` **be sure capitilize the T in Template!!** and then rename the `items:` field to `objects:`
+2. On the second line, add a new field: `kind: Template` **be sure capitalize the T in Template!!** and then rename the `items:` field to `objects:`
 3. Remove `kind: List`
 
 Next, add a new field called 'parameters' to our yaml file, above  `objects`. Replace `[username]` with your username. 
@@ -64,13 +64,13 @@ parameters:
     required: true
     value: 'dev'
 ```
-Next, let's search through the file for the places where our username or namespace suffix `-dev` is being used and replace them with `${OWNER}` and `${APP_NAMESPACE}` respectively. This way, in the future we can just make changes to a parameter values and they'll be applied throughout our template. Be sure to check carefully, don't just find and replace all! Be sure to save your `template.yaml` file. 
+Next, let's search through the file for the places where our username or namespace suffix `-dev` is being used and replace them with `${OWNER}` and `${APP_NAMESPACE}` respectively. This way, in the future we can just make changes to parameter values and they'll be applied throughout our template. Be sure to check carefully, don't just find and replace all! Be sure to save your `template.yaml` file. 
 
 ## Test the template
 
 The `oc process` command is used to process a **template** into a **resource list**. The `-f` flag is used to indicate that we need to process a file.  
 
-The `oc create` or `oc apply` commands can be used to create new objects in OpenShift, again using the `-f` flag. We'll use oc apply, which will either modify existing objects or create new objects that don't exist. 
+The `oc create` or `oc apply` commands can be used to create new objects in OpenShift, again using the `-f` flag. We'll use `oc apply`, which will either modify existing objects or create new objects that don't exist. 
 
 Below, we can use the pipe character `|` to take the output from the `oc process` command and feed it into the `oc apply` command. We add `--dry run=server` to get a simulated output before actually running the command. This way, we can check that our template is working correctly: 
 
@@ -91,6 +91,16 @@ secret/mongodb-mattspencer configured (dry run)
 secret/rocketchat-mattspencer-secret configured (dry run)
 ```
 
+**Note:** If your output contains any warnings, such as the one shown below, that is OK. These warnings appear because the objects in this lab were originally created using commands like `oc new-app`, `oc create`, `oc import-image`, and `oc tag`. These commands create the resources, but they do not store the “last applied configuration” annotation that `oc apply` relies on. When you run `oc apply` for the first time, OpenShift notices the annotation is missing, shows a warning, and then automatically adds the annotation for you. Future applies will not show this warning.
+
+```
+Warning: resource services/mongodb-[username] is missing the
+kubectl.kubernetes.io/last-applied-configuration annotation which
+is required by oc apply. oc apply should only be used on resources
+created declaratively by either oc create --save-config or oc apply.
+The missing annotation will be patched automatically.
+```
+
 If the dry run looks to be producing a successful output, let's move on to test our template. 
 
 ## Delete objects, recreate them with the template
@@ -99,7 +109,7 @@ Currently, our template would not be very helpful as it applies objects that alr
 
 Let's create a situation where all of the objects that we'd previously created in the `-dev` namespace have been deleted. 
 
-Before deleting objects, it's also good practice to do a dry run to make sure you're only deleing the objects you intend to: 
+Before deleting objects, it's also good practice to do a dry run to make sure you're only deleting the objects you intend to: 
 
 `oc -n [-dev] delete deployment,route,service,configmap,pvc,secrets -l app=rocketchat-[username] --dry-run=server`
 
@@ -107,7 +117,7 @@ If you can see that you'll only be deleting your own objects, then proceed witho
 
 `oc -n [-dev] delete deployment,route,service,configmap,pvc,secrets -l app=rocketchat-[username]`
 
-Now that we've deleted all of our objects that we created in the [-dev] namespace, let's use our template to recreate them. 
+Now that we've deleted all of the objects we created in the [-dev] namespace, let's use our template to recreate them. 
 
 `oc -n [-dev] process -f template.yaml | oc -n [-dev] create -f - `
 
