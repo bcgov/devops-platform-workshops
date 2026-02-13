@@ -5,7 +5,7 @@ Many templates include reasonable CPU and Memory resource configurations. Howeve
 
 The platform default resource configuration is maintained by the Platform Services team. It is based on a measurement of average CPU and memory utilization, and it serves as a great starting point for your pod's horsepower.
 
-<kbd>[![Video Walkthrough Thumbnail](././images/05_resource_requests_and_limits_thumb.png)](https://youtu.be/dhLnaUGgnQY)</kbd>
+<!-- <kbd>[![Video Walkthrough Thumbnail](././images/05_resource_requests_and_limits_thumb.png)](https://youtu.be/dhLnaUGgnQY)</kbd> -->
 
 [Video walkthrough](https://youtu.be/dhLnaUGgnQY)
 
@@ -14,7 +14,9 @@ Since the Rocket.Chat application was imported and not deployed from a template,
 
 - Navigate to your rocketchat deployment and select the YAML tab
 
-- Take a look a the resources spec under `.spec.template.spec.containers.resources`. These values should reflect the resource requests (cpu=500m,memory=512Mi) and limits (cpu=1000m,memory=1024Mi) we set earlier. If we had not set any values for requests or limits earlier, we would see `{}` in the resources spec to indicate the deployment was using the default resource allocation for the platform.
+- Take a look at the resources spec under `.spec.template.spec.containers.resources`. These values should reflect the resource requests (cpu=500m,memory=512Mi) and limits (cpu=1000m,memory=1024Mi) we set earlier. If we had not set any values for requests or limits earlier, we would see `{}` in the resources spec to indicate the deployment was using the default resource allocation for the platform.
+
+<kbd>![rocketchat YAML Showing Resources](./images/05_resource_management_001.png)</kbd>
 
 - To view the limit ranges that are in place, run the command:
 `oc get LimitRange`
@@ -27,33 +29,33 @@ Since the Rocket.Chat application was imported and not deployed from a template,
 <kbd>![rocketchat Deployment showing Pods tab with a single pod running](./images/05_resource_management_01.png)</kbd>
 <kbd>![rocketchat Pod Details showing Metrics tab with Memory and CPU usage graphs](./images/05_resource_management_02.png)</kbd>
 
-- Reduce the CPU (request and limit) to `65 millicores` and Memory (request and limits) to `100 Megabytes` and monitor the startup time of the pod
+- Reduce the CPU request to `100 millicores` and the CPU limit to  `200 millicores` 
   ```oc:cli
-  oc -n [-dev] set resources deployment/rocketchat-[username] --requests=cpu="65m",memory="100Mi" --limits=cpu="65m",memory="100Mi"
+  oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=100m,memory=512Mi' --limits='cpu=200m,memory=1024Mi'
   ```
-- Monitor the startup events of your pod and measure the time it takes to start. We'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finihsed shutting down after the last step. This will give us a consistent starting point to time from.   
+- We'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finished shutting down after the last step. This will give us a consistent starting point to time from. After your pod is running, measure the time it takes to rollout.  
+
   ```oc:cli
-  # Restart deployment; and observe
-  oc -n [-dev] rollout restart deployment/rocketchat-[username]
 
-  # Wait for deployment to finish
-  time oc -n [-dev] rollout restart deployment/rocketchat-[username]
+  # Restart the deployment and observe how long it takes to finish (this should take around 2-3 minutes)
+
+  time (oc -n [-dev] rollout restart deployment/rocketchat-[username] && oc -n [-dev] rollout status deployment/rocketchat-[username])
   ```
 
-You may notice your pod starts to crash loop. This is most likely because the `liveness` probe you added from an earlier lab is timing out. This is an important consideration when deciding to tune pod resources. It is always a balance.
+If you experiment with the resource values, you may notice your pod starts to crash loop. This is most likely because the `liveness` probe you added from an earlier lab is timing out. This is an important consideration when deciding to tune pod resources. It is always a balance.
 
 - Remove the limits previously imposed, and set your pod to `1 core` (or `1000 millicores`) for the request and limit
+
   ```oc:cli
   oc -n [-dev] set resources deployment/rocketchat-[username] --requests=cpu="1000m",memory="512Mi" --limits=cpu="1000m",memory="1024Mi"
   ```
 
-- Monitor the startup events of your pod and measure the time it takes to start. Again, we'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finished shutting down after the last step. This will give us a consistent starting point to compare to our previous timing. 
-  ```oc:cli
-  # Start new deployment; and
-  oc -n [-dev] rollout restart deployment/rocketchat-[username]
+- Monitor the startup events of your pod and measure the time it takes to rollout. Again, we'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finished shutting down after the last step. This will give us a consistent starting point to compare to our previous timing. 
 
-  # Wait for deployment to finish
-  time oc -n [-dev] rollout restart deployment/rocketchat-[username]
+  ```oc:cli
+  # Restart the deployment and observe how long it takes to finish 
+
+  time (oc -n [-dev] rollout restart deployment/rocketchat-[username] && oc -n [-dev] rollout status deployment/rocketchat-[username])
   ```
 
 ## Sharing Resources
@@ -63,7 +65,13 @@ If there are many team members (and therefore workloads) working together in the
 - Reset resources utilization to something more appropriate
 
 ```oc:cli
-oc -n [-dev] set resources deployment/rocketchat-[username] --requests=cpu="150m",memory="256Mi" --limits=cpu="200m",memory="400Mi"
+oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=250m,memory=512Mi' --limits='cpu=500m,memory=1024Mi'
+```
+
+- Restart the rollout and wait for that to finish to ensure all our pods are running with the new resources:
+
+```
+oc -n [-dev] rollout restart deployment/rocketchat-[username]
 ```
 
 ## Troubleshooting OOM
