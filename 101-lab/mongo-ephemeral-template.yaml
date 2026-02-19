@@ -79,7 +79,7 @@ objects:
                   command:
                     - mongosh
                     - --eval
-                    - db.adminCommand('ping')
+                    - "db.adminCommand('ping')"
                 initialDelaySeconds: 5
                 timeoutSeconds: 5
                 periodSeconds: 10
@@ -94,6 +94,7 @@ objects:
           volumes:
             - name: mongodb-data
               emptyDir: {}
+
 parameters:
   - name: MONGODB_ROOT_USER
     displayName: MongoDB Root User
@@ -106,27 +107,27 @@ parameters:
     value: rootpassword
     required: true
   - name: MONGODB_APP_USER
-    displayName: MongoDB Rocket.Chat User
-    description: Username for the Rocket.Chat application user (created manually).
-    value: rocketchat
+    displayName: MongoDB Pacman User
+    description: Username for the Pacman application user (created manually after startup).
+    value: pacman
     required: true
   - name: MONGODB_APP_PASSWORD
-    displayName: MongoDB Rocket.Chat User Password
-    description: Password for the Rocket.Chat application user (created manually).
-    value: rocketchatpass
+    displayName: MongoDB Pacman User Password
+    description: Password for the Pacman application user (created manually after startup).
+    value: pacmanpass
     required: true
   - name: MONGODB_DATABASE
     displayName: MongoDB Database Name
-    description: Name of the MongoDB database accessed by Rocket.Chat.
-    value: rocketchat
+    description: Name of the MongoDB database accessed by Pacman.
+    value: pacman
     required: true
   - name: MONGODB_NAME
     displayName: MongoDB Service Name
-    description: The name for the OpenShift Service/Secret/Deployment for this instance.
+    description: The name for the OpenShift Service, Secret, and Deployment for this instance.
     value: mongodb-[username]
     required: true
   - name: MONGODB_APP_LABEL
     displayName: Application Label
     description: The label to use for the app.
-    value: rocketchat-[username]
+    value: mongodb-[username]
     required: true
