@@ -1,20 +1,20 @@
 # Builds
-In this lab, you will import the Rocket.Chat Docker image for use in your OpenShift environment. Although this section is called 'builds', we've temporarily removed image building from this section for now. 
+In this lab, you will build the Pac-Man application image for use in your OpenShift environment. We will build Pac-Man from source using Source-to-Image (S2I).
 
 <!-- <kbd>[![Video Walkthrough Thumbnail](././images/02_builds_thumb.png)](https://youtu.be/j7a74_I6MYw)<kbd>
 
 [Video walkthrough](https://youtu.be/j7a74_I6MYw) -->
 
 ## The Tools Project
-The tools project is what will hold various support tools for the application. In this case, we'll import the Rocket.Chat image into this project.
+The tools project is what will hold various support tools for the application. In this case, we'll build the Pac-Man image in this project and then tag it for use in dev. Building in tools helps preserve CPU/memory quotas in your dev namespace for deployment workloads.
 
-## Importing the Rocket.Chat Image
-The Rocket.Chat Docker image is built from source code that is available on the official Rocket.Chat Github [public repository](https://github.com/RocketChat/Rocket.Chat).
+## Importing the Pac-Man Image
+The Pac-Man source code is available on a Github [public repository](https://github.com/RHODA-lab/pacman).
 
-Leveraging the commandline, we will use the `oc import-image` command to import the pre-built Rocket.Chat Docker image from [Docker Hub](https://hub.docker.com/_/rocket.chat). 
+Leveraging the commandline, you can use the `oc new-build` command to create all of the necessary OpenShift build components. 
 
 Ensure that all team members have edit rights into the project. Once complete, 
-each member can create their own Rocket.Chat docker build. 
+each member can create their own Pac-Man build. 
 
 **Note:** In this lab, we'll use square brackets to indicate when you need to replace part of a command and omit the square brackets. If you see `[-tools]` in a command, replace that part of the command with the name of your tools namespace. When `[-dev]` is indicated, replace this part of the command with your dev namespace's name. In the example below, `oc project [-tools]` would become `oc project d8f105-tools` or the name of the tools namespace you are using for this training. We also use [username] as a unique identifier throughout the lab, and this can be any unique username so long as you use it consistently throughout the lab. Note that this username cannot contain the following characters: `. ~ @ | ></{}[];:'"`
 
@@ -24,53 +24,59 @@ each member can create their own Rocket.Chat docker build.
 oc project [-tools]
 ```
 
-- With the `oc` cli, import the Rocket.Chat image:
+- With the `oc` cli, create a BuildConfig for Pac-Man:
 
 ```oc:cli
-oc -n [-tools] import-image rocketchat-[username]:8.0.1 \
-    --from=docker.io/rocketchat/rocket.chat:8.0.1 \
-    --confirm \
-    --reference-policy=local
+oc -n [-tools] new-build https://github.com/RHODA-lab/pacman \
+    --name=pacman-[username] \
+    --to=pacman-[username]:8.0.1
 ```
-- It may take a few minutes to import the Rocket.Chat image.
 
 - The output of the previous command should be similar to the following: 
 
 ```
-imagestream.image.openshift.io/rocketchat-[username] imported
+--> Found image 5cce4e1 (2 days old) in image stream "openshift/nodejs" under tag "20-ubi9" for "nodejs"
 
-Name:			    rocketchat-[username]
-Namespace:		    [-tools]
-Created:		    Less than a second ago
-Labels:			    <none>
-Annotations:		openshift.io/image.dockerRepositoryCheck=2026-01-22T20:35:25Z
-Image Repository:	image-registry.apps.silver.devops.gov.bc.ca/[-tools]/rocketchat-[username]
-Image Lookup:		local=false
-Unique Images:		1
-Tags:			    1
+    Node.js 20 
+    ---------- 
+    Node.js 20 available as container is a base platform for building and running various Node.js 20 applications and frameworks. Node.js is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.
 
-8.0.1
-  tagged from docker.io/rocketchat/rocket.chat:8.0.1
-    prefer registry pullthrough when referencing this tag
+    Tags: builder, nodejs, nodejs20
 
-...
-...
-...
+    * The source repository appears to match: nodejs
+    * A source build using source code from https://github.com/RHODA-lab/pacman will be created
+      * The resulting image will be pushed to image stream tag "pacman-[username]:8.0.1"
+      * Use 'oc start-build' to trigger a new build
 
-Volumes:	        /app/uploads
+--> Creating resources with label build=pacman-[username] ...
+    imagestream.image.openshift.io "pacman-[username]" created
+    buildconfig.build.openshift.io "pacman-[username]" created
+--> Success
 ```
 
-- You can verify the image was successfully imported:
+- Follow the build logs. The build may take a few minutes to complete:
 
 ```oc:cli
-# Check the imagestream exists
-oc -n [-tools] get imagestream rocketchat-[username]
-
-# Get detailed information
-oc -n [-tools] describe imagestream rocketchat-[username]
-
-# Verify the 8.0.1 tag exists
-oc -n [-tools] get imagestreamtag rocketchat-[username]:8.0.1
+oc -n [-tools] logs -f bc/pacman-[username]
 ```
+
+You can now explore the Web Console to watch the build status from `Builds`. Note that you will see multiple builds from each team member. 
+
+<kbd>![](./images/02_builds_image_01.png)</kbd>
+
+- Or this can be done on the CLI
+
+```oc:cli
+oc -n [-tools] get bc
+oc -n [-tools] status
+```
+
+- The build status can be monitored from the Web Console by selecting the `Logs` link
+
+<kbd>![](./images/02_builds_image_02.png)</kbd>
+
+<kbd>![](./images/02_builds_image_03.png)</kbd>
+
+- Note: The "an error occured while retrieving the requested logs" message can be ignored.
 
 Next page - [Deployment](./03_deployment.md)

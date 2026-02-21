@@ -1,13 +1,12 @@
 # Deployment
-Since the build and deploy stages are separate, and we have imported the image from the previous exercise, we can now deploy this 
-image into the dev project. 
+Since the build and deploy stages are separate, and we have a built image from the previous exercise, we can now deploy this image into the dev project.
 
 <!-- <kbd>[![Video Walkthrough Thumbnail](././images/03_deployment_thumb.png)](https://youtu.be/MZHhj0yQn0M)</kbd> -->
 
 <!-- [Video walkthrough](https://youtu.be/MZHhj0yQn0M) -->
 
 ## The Dev Project
-The dev project is where applications are deployed. In this case, we will deploy RocketChat and MongoDB to the dev namespace.
+The dev project is where applications are deployed. In this case, we will deploy Pac-Man and MongoDB (the database) to the dev namespace.
 
 ### Create an ImageStreamTag
 
@@ -18,49 +17,57 @@ The dev project is where applications are deployed. In this case, we will deploy
 
 ```oc:cli
 # retagging the image stream from 8.0.1 to dev
-oc -n [-tools] tag rocketchat-[username]:8.0.1 rocketchat-[username]:dev
+oc -n [-tools] tag pacman-[username]:8.0.1 pacman-[username]:dev
 
 # Verify that the `dev` tag has been created
-oc -n [-tools] get imagestreamtag/rocketchat-[username]:dev
+oc -n [-tools] get imagestreamtag/pacman-[username]:dev
 ```
 
 ## Create an Image-Based Deployment
 
-__Objective__: Deploy RocketChat from the imported image.
+__Objective__: Deploy Pac-Man from the imported image.
 
 - From the CLI:
 
 ```oc:cli
-oc -n [-dev] new-app [-tools]/rocketchat-[username]:dev --name=rocketchat-[username]
+oc -n [-dev] new-app [-tools]/pacman-[username]:dev --name=pacman-[username]
 ```
 
 - The output should be as follows:
 
 ```
---> Found image a7ffcd3 (10 days old) in image stream "[-tools]/rocketchat-[username]" under tag "dev" for "[-tools]/rocketchat-[username]:dev"
+--> Found image fc5ad41 (2 hours old) in image stream "d8f105-tools/pacman-[username]" under tag "dev" for "d8f105-tools/pacman-[username]:dev"
+
+    Node.js 20 
+    ---------- 
+    Node.js 20 available as container is a base platform for building and running various Node.js 20 applications and frameworks. Node.js is a platform built on Chrome's JavaScript runtime for easily building fast, scalable network applications. Node.js uses an event-driven, non-blocking I/O model that makes it lightweight and efficient, perfect for data-intensive real-time applications that run across distributed devices.
+
+    Tags: builder, nodejs, nodejs20
 
 
 --> Creating resources ...
-    deployment.apps "rocketchat-[username]" created
-    service "rocketchat-[username]" created
+    deployment.apps "pacman-[username]" created
+    service "pacman-[username]" created
 --> Success
     Application is not exposed. You can expose services to the outside world by executing one or more of the commands below:
-     'oc expose svc/rocketchat-[username]' 
+     'oc expose service/pacman-[username]' 
     Run 'oc status' to view your app.
 ```
 
 ## Speed-up application start up
-__Objective__: Get RocketChat to start up faster by tweaking `Resource Requests and Limits`.
+__Objective__: Get Pac-Man to start up faster by tweaking `Resource Requests and Limits`.
 
 > Resource adjustment is also something that will be covered in a later exercise.
 
 Increasing the resources (especially CPU) right now will help with faster pod start up.
 
 - From the terminal, run the follow oc command:
+
 ```oc:cli
-oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=500m,memory=512Mi' --limits='cpu=1000m,memory=1024Mi'
+oc -n [-dev] set resources deployment/pacman-[username] --requests='cpu=500m,memory=512Mi' --limits='cpu=1000m,memory=1024Mi'
 ```
-- It may take a few minutes before the pod displays an error.
+
+- The Pac-Man pod will be displaying an error.
 
 ## __Objective 1__: Identify ImagePull Problem
 As the Web UI indicated, the `dev` project service accounts do not have the appropriate access to pull the image from the `tools`
@@ -76,7 +83,6 @@ Note that since only admin users have access to manage rolebindings in a namespa
 
 <kbd>![](./images/03_deploy_image_05.png)</kbd>
 
-
 Now that we have identified the issue, next step is to create the rolebinding to allow image pulling from tools namespace.
 
 > Note that only Admin users have access to manage rolebindings in a namespace, the following action will need to be done by DevOps in the team. Reach out to the team if you don't have access to do so!
@@ -89,7 +95,7 @@ oc -n [-tools] policy add-role-to-user system:image-puller system:serviceaccount
 **Remember:  if somebody else in the lab has completed this step already and you're not experiencing the ImagePull error, move on to the next step _Objective 2_.**
 
 With the appropriate access in place, you can try bringing up a new pod to see if the issue has been resolved. With Deployments this can be done by
-`oc -n [-dev] scale deployment/rocketchat-[username] --replicas=0` waiting for the pods to scale down to 0 and then to scale back up with `oc scale -n [-dev] deployment/rocketchat-[username] --replicas=1`
+`oc -n [-dev] scale deployment/pacman-[username] --replicas=0` waiting for the pods to scale down to 0 and then to scale back up with `oc scale -n [-dev] deployment/pacman-[username] --replicas=1`
 
 - Validate that the image is able to be pulled
 
@@ -106,18 +112,18 @@ When you ran `oc new-app` a new imagestream was created in your `dev` namespace 
 1. Re-tag your tools image tag into this new imagestream
 
 ```oc:cli
-oc -n [-dev] tag [-tools]/rocketchat-[username]:dev rocketchat-[username]:dev
+oc -n [-dev] tag [-tools]/pacman-[username]:dev pacman-[username]:dev
 ```
 
-2. Modify your Rocket Chat deployment to point to the new image stream.
+2. Modify your Pac-Man deployment to point to the new image stream.
 
 ```oc:cli
-oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=rocketchat-[username]:dev
+oc -n [-dev] set image deployment/pacman-[username] pacman-[username]=pacman-[username]:dev
 ```
 
 ## __Objective 3__: Identify CrashLoopBackOff problem
 
-After waiting a few minutes, notice that the deployment is still failing. 
+Notice that the deployment is still failing.
 
 <kbd>![](./images/03_deploy_image_08a.png)</kbd>
 
@@ -133,23 +139,36 @@ Note: you can ignore the message above the logs - "an error occured while retrie
 
 ```oc:cli
 # Show your pod's log
-oc -n [-dev] logs -f $(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o name --no-headers | head -1)
+oc -n [-dev] logs -f $(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=pacman-[username] -o name --no-headers | head -1)
 ```
 Note: you can follow the logs with `-f` argument
 
 In OpenShift 4.10, it is now possible to launch a debug terminal from within the web console when a pod is in the `CrashLoopBackOff` state. The debug terminal can be launched from the `logs` window for a pod. This can be useful to gather additional information when troubleshooting.  
 
-Taking a look at the logs it is clear that the RocketChat pod is failing because it is not able to connect to a __mongo database__.
+Taking a look at the logs it is clear that the Pac-Man pod is failing because it is not able to connect to a __MongoDB service binding__.
 
-In the steps that follow, we will deploy the database and give our RocketChat deployment the credentials needed to access the database. This will resolve the CrashLoopBackOff problem.
+```
+Error: No Binding Found
+    at Object.getBinding (/opt/app-root/src/node_modules/kube-service-bindings/index.js:73:11)
+    at Object.<anonymous> (/opt/app-root/src/lib/database.js:24:36)
+    ...
+/opt/app-root/src/lib/database.js:31
+const url = bindings.url + '/pacman?retryWrites=true&w=majority';
+                     ^
+
+TypeError: Cannot read properties of undefined (reading 'url')
+```
+
+In the steps that follow, we will deploy the database and configure a service binding to give our Pac-Man deployment the credentials needed to access the database. This will resolve the CrashLoopBackOff problem.
 
 ## Deploying the Database
 
 ### Use a template to create the database, service and secret
 
-In order to use deploy these objects, we are a going to use a template stored in the OpenShift 101 github repository. Managing OpenShift objects from a GitHub repository is a common strategy to ensure consistency, version control and history. In future you may use methods such as [Tekton Pipelines](https://github.com/bcgov/pipeline-templates/tree/main/tekton#tekton-pipelines), [github actions](https://github.blog/2022-02-02-build-ci-cd-pipeline-github-actions-four-steps/) or [HELM](https://helm.sh/) charts to allow changes to files in a repository to automatically make changes to the objects running in your OpenShift project. 
+In order to use deploy these objects, we are a going to use a template stored in the OpenShift 101 GitHub repository. Managing OpenShift objects from a GitHub repository is a common strategy to ensure consistency, version control and history. In future you may use methods such as [Tekton Pipelines](https://github.com/bcgov/pipeline-templates/tree/main/tekton#tekton-pipelines), [github actions](https://github.blog/2022-02-02-build-ci-cd-pipeline-github-actions-four-steps/) or [HELM](https://helm.sh/) charts to allow changes to files in a repository to automatically make changes to the objects running in your OpenShift project. 
 
-The template we're going to use is located at: https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml
+The template we're going to use is located at: 
+https://raw.githubusercontent.com/bcgov/devops-platform-workshops/101_pacman_instructions/101-lab/mongo-ephemeral-template.yaml
 
 If you browse this file, you'll notice it contains the YAML that defines our deployment, service and secret. We can apply parameters to this template to adjust particular values. 
 
@@ -160,7 +179,7 @@ If you browse this file, you'll notice it contains the YAML that defines our dep
   - List available parameters of the template:
 
 ```oc:cli
-oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml --parameters=true
+oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-workshops/101_pacman_instructions/101-lab/mongo-ephemeral-template.yaml --parameters=true
 ```
 
   - You should see output similar to:
@@ -168,32 +187,32 @@ oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-
   ```
 NAME                     DESCRIPTION                                                      VALUE
 MONGODB_ROOT_USER        Username for the MongoDB root user created at initialization.    rootuser
-MONGODB_ROOT_PASSWORD    Password for the MongoDB root user created at initialization     rootpassword
-MONGODB_APP_USER         Username for the Rocket.Chat application user                    rocketchat
-MONGODB_APP_PASSWORD     Password for the Rocket.Chat application user                    rocketchatpass
-MONGODB_DATABASE         Name of the MongoDB database accessed                            rocketchat
-MONGODB_NAME             The name of the OpenShift Service exposed for this instance      mongodb-[username]
-MONGODB_APP_LABEL        The label to use for the app                                     rocketchat-[username]
+MONGODB_ROOT_PASSWORD    Password for the MongoDB root user created at initialization.    rootpassword
+MONGODB_APP_USER         Username for the Pacman application user (created manually).     pacman
+MONGODB_APP_PASSWORD     Password for the Pacman application user (created manually).     pacmanpass
+MONGODB_DATABASE         Name of the MongoDB database accessed by Pacman.                 pacman
+MONGODB_NAME             The name for the OpenShift Service, Secret, and Deployment.      mongodb-[username]
+MONGODB_APP_LABEL        The label to use for the app.                                    mongodb-[username]
   ```
 
-  - Note: if you are getting an error, try turning off VPN.
+  - Note: if you are getting an error and your VPN is on, try turning it off and running the command again.
 
-  - Create MongoDB deployment, service and secret using this template. We'll need to specify some parameters, and add our username to make this object unique. We'll do a dry run first to see if the command will do what we expect. 
+  - Create MongoDB deployment, service and secret using this template. We'll need to specify some parameters and add our username to make this object unique. We'll do a dry run first to see if the command will do what we expect. 
 
   - From the CLI, `-l` flag will add a label `ocp101=participant` to your deployment.
 
 ```oc:cli
 oc -n [-dev] process -f \
-https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
--p MONGODB_ROOT_USER=rootuser \
--p MONGODB_ROOT_PASSWORD=rootpassword \
--p MONGODB_APP_USER=rocketchat \
--p MONGODB_APP_PASSWORD=rocketchatpass \
--p MONGODB_DATABASE=rocketchat \
--p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username]\
--l ocp101=participant \
--l app=rocketchat-[username] | oc -n [-dev] create -f - --dry-run=client
+    https://raw.githubusercontent.com/bcgov/devops-platform-workshops/101_pacman_instructions/101-lab/mongo-ephemeral-template.yaml \
+    -p MONGODB_ROOT_USER=rootuser \
+    -p MONGODB_ROOT_PASSWORD=rootpassword \
+    -p MONGODB_APP_USER=pacman \
+    -p MONGODB_APP_PASSWORD=pacmanpass \
+    -p MONGODB_DATABASE=pacman \
+    -p MONGODB_NAME=mongodb-[username] \
+    -p MONGODB_APP_LABEL=mongodb-[username] \
+    -l ocp101=participant \
+    -l app=mongodb-[username] | oc -n [-dev] create -f - --dry-run=client
 ```
 
 > When you ran the cli command you should get an output like this:
@@ -208,24 +227,23 @@ Now, let's run the command for real by removing the dry run.
 
 ```oc:cli
 oc -n [-dev] process -f \
-https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
--p MONGODB_ROOT_USER=rootuser \
--p MONGODB_ROOT_PASSWORD=rootpassword \
--p MONGODB_APP_USER=rocketchat \
--p MONGODB_APP_PASSWORD=rocketchatpass \
--p MONGODB_DATABASE=rocketchat \
--p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username]\
--l ocp101=participant \
--l app=rocketchat-[username] | oc -n [-dev] create -f - 
-
+    https://raw.githubusercontent.com/bcgov/devops-platform-workshops/101_pacman_instructions/101-lab/mongo-ephemeral-template.yaml \
+    -p MONGODB_ROOT_USER=rootuser \
+    -p MONGODB_ROOT_PASSWORD=rootpassword \
+    -p MONGODB_APP_USER=pacman \
+    -p MONGODB_APP_PASSWORD=pacmanpass \
+    -p MONGODB_DATABASE=pacman \
+    -p MONGODB_NAME=mongodb-[username] \
+    -p MONGODB_APP_LABEL=mongodb-[username] \
+    -l ocp101=participant \
+    -l app=mongodb-[username] | oc -n [-dev] create -f - 
 ```
 
 Your output should be similar to: 
 ```
-deployment.apps/mongodb-mattspencer created
-secret/mongodb-mattspencer created
-service/mongodb-mattspencer created
+secret/mongodb-[username] created
+service/mongodb-[username] created
+deployment.apps/mongodb-[username] created
 ```
 
 ### Verify MongoDB is up
@@ -238,94 +256,146 @@ service/mongodb-mattspencer created
   {"t":{"$date":"2026-01-30T19:25:47.067+00:00"},"s":"I", "c":"ACCESS", "id":10483900,"ctx":"conn63","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:51672","doc":{"application":{"name":"mongosh 2.6.0"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.6.0"},"platform":"Node.js v20.20.0, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"orchestrator":"kubernetes"}}}}}
   ```
 
-### Create MongoDB user for RocketChat
+### Create MongoDB user for Pac-Man
 The latest version of MongoDB (8.2) requires authentication and doesn't automatically create application users from environment variables like previous versions did. We need to authenticate as the root user and then create the application user.
 
-Note: We authenticate to the admin database with root credentials (rootuser/rootpassword from our secret), then use ```getSiblingDB("rocketchat")``` to create the RocketChat user with readWrite role.
+Note: We authenticate to the admin database with root credentials (rootuser/rootpassword from our secret), then use ```getSiblingDB("pacman")``` to create the Pac-Man user with `readWrite` role.
 
-- Create the RocketChat database user (authenticating as root):
+- Create the Pac-Man database user (authenticating as root):
 
 ```oc:cli
 oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db.getSiblingDB("rocketchat").createUser({
-  user: "rocketchat",
-  pwd: "rocketchatpass",
-  roles: [{ role: "readWrite", db: "rocketchat" }]})'
+    'mongodb://rootuser:rootpassword@localhost:27017/admin' \
+    --eval 'db.getSiblingDB("pacman").createUser({
+        user: "pacman",
+        pwd: "pacmanpass",
+        roles: [{ role: "readWrite", db: "pacman" }]})'
 ```
 
 - Verify the user was created:
 
 ```oc:cli
 oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db.getSiblingDB("rocketchat").getUsers()'
+    'mongodb://rootuser:rootpassword@localhost:27017/admin' \
+    --eval 'db.getSiblingDB("pacman").getUsers()'
 ```
 
 - Test that the application can authenticate: 
 ```oc:cli
 oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rocketchat:rocketchatpass@localhost:27017/rocketchat" \
---eval 'db.adminCommand("ping")'
+    'mongodb://pacman:pacmanpass@localhost:27017/pacman' \
+    --eval 'db.adminCommand("ping")'
 ```
 You should see ```{ ok: 1 }``` from the ping command, which means the user was created successfully and can authenticate.
 
-### Environment Variables
-By default your RocketChat deployment has no environment variables defined. So while RocketChat is trying to start and 
-a database has been deployed, the app does not know how or where to connect to MongoDB. We will need to add environment variables to the deployment.
+### Configure Service Binding for Pac-Man
+This is the modern, cloud-native way to provide database credentials to applications in
+Kubernetes/OpenShift. The library looks for a root directory (specified by `SERVICE_BINDING_ROOT`),
+scans for subdirectories (one per service, e.g., /`bindings/mongodb`), and reads files from each
+subdirectory - the filename is the key and the file contents are the value. Mounting a Kubernetes
+Secret as a volume automatically creates this file-per-key structure.
 
-- In the Web Console, navigate to `Topology` and select your rocketchat deployment
-- Click on the name of your rocketchat-[username] deployment in the right-hand menu pane
-- Click the `Environment` tab
-<kbd>![](./images/03_deploy_env_02.png)</kbd>
+#### Step 1: Create the Service Binding Secret
+The service binding secret contains all MongoDB connection details in a structured format the
+`kube-service-bindings` library expects. Note that Pacman's database code specifically looks for a
+`url` key to construct its connection string, so both `uri` and `url` must be included:
 
-- Add the following environment variables: 
-
-**MONGO_URL**
-```
-mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat
-```
-
-**ROOT_URL**
-```
-http://rocketchat-[username]:3000
-```
-
-<kbd>![](./images/03_deploy_config_01.png)</kbd>
-
-You can also use the CLI to apply the environment variables:
-```
-oc -n [-dev] set env deployment/rocketchat-[username] \
-  "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat" \
-  "ROOT_URL=http://rocketchat-[username]:3000"
+```oc:cli
+oc -n [-dev] create secret generic pacman-[username]-mongodb-binding \
+    --from-literal=type=mongodb \
+    --from-literal=provider=manual \
+    --from-literal=host=mongodb-[username] \
+    --from-literal=port=27017 \
+    --from-literal=database=pacman \
+    --from-literal=username=pacman \
+    --from-literal=password=pacmanpass \
+    --from-literal=uri='mongodb://pacman:pacmanpass@mongodb-[username]:27017/pacman' \
+    --from-literal=url='mongodb://pacman:pacmanpass@mongodb-[username]:27017/pacman'
 ```
 
-- Click Save 
-- Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time)
+#### Step 2: Mount the Service Binding Secret
+We need to mount the secret at `/bindings/mongodb` so the `kube-service-bindings` library can
+discover it. We also mount an `emptyDir` at `/bindings` to ensure the root directory is present at
+startup before any secrets are mounted inside it.
 
+- Create the /bindings root directory:
 
-#### STRETCH: Sensitive Configurations
-> this step is a stretch exercise, completing this section is not a requirement for the next section of the lab
+```oc:cli
+oc -n [-dev] set volume deployment/pacman-[username] \
+    --add --overwrite \
+    --name=bindings-root \
+    --type=emptyDir \
+    --mount-path=/bindings
+```
 
-If you are feeling at odds with things like __dbpass__ being out in the open as an environment variable. That is a good thing! For demonstration purposes you are creating a `Single Value Env`. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
+You can ignore the warning:
 
-If you don't have the `jq` tool installed, you can [download it here](https://stedolan.github.io/jq/download/) OR if you have [homebrew](https://brew.sh/) installed you can use it to install `jq` by running this command: `
-brew install jq`
+```
+warning: volume "bindings-root" did not previously exist and was not overwritten. A new volume with this name has been created instead.deployment.apps/pacman-[username] volume updated
+```
 
-  ```oc:cli
-oc -n [-dev] rollout pause deployment/rocketchat-[username] 
+- Mount the MongoDB binding secret at /bindings/mongodb:
 
-oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_USER", "valueFrom":{"secretKeyRef":{"key":"app-username", "name":"mongodb-[username]"}}}]}]}}}}'
+```oc:cli
+oc -n [-dev] set volume deployment/pacman-[username] \
+    --add --overwrite \
+    --name=binding-mongodb \
+    --type=secret \
+    --secret-name=pacman-[username]-mongodb-binding \
+    --mount-path=/bindings/mongodb \
+    --read-only=true
+```
 
-oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_PASS", "valueFrom":{"secretKeyRef":{"key":"app-password", "name":"mongodb-[username]"}}}]}]}}}}'
+Ignore the similar warning message.
 
-oc -n [-dev] set env deployment/rocketchat-[username] 'MONGO_URL=mongodb://$(MONGO_USER):$(MONGO_PASS)@mongodb-[username]:27017/rocketchat'
+#### Step 3: Set the SERVICE_BINDING_ROOT Environmental Variable
 
-oc -n [-dev] rollout resume deployment/rocketchat-[username] 
+The `kube-service-bindings` library needs to know where to look for bindings:
 
-# Check environment variables configuration
-oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.spec.containers[].env'
-  ```
+```oc:cli
+oc -n [-dev] set env deployment/pacman-[username] \
+    SERVICE_BINDING_ROOT=/bindings
+```
+
+Then restart the deployment:
+```
+oc -n [-dev] rollout restart deployment/pacman-[username]
+```
+
+To summarize: 
+
+The `kube-service-bindings` library follows the
+Kubernetes Service Binding Specification:
+
+1. It looks for a directory specified by SERVICE_BINDING_ROOT (we set this to `/bindings`)
+
+2. Inside that directory, it finds subdirectories (e.g., `/bindings/mongodb`)
+
+3. Each subdirectory contains files where the filename is the key and the file content is the value
+
+4. The secret mounted as a volume creates this file-per-key structure automatically
+
+This approach is standardized across cloud-native applications and provides a secure, consistent way to
+inject service credentials without hardcoding them in environment variables.
+
+### Verify Pac-Man is Running
+
+- Navigate to `Topology` and investigate your Pac-Man Deployment.  It should be redeploying
+successfully now that it can find the MongoDB connection details through the service binding.
+
+- Check the logs to confirm the application started succesfully
+
+```oc:cli
+oc -n [-dev] logs -f $(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=pacman-[username] -o name --no-headers | head -1)
+```
+
+You should see lines such as:
+
+```
+Inside App Database.connect
+Connected to database server successfully
+```
+
 ## Network policies (self-paced training)
 
 **Note: if you're doing the live training in the d8f105-dev and d8f105-tools namespaces, skip this step**
@@ -380,14 +450,14 @@ spec:
 
 You can do this by selecting your dev namespace in the web console. Click on the '+add' menu option. Paste the YAML above into window, and edit the namespace name and licenseplate to match your namespace. The licenseplate is the 6-digit alphanumeric part of the namespace name. 
 
-## Create a Route for your Rocket.Chat App
-Your rocketchat application may already have a route created for it. If you were using `oc new-app` however, a route would not have been created by default. 
+## Create a Route for your Pac-Man App
+Your Pac-Man application may already have a route created for it. If you were using `oc new-app` however, a route would not have been created by default. 
 
 ### CLI
 You can create a secure https route using:
 
 ```oc:cli
-oc -n [-dev] create route edge rocketchat-[username] --service=rocketchat-[username] --insecure-policy=Redirect
+oc -n [-dev] create route edge pacman-[username] --service=pacman-[username] --insecure-policy=Redirect
 ```
 
 After creating the route you may access your application via the 'developer' view, navigating to the 'topology' menu and clicking on the link to follow your route!
@@ -401,7 +471,7 @@ Alternatively, you can use the web console to create or manage routes.
   - Choose the 'Administrator' view
   - Select 'Networking' in the left menu, then 'Routes'
   - Select `Create Route`
-  - Customize the name of the route, such as `rocketchat-[username]`
+  - Customize the name of the route, such as `pacman-[username]`
   - Ensure the service it points to is your particular service
   - After creating the route you may access your application via the 'developer' view, navigating to the 'topology' menu and clicking on the link to follow your route! 
 
@@ -413,18 +483,19 @@ Once you have created your route, update the ROOT_URL environment variable to ma
 
 This is necessary because:
 
-- We initially set ROOT_URL to ```http://rocketchat-[username]:3000``` (internal service name).
-- Modern RocketChat needs ROOT_URL to match the actual external URL users will access.
+- We initially set ROOT_URL to ```http://pacman-[username]:3000``` (internal service name).
+- Pac-Man needs ROOT_URL to match the actual external URL users will access.
 - This prevents routing errors.
 
 First, verify the route exists:
+
 ```oc:cli
-oc -n [-dev] get route rocketchat-[username]
+oc -n [-dev] get route pacman-[username]
 ```
 
 Get the actual route URL:
 ```oc:cli
-ROUTE_URL=$(oc -n [-dev] get route rocketchat-[username] -o jsonpath='{.spec.host}')
+ROUTE_URL=$(oc -n [-dev] get route pacman-[username] -o jsonpath='{.spec.host}')
 ```
 
 Verify the ROUTE_URL variable is not empty:
@@ -434,14 +505,20 @@ echo "Route URL is: ${ROUTE_URL}"
 
 If the route URL looks correct, update the ROOT_URL environment variable:
 ```oc:cli
-oc -n [-dev] set env deployment/rocketchat-[username] "ROOT_URL=https://${ROUTE_URL}"
+oc -n [-dev] set env deployment/pacman-[username] "ROOT_URL=https://${ROUTE_URL}"
+```
+
+Restart the rollout:
+
+```
+oc -n [-dev] rollout restart deployment/pacman-[username]
 ```
 
 ## Exploring Health Checks
 
-- If you redeploy the rocket chat application there is an interval where the pod is considered ready but it is still not available to be accessed.
+- If you redeploy the Pac-Man application there is an interval where the pod is considered ready but it is still not available to be accessed.
 - You can check this by killing the pod, waiting for the pod to redeploy and be `ready` and then visit your
-Rocket Chat url. 
+Pac-Man URL. 
 
 <kbd>![](./images/03_deploy_pod_delete_01.png)</kbd>
 <kbd>![](./images/03_deploy_pod_delete_02.png)</kbd>
@@ -453,11 +530,14 @@ You can add a healthcheck for `readiness` and `liveness`.
 
 ### Using cli
 ```oc:cli
-oc -n [-dev] set probe deployment/rocketchat-[username] --readiness --get-url=http://:3000/ --initial-delay-seconds=15
+oc -n [-dev] set probe deployment/pacman-[username] \
+    --readiness \
+    --get-url=http://:8080/ \
+    --initial-delay-seconds=15
 ```
 
 ### Summary
 
-You added a __readiness__ check to the `rocketchat-[username]` deployment so that you no longer have a false positive of when the pod should be considered available. By default pods are considered to be 'ready' when the container starts up and the entrypoint script is running. This however is not useful for things like webservers or databases! Not only do you need the entrypoint script to run but you need to wait for the server to listen on a port. 
+You added a __readiness__ check to the `pacman-[username]` deployment so that you no longer have a false positive of when the pod should be considered available. By default pods are considered to be 'ready' when the container starts up and the entrypoint script is running. This however is not useful for things like webservers or databases! Not only do you need the entrypoint script to run but you need to wait for the server to listen on a port. 
 
 Next page - [Configuring Deployments](./04_configuring_deployments.md)
