@@ -29,17 +29,18 @@ Since the Rocket.Chat application was imported and not deployed from a template,
 <kbd>![rocketchat Deployment showing Pods tab with a single pod running](./images/05_resource_management_01.png)</kbd>
 <kbd>![rocketchat Pod Details showing Metrics tab with Memory and CPU usage graphs](./images/05_resource_management_02.png)</kbd>
 
-- Reduce the CPU request to `100 millicores` and the CPU limit to  `200 millicores` 
+- Reduce the CPU (request and limit) to `10 millicores` and the memory (request and limit) to `60 Mebibytes`.
+- 
   ```oc:cli
-  oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=100m,memory=512Mi' --limits='cpu=200m,memory=1024Mi'
+  oc -n d8f105-dev set resources deployment/pacman-[username] --requests='cpu=5m,memory=30Mi' --limits='cpu=10m,memory=60Mi'
   ```
 - We'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finished shutting down after the last step. This will give us a consistent starting point to time from. After your pod is running, measure the time it takes to rollout.  
 
   ```oc:cli
 
-  # Restart the deployment and observe how long it takes to finish (this should take around 2-3 minutes)
+  # Restart the deployment and observe how long it takes to finish (this should take around 1-3 minutes)
 
-  time (oc -n [-dev] rollout restart deployment/rocketchat-[username] && oc -n [-dev] rollout status deployment/rocketchat-[username])
+  time (oc -n [-dev] rollout restart deployment/pacman-[username] && oc -n [-dev] rollout status deployment/pacman-[username])
   ```
 
 If you experiment with the resource values, you may notice your pod starts to crash loop. This is most likely because the `liveness` probe you added from an earlier lab is timing out. This is an important consideration when deciding to tune pod resources. It is always a balance.
@@ -47,7 +48,7 @@ If you experiment with the resource values, you may notice your pod starts to cr
 - Remove the limits previously imposed, and set your pod to `1 core` (or `1000 millicores`) for the request and limit
 
   ```oc:cli
-  oc -n [-dev] set resources deployment/rocketchat-[username] --requests=cpu="1000m",memory="512Mi" --limits=cpu="1000m",memory="1024Mi"
+  oc -n [-dev] set resources deployment/pacman-[username] --requests=cpu="1000m",memory="512Mi" --limits=cpu="1000m",memory="1024Mi"
   ```
 
 - Monitor the startup events of your pod and measure the time it takes to rollout. Again, we'll restart the rollout and wait for that to finish to ensure all our pods are running with the new resources and that any old ones have finished shutting down after the last step. This will give us a consistent starting point to compare to our previous timing. 
@@ -55,7 +56,7 @@ If you experiment with the resource values, you may notice your pod starts to cr
   ```oc:cli
   # Restart the deployment and observe how long it takes to finish 
 
-  time (oc -n [-dev] rollout restart deployment/rocketchat-[username] && oc -n [-dev] rollout status deployment/rocketchat-[username])
+  time (oc -n [-dev] rollout restart deployment/pacman-[username] && oc -n [-dev] rollout status deployment/pacman-[username])
   ```
 
 ## Sharing Resources
@@ -65,13 +66,13 @@ If there are many team members (and therefore workloads) working together in the
 - Reset resources utilization to something more appropriate
 
 ```oc:cli
-oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=250m,memory=512Mi' --limits='cpu=500m,memory=1024Mi'
+oc -n [-dev] set resources deployment/pacman-[username] --requests='cpu=100m,memory=100Mi' --limits='cpu=200m,memory=200Mi'
 ```
 
 - Restart the rollout and wait for that to finish to ensure all our pods are running with the new resources:
 
 ```
-oc -n [-dev] rollout restart deployment/rocketchat-[username]
+oc -n [-dev] rollout restart deployment/pacman-[username]
 ```
 
 ## Troubleshooting OOM

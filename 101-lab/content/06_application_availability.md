@@ -40,7 +40,7 @@ To increase the availability of an application and defend against unplanned outa
 application must have multiple pods/instance running. For this reason, stateless applications are desirable as they 
 do not require custom clustering configurations. 
 
-**Note** Stateful applications do not support "scaling pods" as a form of high availability. Such a stateful example 
+**Note:** Stateful applications do not support "scaling pods" as a form of high availability. Such a stateful example 
 would be the mongodb database. For this reason, this lab focuses on the rocketchat application which will function 
 with multiple pods. Please refer to specific application documentaion for details on scalability support. 
 
@@ -53,7 +53,7 @@ with multiple pods. Please refer to specific application documentaion for detail
 - Or from the CLI
 
 ```oc:cli
-oc -n [-dev] scale deployment/rocketchat-[username] --replicas=2
+oc -n [-dev] scale deployment/pacman-[username] --replicas=2
 ```
 - Notice the balancing across nodes by exploring the details of each pod
 <kbd>![1st Pod is on Node mcs-silver-app-39.dmz](./images/06_application_availability_01.png)</kbd>

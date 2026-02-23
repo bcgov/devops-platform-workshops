@@ -46,7 +46,6 @@ oc -n [-dev] autoscale deployment/rocketchat-[username] --min 1 --max 10 --cpu-p
 
   - Copy 'Webhook URL' (see 'COPY TO CLIPBOARD' button/link)
 
-
   ```oc:cli
   # Make sure the domain matches the exposed route (no "localhost:3000")!!!
   # Paste the command below into your terminal, replace the URL at the end with the URL from your clipboard, and run it to begin the load test:
