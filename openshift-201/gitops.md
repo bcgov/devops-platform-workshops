@@ -27,6 +27,8 @@
 
 [Video walkthrough](https://youtu.be/d_wsorGZyqo)
 
+**Note:** where the written instructions and video differ, please follow the written instructions. 
+
 ## Objectives
 After completing this section, you should have an understanding of GitOps and how to use Argo CD to manage your applications and other resources.
 
