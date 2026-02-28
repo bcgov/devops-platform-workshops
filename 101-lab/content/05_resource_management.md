@@ -5,9 +5,9 @@ Many templates include reasonable CPU and Memory resource configurations. Howeve
 
 The platform default resource configuration is maintained by the Platform Services team. It is based on a measurement of average CPU and memory utilization, and it serves as a great starting point for your pod's horsepower.
 
-<!-- <kbd>[![Video Walkthrough Thumbnail](././images/05_resource_requests_and_limits_thumb.png)](https://youtu.be/dhLnaUGgnQY)</kbd> -->
+<!-- <kbd>[![Video Walkthrough Thumbnail](././images/05_resource_requests_and_limits_thumb.png)](https://youtu.be/dhLnaUGgnQY)</kbd> 
 
-[Video walkthrough](https://youtu.be/dhLnaUGgnQY)
+[Video walkthrough](https://youtu.be/dhLnaUGgnQY)-->
 
 ## Explore Default Resource Configurations
 Since the Rocket.Chat application was imported and not deployed from a template, explore the current resources allocated to the pods:
