@@ -191,7 +191,7 @@ https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab
 -p MONGODB_APP_PASSWORD=rocketchatpass \
 -p MONGODB_DATABASE=rocketchat \
 -p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username]\
+-p MONGODB_APP_LABEL=rocketchat-[username] \
 -l ocp101=participant \
 -l app=rocketchat-[username] | oc -n [-dev] create -f - --dry-run=client
 ```
@@ -215,7 +215,7 @@ https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab
 -p MONGODB_APP_PASSWORD=rocketchatpass \
 -p MONGODB_DATABASE=rocketchat \
 -p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username]\
+-p MONGODB_APP_LABEL=rocketchat-[username] \
 -l ocp101=participant \
 -l app=rocketchat-[username] | oc -n [-dev] create -f - 
 
