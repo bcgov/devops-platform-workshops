@@ -81,7 +81,7 @@ Now that we have identified the issue, next step is to create the rolebinding to
 
 > Note that only Admin users have access to manage rolebindings in a namespace, the following action will need to be done by DevOps in the team. Reach out to the team if you don't have access to do so!
 
-- From the CLI add a service account to tools granting image pull access to the from the dev project: 
+- From the CLI add a service account to tools granting image pull access from the dev project: 
 
 ```oc:cli
 oc -n [-tools] policy add-role-to-user system:image-puller system:serviceaccount:[-dev]:default
@@ -95,7 +95,7 @@ With the appropriate access in place, you can try bringing up a new pod to see i
 
 ## __Objective 2__: Importing Images to the deploy namespace
 
-Deploying images from another namespace can run you into some issues that are easily solvable if you import a copy of the image to your deploy namespace. This is a BC Gov best practice in fact. 
+Deploying images from another namespace can cause some issues that are easily solvable if you import a copy of the image to your deploy namespace. This is a BC Gov best practice in fact. 
 
 ### Why Build in Tools Then?
 
@@ -135,7 +135,7 @@ Note: you can ignore the message above the logs - "an error occured while retrie
 # Show your pod's log
 oc -n [-dev] logs -f $(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o name --no-headers | head -1)
 ```
-Note: you can follow the logs with `-f` argument
+Note: you can follow the logs with the `-f` argument
 
 In OpenShift 4.10, it is now possible to launch a debug terminal from within the web console when a pod is in the `CrashLoopBackOff` state. The debug terminal can be launched from the `logs` window for a pod. This can be useful to gather additional information when troubleshooting.  
 
@@ -147,13 +147,13 @@ In the steps that follow, we will deploy the database and give our RocketChat de
 
 ### Use a template to create the database, service and secret
 
-In order to use deploy these objects, we are a going to use a template stored in the OpenShift 101 github repository. Managing OpenShift objects from a GitHub repository is a common strategy to ensure consistency, version control and history. In future you may use methods such as [Tekton Pipelines](https://github.com/bcgov/pipeline-templates/tree/main/tekton#tekton-pipelines), [github actions](https://github.blog/2022-02-02-build-ci-cd-pipeline-github-actions-four-steps/) or [HELM](https://helm.sh/) charts to allow changes to files in a repository to automatically make changes to the objects running in your OpenShift project. 
+In order to deploy these objects, we are a going to use a template stored in the OpenShift 101 github repository. Managing OpenShift objects from a GitHub repository is a common strategy to ensure consistency, version control and history. In future you may use methods such as [Tekton Pipelines](https://github.com/bcgov/pipeline-templates/tree/main/tekton#tekton-pipelines), [github actions](https://github.blog/2022-02-02-build-ci-cd-pipeline-github-actions-four-steps/) or [HELM](https://helm.sh/) charts to allow changes to files in a repository to automatically make changes to the objects running in your OpenShift project. 
 
 The template we're going to use is located at: https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml
 
 If you browse this file, you'll notice it contains the YAML that defines our deployment, service and secret. We can apply parameters to this template to adjust particular values. 
 
-### From CLI
+### From the CLI
 
   - Note: any data stored in our database will be lost upon pod destruction. We're only using this ephemeral template for testing and we'll add storage later. 
 
@@ -231,9 +231,9 @@ service/mongodb-mattspencer created
 ### Verify MongoDB is up
   - Find the mongodb deployment by going back to `Topology`
   - Wait until MongoDB has been successfully deployed.
-  - MongoDB will generate a lot of logs. Since MongoDB comes with a readiness probe check for pod/container readiness, to know when it is up and ready.
+  - MongoDB will generate a lot of logs. Since MongoDB comes with a readiness probe, check for pod/container readiness to know when it is up and ready.
   
-  You can safely ignore repeated messages as such:
+  You can safely ignore repeated messages such as:
   ```
   {"t":{"$date":"2026-01-30T19:25:47.067+00:00"},"s":"I", "c":"ACCESS", "id":10483900,"ctx":"conn63","msg":"Connection not authenticating","attr":{"client":"127.0.0.1:51672","doc":{"application":{"name":"mongosh 2.6.0"},"driver":{"name":"nodejs|mongosh","version":"6.19.0|2.6.0"},"platform":"Node.js v20.20.0, LE","os":{"name":"linux","architecture":"x64","version":"3.10.0-327.22.2.el7.x86_64","type":"Linux"},"env":{"container":{"orchestrator":"kubernetes"}}}}}
   ```
@@ -307,7 +307,7 @@ oc -n [-dev] set env deployment/rocketchat-[username] \
 #### STRETCH: Sensitive Configurations
 > this step is a stretch exercise, completing this section is not a requirement for the next section of the lab
 
-If you are feeling at odds with things like __dbpass__ being out in the open as an environment variable. That is a good thing! For demonstration purposes you are creating a `Single Value Env`. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
+If you are feeling at odds with things like __dbpass__ being out in the open as an environment variable, that is a good thing! For demonstration purposes you are creating a `Single Value Env`. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
 
 If you don't have the `jq` tool installed, you can [download it here](https://stedolan.github.io/jq/download/) OR if you have [homebrew](https://brew.sh/) installed you can use it to install `jq` by running this command: `
 brew install jq`

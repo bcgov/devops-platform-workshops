@@ -7,7 +7,7 @@ The platform default resource configuration is maintained by the Platform Servic
 
 <!-- <kbd>[![Video Walkthrough Thumbnail](././images/05_resource_requests_and_limits_thumb.png)](https://youtu.be/dhLnaUGgnQY)</kbd> 
 
-[Video walkthrough](https://youtu.be/dhLnaUGgnQY)-->
+<!-- [Video walkthrough](https://youtu.be/dhLnaUGgnQY)-->
 
 ## Explore Default Resource Configurations
 Since the Rocket.Chat application was imported and not deployed from a template, explore the current resources allocated to the pods:
