@@ -39,7 +39,7 @@ When the lab begins, our volunteer admins will navigate to each project and assi
 This can also be done on the CLI with the `oc` utility: 
 
 ```
-oc policy add-role-to-user [role] [username]
+oc -n [namespace] policy add-role-to-user [role] [username]
 ```
 
 ## Roles
