@@ -14,14 +14,29 @@ The dev project is where applications are deployed. In this case, we will deploy
 
 > Although we use the tag name `dev` there are better naming conventions! We strongly suggest associating image tags with a version that is meaningful for your project!
 
-- From the CLI:
+- From the CLI: first retag the image stream from 8.0.1 to dev
 
 ```oc:cli
-# retagging the image stream from 8.0.1 to dev
 oc -n [-tools] tag rocketchat-[username]:8.0.1 rocketchat-[username]:dev
+```
 
-# Verify that the `dev` tag has been created
+- The output of the previous command should be similar to:
+
+```oc:cli
+Tag rocketchat-[username]:dev set to rocketchat-[username]@sha256:...
+```
+
+- Then, verify that the `dev` tag has been created
+
+```oc:cli
 oc -n [-tools] get imagestreamtag/rocketchat-[username]:dev
+```
+
+- The output of the previous command should be similar to:
+
+```oc:cli
+NAME                  IMAGE REFERENCE                                UPDATED
+rocketchat-alit:dev   docker.io/rocketchat/rocket.chat@sha256:....   7 weeks ago
 ```
 
 ## Create an Image-Based Deployment
@@ -60,13 +75,22 @@ Increasing the resources (especially CPU) right now will help with faster pod st
 ```oc:cli
 oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=500m,memory=512Mi' --limits='cpu=1000m,memory=1024Mi'
 ```
-- It may take a few minutes before the pod displays an error.
+
+- Expected output from the previous command:
+
+```oc:cli
+deployment.apps/rocketchat-[username] resource requirements updated
+```
+
+- The pod will show as running for a few minutes and then display an error
 
 ## __Objective 1__: Identify ImagePull Problem
 As the Web UI indicated, the `dev` project service accounts do not have the appropriate access to pull the image from the `tools`
 project. Admin users manage service accounts and will need to grant rolebindings in order to provide image pull access from two respective namespaces.
 
-Note that since only admin users have access to manage rolebindings in a namespace, the following action will need to be done by DevOps in the team. Reach out to the team if you don't have access to do so! This step only needs to be completed once for the shared namespace that the lab class is working in. If somebody else has completed this step already and you're not experiencing the ImagePull error, move on to the next step _Objective 2_. 
+Note that since only admin users have access to manage rolebindings in a namespace, the following action will need to be done by DevOps in the team. Reach out to the team if you don't have access to do so! 
+
+**This step only needs to be completed once for the shared namespace that the lab class is working in. If somebody else has completed this step already and you're not experiencing the ImagePull error, move on to _Objective 2_**. 
 
 - Navigate to `Topology` and click on the deployment to investigate further
 
@@ -117,7 +141,11 @@ oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=ro
 
 ## __Objective 3__: Identify CrashLoopBackOff problem
 
-After waiting a few minutes, notice that the deployment is still failing. 
+Clicking on your rocketchat deployment in `Topology`, you will likely see two errors:
+
+<kbd>![](./images/03_deploy_image_08i.png)</kbd>
+
+After **waiting around five minutes**, the image pull error should disappear, and the deployment may briefly show as running. Soon after, the CrashLoopBackOff error will return. 
 
 <kbd>![](./images/03_deploy_image_08a.png)</kbd>
 
@@ -129,10 +157,9 @@ Navigate to the pod and review the logs to determine why the container will not 
 
 Note: you can ignore the message above the logs - "an error occured while retrieving the requested logs".
 
-- Or from the CLI
+- You can also view your pod's logs from the CLI
 
 ```oc:cli
-# Show your pod's log
 oc -n [-dev] logs -f $(oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o name --no-headers | head -1)
 ```
 Note: you can follow the logs with the `-f` argument
@@ -254,6 +281,12 @@ oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
   roles: [{ role: "readWrite", db: "rocketchat" }]})'
 ```
 
+- Expected output:
+
+``` 
+{ ok: 1 }
+```
+
 - Verify the user was created:
 
 ```oc:cli
@@ -262,12 +295,36 @@ oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
 --eval 'db.getSiblingDB("rocketchat").getUsers()'
 ```
 
+- Expected output:
+
+```
+users: [
+    {
+      _id: 'rocketchat.rocketchat',
+      userId: UUID('...'),
+      user: 'rocketchat',
+      db: 'rocketchat',
+      roles: [ { role: 'readWrite', db: 'rocketchat' } ],
+      mechanisms: [ 'SCRAM-SHA-1', 'SCRAM-SHA-256' ]
+    }
+  ],
+  ok: 1
+}
+```
+
 - Test that the application can authenticate: 
 ```oc:cli
 oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
 "mongodb://rocketchat:rocketchatpass@localhost:27017/rocketchat" \
 --eval 'db.adminCommand("ping")'
 ```
+
+- Expected output:
+```
+{ ok: 1 }
+```
+
+
 You should see ```{ ok: 1 }``` from the ping command, which means the user was created successfully and can authenticate.
 
 ### Environment Variables
@@ -276,38 +333,43 @@ a database has been deployed, the app does not know how or where to connect to M
 
 - In the Web Console, navigate to `Topology` and select your rocketchat deployment
 - Click on the name of your rocketchat-[username] deployment in the right-hand menu pane
-- Click the `Environment` tab
+- Click the `Environment` tab. It should look like this:
 <kbd>![](./images/03_deploy_env_02.png)</kbd>
 
-- Add the following environment variables: 
+- Add the following two environment variables: 
 
-**MONGO_URL**
-```
-mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat
-```
+**Variable 1:**
+- Name: `MONGO_URL`
+- Value: `mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat`
 
-**ROOT_URL**
-```
-http://rocketchat-[username]:3000
-```
+**Variable 2:**
+- Name: `ROOT_URL`
+- Value: `http://rocketchat-[username]:3000`
 
+This is shown in the image below (**note that you need to replace [username] with your actual username**).
 <kbd>![](./images/03_deploy_config_01.png)</kbd>
 
-You can also use the CLI to apply the environment variables:
+- Click Save
+
+Alternatively, you can use the CLI to apply the environment variables:
 ```
 oc -n [-dev] set env deployment/rocketchat-[username] \
   "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat" \
   "ROOT_URL=http://rocketchat-[username]:3000"
 ```
 
-- Click Save 
-- Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time)
+Expected output from the above command:
+```
+deployment.apps/rocketchat-[username] updated
+```
+
+Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time)
 
 
 #### STRETCH: Sensitive Configurations
 > this step is a stretch exercise, completing this section is not a requirement for the next section of the lab
 
-If you are feeling at odds with things like __dbpass__ being out in the open as an environment variable, that is a good thing! For demonstration purposes you are creating a `Single Value Env`. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
+If you are feeling at odds with things like __dbpass__ being out in the open as an environment variable, that is a good thing! For demonstration purposes you are creating single value environmental variables. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
 
 If you don't have the `jq` tool installed, you can [download it here](https://stedolan.github.io/jq/download/) OR if you have [homebrew](https://brew.sh/) installed you can use it to install `jq` by running this command: `
 brew install jq`
@@ -390,6 +452,11 @@ You can create a secure https route using:
 oc -n [-dev] create route edge rocketchat-[username] --service=rocketchat-[username] --insecure-policy=Redirect
 ```
 
+Expected output from the above command:
+```
+route.route.openshift.io/rocketchat-[username] created
+```
+
 After creating the route you may access your application via the 'developer' view, navigating to the 'topology' menu and clicking on the link to follow your route!
 
 <kbd>![rocketchat](./images/03_deploy_route.png)</kbd>
@@ -422,6 +489,13 @@ First, verify the route exists:
 oc -n [-dev] get route rocketchat-[username]
 ```
 
+The output from the above command should look similar to:
+
+```
+NAME                   HOST/PORT                                                 PATH   SERVICES                PORT       TERMINATION    WILDCARD
+rocketchat-[username]  rocketchat-[username]-[-dev].apps.silver.devops.gov.bc.ca        rocketchat-[username]   3000-tcp   edge/Redirect  None
+```
+
 Get the actual route URL:
 ```oc:cli
 ROUTE_URL=$(oc -n [-dev] get route rocketchat-[username] -o jsonpath='{.spec.host}')
@@ -432,9 +506,22 @@ Verify the ROUTE_URL variable is not empty:
 echo "Route URL is: ${ROUTE_URL}"
 ```
 
+Expected output:
+
+```
+Route URL is: rocketchat-[username]-[-dev].apps.silver.devops.gov.bc.ca
+```
+
 If the route URL looks correct, update the ROOT_URL environment variable:
+
 ```oc:cli
 oc -n [-dev] set env deployment/rocketchat-[username] "ROOT_URL=https://${ROUTE_URL}"
+```
+
+Expected output:
+
+```
+deployment.apps/rocketchat-[username] updated
 ```
 
 ## Exploring Health Checks
