@@ -369,7 +369,7 @@ Navigate to `Topology` and investigate your RocketChat Deployment. It should be 
 #### STRETCH: Sensitive Configurations
 > this step is a stretch exercise, completing this section is not a requirement for the next section of the lab
 
-If you are feeling at odds with things like __dbpass__ being out in the open as an environment variable, that is a good thing! For demonstration purposes you are creating single value environmental variables. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
+If you are feeling at odds with things like __rocketchatpass__ being out in the open as an environment variable, that is a good thing! For demonstration purposes you are creating single value environmental variables. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
 
 If you don't have the `jq` tool installed, you can [download it here](https://stedolan.github.io/jq/download/) OR if you have [homebrew](https://brew.sh/) installed you can use it to install `jq` by running this command: `
 brew install jq`
@@ -543,6 +543,10 @@ You can add a healthcheck for `readiness` and `liveness`.
 oc -n [-dev] set probe deployment/rocketchat-[username] --readiness --get-url=http://:3000/ --initial-delay-seconds=15
 ```
 
+Expected output: 
+```
+deployment.apps/rocketchat-[username] probes updated
+```
 ### Summary
 
 You added a __readiness__ check to the `rocketchat-[username]` deployment so that you no longer have a false positive of when the pod should be considered available. By default pods are considered to be 'ready' when the container starts up and the entrypoint script is running. This however is not useful for things like webservers or databases! Not only do you need the entrypoint script to run but you need to wait for the server to listen on a port. 
