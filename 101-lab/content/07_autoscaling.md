@@ -20,7 +20,7 @@ This lab will provide a simple demonstration of autoscaling based on CPU, as thi
 - Create an autoscaler to automatically set the number of pods your app uses:
 > You are configuring a very low CPU request target (10%) so that you can test the autoscaling easily by browsing the web application. A real production CPU target would be closer to 70-80%.
 ```oc:cli
-oc -n [-dev] autoscale deployment/rocketchat-[username] --min 1 --max 10 --cpu-percent=10
+oc -n [-dev] autoscale deployment/rocketchat-[username] --min 1 --max 10 --cpu=10%
 ```
 
 - Browse to the application to generate some load and monitor the behavior of the pods
