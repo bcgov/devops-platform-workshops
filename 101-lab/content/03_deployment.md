@@ -85,12 +85,13 @@ deployment.apps/rocketchat-[username] resource requirements updated
 - The pod will show as running for a few minutes and then display an error
 
 ## __Objective 1__: Identify ImagePull Problem
+
+**This step only needs to be completed once for the shared namespace that the lab class is working in. If somebody else has completed this step already and you're not experiencing the ImagePull error, move on to _Objective 2_**. 
+
 As the Web UI indicated, the `dev` project service accounts do not have the appropriate access to pull the image from the `tools`
 project. Admin users manage service accounts and will need to grant rolebindings in order to provide image pull access from two respective namespaces.
 
 Note that since only admin users have access to manage rolebindings in a namespace, the following action will need to be done by DevOps in the team. Reach out to the team if you don't have access to do so! 
-
-**This step only needs to be completed once for the shared namespace that the lab class is working in. If somebody else has completed this step already and you're not experiencing the ImagePull error, move on to _Objective 2_**. 
 
 - Navigate to `Topology` and click on the deployment to investigate further
 
@@ -374,20 +375,42 @@ If you are feeling at odds with things like __rocketchatpass__ being out in the 
 If you don't have the `jq` tool installed, you can [download it here](https://stedolan.github.io/jq/download/) OR if you have [homebrew](https://brew.sh/) installed you can use it to install `jq` by running this command: `
 brew install jq`
 
-  ```oc:cli
+- Pause rollout of your deployment:
+
+```oc:cli
 oc -n [-dev] rollout pause deployment/rocketchat-[username] 
+```
 
+- Patch your deployment to create a secret for our mongodb account called MONGO_USER:
+
+```oc:cli
 oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_USER", "valueFrom":{"secretKeyRef":{"key":"app-username", "name":"mongodb-[username]"}}}]}]}}}}'
+```
 
+- Patch your deployment to create a secret for our mongodb password called MONGO_PASS:
+
+```oc:cli
 oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_PASS", "valueFrom":{"secretKeyRef":{"key":"app-password", "name":"mongodb-[username]"}}}]}]}}}}'
+```
 
+- Set the environment variables in order to use the secrets that we just created to connect to our database:
+
+```oc:cli
 oc -n [-dev] set env deployment/rocketchat-[username] 'MONGO_URL=mongodb://$(MONGO_USER):$(MONGO_PASS)@mongodb-[username]:27017/rocketchat'
+```
 
+- Resume the rollout of your RocketChat deployment:
+
+```oc:cli
 oc -n [-dev] rollout resume deployment/rocketchat-[username] 
+```
 
-# Check environment variables configuration
+- Check the new configuration of your environment variables:
+
+```oc:cli
 oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.spec.containers[].env'
-  ```
+```
+
 ## Network policies (self-paced training)
 
 **Note: if you're doing the live training in the d8f105-dev and d8f105-tools namespaces, skip this step**
