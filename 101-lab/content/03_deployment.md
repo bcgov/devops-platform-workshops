@@ -35,8 +35,8 @@ oc -n [-tools] get imagestreamtag/rocketchat-[username]:dev
 - The output of the previous command should be similar to:
 
 ```oc:cli
-NAME                  IMAGE REFERENCE                                UPDATED
-rocketchat-alit:dev   docker.io/rocketchat/rocket.chat@sha256:....   7 weeks ago
+NAME                        IMAGE REFERENCE                                UPDATED
+rocketchat-[username]:dev   docker.io/rocketchat/rocket.chat@sha256:....   7 weeks ago
 ```
 
 ## Create an Image-Based Deployment
@@ -367,33 +367,66 @@ deployment.apps/rocketchat-[username] updated
 Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time)
 
 
-#### STRETCH: Sensitive Configurations
-> this step is a stretch exercise, completing this section is not a requirement for the next section of the lab
+### STRETCH: Sensitive Configurations
+> This step is a stretch exercise, completing this section is not a requirement for the next section of the lab
 
 If you are feeling at odds with things like __rocketchatpass__ being out in the open as an environment variable, that is a good thing! For demonstration purposes you are creating single value environmental variables. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
 
 If you don't have the `jq` tool installed, you can [download it here](https://stedolan.github.io/jq/download/) OR if you have [homebrew](https://brew.sh/) installed you can use it to install `jq` by running this command: `
 brew install jq`
 
-- Pause rollout of your deployment:
+#### The Problem:
+
+Currently, your MongoDB password is hardcoded in plain text in the `MONGO_URL` environment variable. This means anyone who can view the deployment configuration can see the password.
+
+- View your current environment variable structure:
+
+```oc:cli
+oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.spec.containers[].env'
+```
+
+- You'll see output like:
+
+```oc:cli
+[
+  {
+    "name": "MONGO_URL",
+    "value": "mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat"
+  },
+  {
+    "name": "ROOT_URL",
+    "value": "http://rocketchat-[username]:3000"
+  }
+]
+```
+
+Notice the password `rocketchatpass` is visible in plain text.
+
+#### The Solution: 
+
+The MongoDB template already created a secret (`mongodb-[username]`) with your credentials. Instead of hardcoding the password, we'll:
+1. Create `MONGO_USER` and `MONGO_PASS` environment variables that pull from the secret
+2. Update `MONGO_URL` to use variable substitution: `$(MONGO_USER)` and `$(MONGO_PASS)`
+
+- First, pause rollout of your deployment:
 
 ```oc:cli
 oc -n [-dev] rollout pause deployment/rocketchat-[username] 
 ```
 
-- Patch your deployment to create a secret for our mongodb account called MONGO_USER:
+- Add `MONGO_USER` environment variable from secret:
 
 ```oc:cli
 oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_USER", "valueFrom":{"secretKeyRef":{"key":"app-username", "name":"mongodb-[username]"}}}]}]}}}}'
 ```
 
-- Patch your deployment to create a secret for our mongodb password called MONGO_PASS:
+- Add `MONGO_PASS` environment variable from secret:
 
 ```oc:cli
 oc -n [-dev] patch deployment/rocketchat-[username] -p '{"spec":{"template":{"spec":{"containers":[{"name":"rocketchat-[username]", "env":[{"name":"MONGO_PASS", "valueFrom":{"secretKeyRef":{"key":"app-password", "name":"mongodb-[username]"}}}]}]}}}}'
 ```
 
-- Set the environment variables in order to use the secrets that we just created to connect to our database:
+- Update `MONGO_URL` to reference `MONGO_USER` and `MONGO_PASS` instead of hardcoded values:
 
 ```oc:cli
 oc -n [-dev] set env deployment/rocketchat-[username] 'MONGO_URL=mongodb://$(MONGO_USER):$(MONGO_PASS)@mongodb-[username]:27017/rocketchat'
@@ -410,6 +443,40 @@ oc -n [-dev] rollout resume deployment/rocketchat-[username]
 ```oc:cli
 oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.spec.containers[].env'
 ```
+
+- You should now see the output:
+
+```oc:cli
+[
+  {
+    "name": "MONGO_PASS",
+    "valueFrom": {
+      "secretKeyRef": {
+        "key": "app-password",
+        "name": "mongodb-[username]"
+      }
+    }
+  },
+  {
+    "name": "MONGO_USER",
+    "valueFrom": {
+      "secretKeyRef": {
+        "key": "app-username",
+        "name": "mongodb-[username]"
+      }
+    }
+  },
+  {
+    "name": "MONGO_URL",
+    "value": "mongodb://$(MONGO_USER):$(MONGO_PASS)@mongodb-[username]:27017/rocketchat"
+  },
+  {
+    "name": "ROOT_URL",
+    "value": "http://rocketchat-[username]:3000"
+  }
+]
+```
+
 
 ## Network policies (self-paced training)
 
