@@ -146,7 +146,7 @@ Clicking on your rocketchat deployment in `Topology`, you will likely see two er
 
 <kbd>![](./images/03_deploy_image_08i.png)</kbd>
 
-Because we're using an image from DockerHub, it may take around 5 minutes to import the image after we tag it. 
+Because we're using an image from DockerHub, it may take around 5 minutes to import the image after we tag it, and hence a temporary image pull error will appear. 
 
 After **waiting around five minutes**, the image pull error should disappear, and the deployment may briefly show as running. Soon after, the CrashLoopBackOff error will return. 
 
