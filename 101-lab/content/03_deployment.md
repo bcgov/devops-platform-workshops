@@ -146,6 +146,8 @@ Clicking on your rocketchat deployment in `Topology`, you will likely see two er
 
 <kbd>![](./images/03_deploy_image_08i.png)</kbd>
 
+Because we're using an image from DockerHub, it may take around 5 minutes to import the image after we tag it. 
+
 After **waiting around five minutes**, the image pull error should disappear, and the deployment may briefly show as running. Soon after, the CrashLoopBackOff error will return. 
 
 <kbd>![](./images/03_deploy_image_08a.png)</kbd>
@@ -367,8 +369,7 @@ deployment.apps/rocketchat-[username] updated
 Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time)
 
 
-### STRETCH: Sensitive Configurations
-> This step is a stretch exercise, completing this section is not a requirement for the next section of the lab
+### Sensitive Configurations
 
 If you are feeling at odds with things like __rocketchatpass__ being out in the open as an environment variable, that is a good thing! For demonstration purposes you are creating single value environmental variables. Sensitive information like passwords should be stored in a `Secret` and referenced as `envFrom`. In addition, you can also use the [Downward API](https://docs.openshift.com/container-platform/4.4/nodes/containers/nodes-containers-downward-api.html#nodes-containers-downward-api-container-secrets_nodes-containers-downward-api) to refer to the secret created by MongoDB.
 
