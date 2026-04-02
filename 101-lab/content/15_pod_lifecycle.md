@@ -8,7 +8,7 @@ A Pod can be extended beyond the normal operation of the container by allowing d
 
 [Video walkthrough](https://youtu.be/552gtIZfEu4)
 
-**Note: The written instructions below have been updated since the above video was recorded. If viewing the video, please make sure to follow the steps in the written instructions below.**
+**Note: The written instructions below have been updated since the above video was recorded. The video is still useful for understanding the overall process,but please make sure to follow the steps in the written instructions.**
 
 ## Init Containers
 Init containers are specialized containers that run before app containers in a pod. Init containers can contain utilities or setup scripts not present in an app image.

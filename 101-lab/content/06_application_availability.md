@@ -4,7 +4,7 @@
 
 [Video walkthrough](https://youtu.be/42UxHJkNLwc)
 
-**Note: The beginning of the video above shows the application setup for an older version of RocketChat. Please follow the written instructions below for the RocketChat setup, as they reflect the current version of RocketChat used in this lab.**
+**Note: The beginning of the video above shows the application setup for an older version of RocketChat. Please follow the written instructions below for the RocketChat application setup, as they reflect the current version of RocketChat used in this lab.**
 
 Prior to beginning this lab, navigate to the public route you created and finish the initial setup of your application. 
 
@@ -64,7 +64,7 @@ oc -n [-dev] scale deployment/rocketchat-[username] --replicas=2
 ```oc:cli
 oc -n [-dev] get pods --field-selector=status.phase=Running -l deployment=rocketchat-[username] -o wide
 ```
-you can also simply combine with grep:
+- You can also simply combine with grep:
 ```
 oc -n [-dev] get pods -o wide | grep rocketchat-[username]
 ```

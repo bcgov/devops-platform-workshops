@@ -1,5 +1,5 @@
 # Builds
-In this lab, you will import the Rocket.Chat Docker image for use in your OpenShift environment. Although this section is called 'builds', we've temporarily removed image building from this section for now. 
+In this lab, you will import the pre-built Rocket.Chat Docker image for use in your OpenShift environment. Although this section is called 'builds', we've temporarily removed image building from this section for now. 
 
 <!-- <kbd>[![Video Walkthrough Thumbnail](././images/02_builds_thumb.png)](https://youtu.be/j7a74_I6MYw)<kbd>
 
@@ -60,17 +60,31 @@ Tags:			    1
 Volumes:	        /app/uploads
 ```
 
-- You can verify the image was successfully imported:
+You can verify the image was successfully imported:
+
+- Run the following command to check the imagestream exists:
 
 ```oc:cli
-# Check the imagestream exists
 oc -n [-tools] get imagestream rocketchat-[username]
+```
 
-# Get detailed information
-oc -n [-tools] describe imagestream rocketchat-[username]
+- The output of the previous command should be similar to:
+```oc:cli
+NAME                    IMAGE REPOSITORY                                                                 TAGS               UPDATED
+rocketchat-[username]   image-registry.apps.silver.devops.gov.bc.ca/[-tools]/rocketchat-[username]       8.0.1,dev,latest   54 seconds ago
+```
 
-# Verify the 8.0.1 tag exists
+- Run the following command to verify the 8.0.1 tag exists:
+
+```
 oc -n [-tools] get imagestreamtag rocketchat-[username]:8.0.1
+```
+
+- The output of the previous command should be similar to:
+
+```oc:cli
+NAME                          IMAGE REFERENCE                                                                              UPDATED
+rocketchat-[username]:8.0.1   image-registry.openshift-image-registry.svc:5000/[-tools]/rocketchat-[username]@sha256:...   7 minutes ago
 ```
 
 Next page - [Deployment](./03_deployment.md)
