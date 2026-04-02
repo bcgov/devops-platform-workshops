@@ -229,9 +229,9 @@ https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab
 > When you ran the cli command you should get an output like this:
 
 ```
-deployment.apps/mongodb-mattspencer created (dry run)
-secret/mongodb-mattspencer created (dry run)
-service/mongodb-mattspencer created (dry run)
+deployment.apps/mongodb-[username] created (dry run)
+secret/mongodb-[username] created (dry run)
+service/mongodb-[username] created (dry run)
 ```
 
 Now, let's run the command for real by removing the dry run. 
@@ -253,9 +253,9 @@ https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab
 
 Your output should be similar to: 
 ```
-deployment.apps/mongodb-mattspencer created
-secret/mongodb-mattspencer created
-service/mongodb-mattspencer created
+deployment.apps/mongodb-[username] created
+secret/mongodb-[username] created
+service/mongodb-[username] created
 ```
 
 ### Verify MongoDB is up
