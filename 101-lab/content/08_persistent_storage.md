@@ -78,7 +78,7 @@ Now that we notice all messages and configuration is gone whenever pods cycle, l
 
 <kbd>![](./images/06_persistent_storage_04a.png)</kbd>
 
-  - Select the `netapp-file-standard` storage class. Set the type to RWO, the size to 1GB, select `Filesystem` mode, and name it `mongodb-[username]-file`
+  - Select the `netapp-file-standard` storage class. Set the type to RWO, the size to 1GB, select `Filesystem` mode, and name it `mongodb-[username]-file` then click 'create'
 
   - Navigate back to your Mongo Deployment and select `Add Storage` from the `Actions` menu
 
