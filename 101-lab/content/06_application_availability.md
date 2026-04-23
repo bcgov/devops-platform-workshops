@@ -44,7 +44,7 @@ do not require custom clustering configurations.
 would be the mongodb database. For this reason, this lab focuses on the rocketchat application which will function 
 with multiple pods. Please refer to specific application documentaion for details on scalability support. 
 
-- Navigate to `Topology` and scale your Deployment by selecting it and pressing `Actions > Edit Count` and increasing the count to 2
+- Navigate to `Topology` and scale your Deployment by selecting it and pressing `Actions > Edit Pod Count` and increasing the count to 2
 
 
 
