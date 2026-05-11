@@ -638,6 +638,45 @@ Expected output:
 ```
 deployment.apps/rocketchat-[username] probes updated
 ```
+### Post-Deployment CrashLoopBackOff Error
+__Objective__: Fix the CrashLoopBackOff Error caused by the ongoing server upgrades and your deployment's ephemeral storage. Persistent storage is covered in Section 8 and you won't get this error once your deployment has persistent storage.
+
+- Since MongoDB is using ephemeral storage, its internal data directory was wiped when it was scaled down by the server upgrades. This includes the Rocket.Chat application user we created earlier in Module 3 (Deployment) [Deploying the Database](https://github.com/bcgov/devops-platform-workshops/blob/master/101-lab/content/03_deployment.md#deploying-the-database). 
+- Scale down the rocketchat application to 0 pods:
+```oc:cli
+  oc -n [-dev] scale deployment/rocketchat-[username] --replicas=0
+```
+
+- Recreate the Rocket.Chat application user:
+
+```oc:cli
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
+"mongodb://rootuser:rootpassword@localhost:27017/admin" \
+--eval 'db = db.getSiblingDB("rocketchat");
+        try { db.dropUser("rocketchat"); } catch(e) {}
+        db.createUser({
+          user: "rocketchat",
+          pwd: "rocketchatpass",
+          roles: [{ role: "readWrite", db: "rocketchat" }]
+        })'
+```
+
+- Verify the user exists (the output should show the rocketchat user listed):
+
+```oc:cli
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
+"mongodb://rootuser:rootpassword@localhost:27017/admin" \
+--eval 'db.getSiblingDB("rocketchat").getUsers()'
+```
+
+- Now that the application user exists again, Rocket.Chat can authenticate successfully. Scale `rocketchat-[username]` to 1 pod:
+
+```oc:cli
+oc -n [-dev] scale deployment/rocketchat-[username] --replicas=1
+```
+
+Open your Rocket.Chat deployment details to check that the error is gone.
+
 ### Summary
 
 You added a __readiness__ check to the `rocketchat-[username]` deployment so that you no longer have a false positive of when the pod should be considered available. By default pods are considered to be 'ready' when the container starts up and the entrypoint script is running. This however is not useful for things like webservers or databases! Not only do you need the entrypoint script to run but you need to wait for the server to listen on a port. 
