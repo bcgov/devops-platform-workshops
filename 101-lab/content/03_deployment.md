@@ -638,7 +638,7 @@ Expected output:
 ```
 deployment.apps/rocketchat-[username] probes updated
 ```
-### Post-Deployment CrashLoopBackOff Error
+### Optional: Resolving Post-Deployment CrashLoopBackOff Error
 __Objective__: Fix the CrashLoopBackOff Error caused by the ongoing server upgrades and your deployment's ephemeral storage. Persistent storage is covered in Section 8 and you won't get this error once your deployment has persistent storage.
 
 - Since MongoDB is using ephemeral storage, its internal data directory was wiped when it was scaled down by the server upgrades. This includes the Rocket.Chat application user we created earlier in Module 3 (Deployment) [Deploying the Database](https://github.com/bcgov/devops-platform-workshops/blob/master/101-lab/content/03_deployment.md#deploying-the-database). 
