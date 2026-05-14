@@ -639,15 +639,19 @@ Expected output:
 deployment.apps/rocketchat-[username] probes updated
 ```
 ### Optional: Resolving Post-Deployment CrashLoopBackOff Error
-__Objective__: Fix the CrashLoopBackOff Error caused by the ongoing server upgrades and your deployment's ephemeral storage. Persistent storage is covered in Section 8 and you won't get this error once your deployment has persistent storage.
+If you encounter an unexpected CrashLoopBackOff error on your RocketChat deployment at any point during Modules 3-7 (before persistent storage is configured in Module 8), this section presents a possible reason why and how to fix it.
 
-- Since MongoDB is using ephemeral storage, its internal data directory was wiped when it was scaled down by the server upgrades. This includes the Rocket.Chat application user we created earlier in Module 3 (Deployment) [Deploying the Database](https://github.com/bcgov/devops-platform-workshops/blob/master/101-lab/content/03_deployment.md#deploying-the-database). 
-- Scale down the rocketchat application to 0 pods:
+Because MongoDB is using ephemeral storage, its internal data directory (including the RocketChat application user created in [Deploying the Database](https://github.com/bcgov/devops-platform-workshops/blob/master/101-lab/content/03_deployment.md#deploying-the-database)) is wiped any time the MongoDB pod is restarted or scaled down to 0. This can happen if: 
+- Platform maintenance was performed while you were away or while you were working through the lab.
+- The MongoDB pod was accidentally scaled down.
+
+To resolve the error, you'll need to recreate the RocketChat database user by following these steps:
+- Scale down the rocketchat application to 0 pods
 ```oc:cli
   oc -n [-dev] scale deployment/rocketchat-[username] --replicas=0
 ```
 
-- Recreate the Rocket.Chat application user:
+- Recreate the Rocket.Chat application user
 
 ```oc:cli
 oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
@@ -661,7 +665,7 @@ oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
         })'
 ```
 
-- Verify the user exists (the output should show the rocketchat user listed):
+- Verify the user exists (the output should show the rocketchat user listed)
 
 ```oc:cli
 oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
@@ -669,7 +673,7 @@ oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
 --eval 'db.getSiblingDB("rocketchat").getUsers()'
 ```
 
-- Now that the application user exists again, Rocket.Chat can authenticate successfully. Scale `rocketchat-[username]` to 1 pod:
+- Now that the application user exists again, Rocket.Chat can authenticate successfully. Scale `rocketchat-[username]` to 1 pod
 
 ```oc:cli
 oc -n [-dev] scale deployment/rocketchat-[username] --replicas=1
