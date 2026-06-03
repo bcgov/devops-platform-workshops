@@ -483,7 +483,7 @@ oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.s
 
 **Note: if you're doing the live training in the d8f105-dev and d8f105-tools namespaces, skip this step**
 
-In your dev namespace, create the following network policies, replacing [-dev] with the name of your dev namespace.
+In your dev namespace, create the following network policies, replacing [-dev] with the name of your dev namespace and [licenseplate] with the 6-character license plate that is used at the start of each namespace name.
 
 ```
 apiVersion: networking.k8s.io/v1
@@ -500,7 +500,8 @@ spec:
               network.openshift.io/policy-group: ingress
   policyTypes:
     - Ingress
----
+```
+```
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -513,7 +514,7 @@ spec:
         - podSelector: {}
   policyTypes:
     - Ingress
----
+```
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
