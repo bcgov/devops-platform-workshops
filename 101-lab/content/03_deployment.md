@@ -73,7 +73,7 @@ Increasing the resources (especially CPU) right now will help with faster pod st
 
 - From the terminal, run the follow oc command:
 ```oc:cli
-oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=500m,memory=512Mi' --limits='cpu=1000m,memory=1024Mi'
+oc -n [-dev] set resources deployment/rocketchat-[username] --requests='cpu=250m,memory=512Mi' --limits='memory=1024Mi'
 ```
 
 - Expected output from the previous command:
