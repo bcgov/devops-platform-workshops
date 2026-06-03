@@ -483,7 +483,7 @@ oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.s
 
 **Note: if you're doing the live training in the d8f105-dev and d8f105-tools namespaces, skip this step**
 
-In your dev namespace, create the following network policies, replacing [-dev] with the name of your dev namespace and [licenseplate] with the 6-character license plate that is used at the start of each namespace name.
+In your dev namespace, create the following three network policies. You can do this by selecting your dev namespace in the web console. Click on the '+add' menu option. Paste a block of YAML above into window, and edit the namespace name and/or licenseplate placeholders to match your namespace. Repeat for each network policy.
 
 ```
 apiVersion: networking.k8s.io/v1
@@ -532,8 +532,6 @@ spec:
   policyTypes:
     - Ingress
 ```
-
-You can do this by selecting your dev namespace in the web console. Click on the '+add' menu option. Paste the YAML above into window, and edit the namespace name and licenseplate to match your namespace. The licenseplate is the 6-digit alphanumeric part of the namespace name. 
 
 ## Create a Route for your Rocket.Chat App
 Your rocketchat application may already have a route created for it. If you were using `oc new-app` however, a route would not have been created by default. 
