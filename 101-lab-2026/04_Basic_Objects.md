@@ -1,10 +1,12 @@
 # Basic Objects
 
-In this section, we'll create a very simple web page and run in on OpenShift by creating an `python` server. 
+In this section, we'll create a very simple web page and run it on OpenShift by creating an `python` server. 
 
-We'll use an existing container image of `python` and run it inside a pod on OpenShift. 
+We'll use an existing container image of `python` and run it inside a pod on OpenShift. A container image is a read only file that contains all the code, libraries and dependencies to run an application or its components.  
 
-We'll use the `deployment` object in OpenShift to create our pod and give it instructions. 
+We'll use the `deployment` object in OpenShift to run our container. OpenShift will create a 'pod' to run the container and give it instructions and resources. The 'deployment' acts as a recipe for creating pods. Often multiple replicas run simultaneously.  
+
+We'll use a `configmap` object to apply additional configuration to the pods created by our deployment.
 
 We'll also create the other objects needed to allow the pod to be accessed from outside OpenShift, a: 
 - `service`
@@ -54,7 +56,7 @@ spec:
 EOF
 ```
 
-This will create a deployment and generate our pod, but it won't work just yet. Click on your deployment's name in the topology menu, then again on the name in the right pane. Click the 'pods' tab. Notice that pod is not running. If you click the 'logs' menu, you can see some information about why that could be. 
+This will create a deployment and generate our pod, but it won't work just yet. Click on your deployment's name in the topology menu, then again on the name in the right pane. Click the 'pods' tab. Notice that pod is not running. If you click the 'logs' menu, you can see some information about why that might be. 
 
 ## Create a configmap
 
@@ -79,7 +81,7 @@ After a few moments, our `deployment` will restart, this time with the configmap
 
 ## More objects
 
-We still need some more objects to make our pod accessible
+We still need some more objects to make our pod accessible from the internet
 
 ### Service
 Next, we'll need to create a service. A service gives us a stable IP address where our pods from our `deployment` can be reached, even if the individual pods are deleted or recreated.  
@@ -95,8 +97,9 @@ oc expose svc/python-html-demo --name=python-html-demo-secure --port=8080 --tls-
 ```
 
 Check the route you created with: 
-
-`oc get route python-html-demo-secure`
+```
+oc get route python-html-demo-secure
+````
 
 *note*: we avoid creating an insecure `http://` route in this section because modern browsers will default to `https` and won't show our page without manually retyping as `http` through a warning page
 
