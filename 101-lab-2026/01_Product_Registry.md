@@ -53,8 +53,7 @@ Admin access to your namespace is automatically granted to the product owner and
 
 Once your product set has been created, let's edit some of the resources. If you needed additional CPU, memory or storage resources, this may require review and explanation to ensure resources are allocated efficiently. 
 
-Each product set comes with four 'namespaces' - development (dev), test, tools and production (prod). 
-In this training, we don't use the production or test namespaces. We'll set their resource values to 0. 
+Each product set comes with four 'namespaces' - development (dev), test, tools and production (prod). In this training, we don't use the production or test namespaces. We'll set their resource values to 0. 
 - Click on your product set in the 'products' list in the registry
 - Scroll down and click the `Quotas(request)` section
 - We'll leave 'development' and 'tools' at the default values

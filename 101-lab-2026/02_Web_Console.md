@@ -14,4 +14,4 @@ https://console.apps.gold.devops.gov.bc.ca
 
 - Log in to the gold cluster using your IDIR account
 
-- Explore resources available in web console (explore network policy?)
+- We will create objects in these namespaces in the following sections
