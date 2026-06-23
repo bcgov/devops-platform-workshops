@@ -94,13 +94,23 @@ The GitOpsTeam defines the users that will have access to the GitOps repository 
 * Set `/metadata/namespace` to your tools namespace, such as abc123-tools
 * Add your GitHub ID in `/spec/gitOpsMembers/admins` as `yourID`
 * Add your GitHub ID in `/spec/projectMembers/maintainers` as `yourID@github`
+  * **Note:** For the previous step, double-check that you are adding `yourID@github`  under `/spec/projectMembers/maintainers`, not under `/spec/gitOpsMembers/maintainers`. 
 * If you have an IDIR account, add it in `/spec/projectMembers/maintainers` as your email address, such as `first.last@gov.bc.ca`
-* Remove the sample user IDs (myGitHubID, seniorDev&#064;gov.bc.ca, etc.)
-* Save the file and apply it, replacing [-tools] with your tools namespace.
-* **Note** that it is the namespace definition in the tempalte, not the command, that sets where the template will be applied. We could run this in any namespace we have access to. 
+* Remove the sample user IDs (ourGitHubTeam, dev1-githubid, otherDev@gov.bc.ca, etc.)
+* Save the file
+* In your terminal, make sure you are in the same directory that your GitOps Team template is located, for example:
+
+```
+cd ~/Downloads
+```
+* Apply the file, replacing [-tools] with your tools namespace.
+
 ```
 oc apply -n [-tools] -f gitopsteam_template.yaml
 ```
+
+* **Note** that it is the namespace definition in the template, not the command, that sets where the template will be applied. We could run this in any namespace we have access to. 
+
 
 **Note:** If you are not already a member of the 'bcgov-c' GitHub organization, you will be sent an email invitation to join it.  You will have to join the organization before you can access your repository.
 
@@ -273,9 +283,7 @@ First, create a directory in your GitOps repository (or anywhere you prefer) for
 ```
 mkdir mariadb-helm
 ```
-Download the 'values.yaml' file from this respository. 
-
-openshift-201/gitops_files/values.yaml
+Download the [values.yaml](gitops_files/values.yaml) file from this respository. 
 
 Save it to the new `mariadb-helm` directory.  Add the file, commit, and push to GitHub:
 ```
@@ -284,14 +292,22 @@ git commit -a -m "Add Helm values file"
 git push origin
 ```
 
-Download the [multi-source application template](gitops_files/app.helm-multi-source.yaml).  Edit the file, replacing the LICENSEPLATE placeholder with your license plate.  Create the application in your dev namespace.
+Download the [multi-source application template](gitops_files/app.helm-multi-source.yaml).  Edit the file, replacing the LICENSEPLATE placeholder with your license plate.  
+
+Save the file and switch directories to the mariadb-helm folder:
+
+```
+cd mariadb-helm
+```
+
+Create the application in your dev namespace:
 ```
 oc -n ${LICENSEPLATE}-dev apply -f app.helm-multi-source.yaml
 ```
 
 In the Argo CD UI, click on the new application and view the resources that would be created.  Note the names of the resources ("mariadb-helm").
 
-Now update the values.yaml file and enter a value for `fullnameOverride` at line 47.  For example:
+To change the names of the resources, update the `values.yaml` file and add the Helm chart value `fullnameOverride` at the top level of the file. For example:
 ```
 fullnameOverride: "testing"
 ```
