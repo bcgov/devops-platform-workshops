@@ -67,7 +67,7 @@ Argo CD ensures that deployed resources match the declared state, including the 
 ## Integration with the Private Cloud
 The Platform Services team maintains a dedicated instance of Argo CD for our users.
 
-The Private Cloud clusters use a custom operator to create and manage resources related to project teams' usage of Argo CD.  When a user creates a `GitOpsTeam` resource, the operator automatically detects it and does all necessary setup, including the creation of a Git repository, configuration of repository access, creation of a project in Argo CD, and the creation of Keycloak groups used for controlling access to the project in the Argo CD UI.  In addition to automating the setup, the operator also ensures consistent configuration for all projects and enforces certain security constratints.  Users can modify the access rules for the Git repository and the Argo CD UI by editing their `GitOpsTeam`.
+The Private Cloud clusters use a custom operator to create and manage resources related to project teams' usage of Argo CD.  When a user creates a `GitOpsTeam` resource, the operator automatically detects it and does all necessary setup, including the creation of a Git repository, configuration of repository access, creation of a project in Argo CD, and the creation of Keycloak groups used for controlling access to the project in the Argo CD UI.  In addition to automating the setup, the operator also ensures consistent configuration for all projects and enforces certain security constraints.  Users can modify the access rules for the Git repository and the Argo CD UI by editing their `GitOpsTeam`.
 
 ### Separate code and configuration repositories
 It is considered a Best Practice to use separate Git repositories for your application code (the CI part of CI/CD) and deployment configuration (the CD part of CI/CD).  There are a number of reasons for this, such as:
@@ -94,11 +94,11 @@ The GitOpsTeam defines the users that will have access to the GitOps repository 
 * Set `/metadata/namespace` to your tools namespace, such as abc123-tools
 * Add your GitHub ID in `/spec/gitOpsMembers/admins` as `yourID`
 * Add your GitHub ID in `/spec/projectMembers/maintainers` as `yourID@github`
-  * **Note:** For the previous step, double-check that you are adding `yourID@github`  under `/spec/projectMembers/maintainers`, not under `/spec/gitOpsMembers/maintainers`. 
+  * **Note:** For the previous step, double-check that you are adding `yourID@github` under `/spec/projectMembers/maintainers`, not under `/spec/gitOpsMembers/maintainers`. 
 * If you have an IDIR account, add it in `/spec/projectMembers/maintainers` as your email address, such as `first.last@gov.bc.ca`
 * Remove the sample user IDs (ourGitHubTeam, dev1-githubid, otherDev@gov.bc.ca, etc.)
 * Save the file
-* In your terminal, make sure you are in the same directory that your GitOps Team template is located, for example:
+* In your terminal, make sure you are in the same directory that your GitOpsTeam template is located, for example:
 
 ```
 cd ~/Downloads
@@ -283,7 +283,7 @@ First, create a directory in your GitOps repository (or anywhere you prefer) for
 ```
 mkdir mariadb-helm
 ```
-Download the [values.yaml](gitops_files/values.yaml) file from this respository. 
+Download the [values.yaml](gitops_files/values.yaml) file from this repository. 
 
 Save it to the new `mariadb-helm` directory.  Add the file, commit, and push to GitHub:
 ```
@@ -404,11 +404,15 @@ The rest of the patch file defines any changes to the default configuration.  In
 #### Optional: Install the 'kustomize' CLI
 Although not required, the 'kustomize' CLI can help you troubleshoot any errors you may have in your setup.  The CLI processes the app in the same way as Argo CD and will show you the same errors.  It may be helpful to run it to either ensure that your files are all good before committing them to your GitOps repo or to debug errors that you get in the Argo CD UI.
 
-`brew install kustomize`
+```
+brew install kustomize
+```
 
 Alternatively, the executable can be downloaded outside of a package management system:
 
-`curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash && sudo mv kustomize /usr/local/bin/`
+```
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash && sudo mv kustomize /usr/local/bin/
+```
 
 Run 'kustomize build' followed by the path to the overlay directory to build for.  To verify the setup and view the resulting YAML manifests, run it against the dev directory.
 
@@ -501,7 +505,22 @@ git commit -a -m "Add argocd_apps"
 git push origin
 ```
 
-Now use the Argo CD UI to create a new app called 'LICENSEPLATE-app-of-apps'.  Set the Path to `argocd_apps`.  Upon creation, the app of apps will show the other app as a dependent resource.
+Now create a new app in Argo CD for the app of apps:
+
+- General
+    - Application Name: `LICENSEPLATE-app-of-apps`
+    - Project Name: select your project from the dropdown
+- Source
+    - Repository URL: `https://github.com/bcgov-c/tenant-gitops-LICENSEPLATE`
+    - Path: `argocd_apps`
+- Destination
+    - Cluster URL: `https://kubernetes.default.svc`
+    - Namespace: `LICENSEPLATE-dev`
+
+Click **Create**. 
+
+After the app is created, open `LICENSEPLATE-app-of-apps`. The `LICENSEPLATE-app1` application should appear as a dependent resource.
+
 
 But you will notice that you now have two "app1" apps!
 * `openshift-bcgov-gitops-shared/LICENSEPLATE-app1`
