@@ -47,19 +47,19 @@ __Objective__: Create an init container
 
 ```YAML
 initContainers:
-  - name: init
-    image: docker.io/giantswarm/tiny-tools
-    command:
-      - /bin/sh
-      - '-c'
-      - >-
-        c=$(curl -X POST -H 'Content-Type: application/json' --data
-        '{"text":"Say Hello"}'
-        YOUR_WEBHOOK_URL)
-    resources: {}
-    terminationMessagePath: /dev/termination-log
-    terminationMessagePolicy: File
-    imagePullPolicy: Always
+        - name: init
+          image: docker.io/giantswarm/tiny-tools
+          command:
+            - /bin/sh
+            - '-c'
+            - >-
+              c=$(curl -X POST -H 'Content-Type: application/json' --data
+              '{"text":"Say Hello"}'
+              YOUR_WEBHOOK_URL)
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
 ```
 **Be careful when pasting your Webhook URL into the YAML above, you will need the ) after your URL.** 
 - Save your changes to the YAML. It should look similar to this: 
@@ -89,26 +89,26 @@ Lifecycle hooks can be configured to start and stop a container properly. The li
 - After replacing 'YOUR_WEBHOOK_URL' below with the webhook URL from the earlier step, add the following section of YAML under `spec: -> template: -> spec: -> containers:` as a sibling to `resources:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
 ```YAML
 lifecycle:
-  postStart:
-    exec:
-      command:
-        - /bin/sh
-        - '-c'
-        - |
-          (wget --header="Content-Type: application/json" \
-          --post-data='{"text": "'"$HOSTNAME"' is at the postStart phase, hooray!"}' \
-          -O- YOUR_WEBHOOK_URL \
-          >/dev/null 2>&1 || true) &
-  preStop:
-    exec:
-      command:
-        - /bin/sh
-        - '-c'
-        - |
-          (wget --header="Content-Type: application/json" \
-          --post-data='{"text": "'"$HOSTNAME"' is just about to STOP!"}' \
-          -O- YOUR_WEBHOOK_URL \
-          >/dev/null 2>&1 || true) &     
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - '-c'
+                  - |
+                    (wget --header="Content-Type: application/json" \
+                    --post-data='{"text": "'"$HOSTNAME"' is at the postStart phase, hooray!"}' \
+                    -O- YOUR_WEBHOOK_URL \
+                    >/dev/null 2>&1 || true) &
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - '-c'
+                  - |
+                    (wget --header="Content-Type: application/json" \
+                    --post-data='{"text": "'"$HOSTNAME"' is just about to STOP!"}' \
+                    -O- YOUR_WEBHOOK_URL \
+                    >/dev/null 2>&1 || true) &   
 ```
 -  Save your changes to the YAML. It should now look similar to this: 
 
@@ -125,13 +125,12 @@ It may be necessary, from time to time, to override the initial command/entrypoi
 
 ```YAML
 command:
-  - /bin/sh
-  - '-c'
-  - |
-    wget --header="Content-Type: application/json" \
-    --post-data='{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
-    -O- YOUR_WEBHOOK_URL
-
+            - /bin/sh
+            - '-c'
+            - |
+              wget --header="Content-Type: application/json" \
+              --post-data='{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
+              -O- YOUR_WEBHOOK_URL
 ```
 
 After saving, your rocketchat deployment YAML should look similar to this (some sections have been collapsed for easier viewing):
