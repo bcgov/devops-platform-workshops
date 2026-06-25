@@ -31,23 +31,13 @@ To understand what will happen when a pod with ephemeral storage is removed,
 - Recreate the Rocket.Chat application user:
 
 ```oc:cli
-oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db = db.getSiblingDB("rocketchat");
-        try { db.dropUser("rocketchat"); } catch(e) {}
-        db.createUser({
-          user: "rocketchat",
-          pwd: "rocketchatpass",
-          roles: [{ role: "readWrite", db: "rocketchat" }]
-        })'
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh "mongodb://rootuser:rootpassword@localhost:27017/admin" --eval 'db = db.getSiblingDB("rocketchat"); try { db.dropUser("rocketchat"); } catch(e) {} db.createUser({ user: "rocketchat", pwd: "rocketchatpass", roles: [{ role: "readWrite", db: "rocketchat" }]})'
 ```
 
 - Verify the user exists (the output should show the rocketchat user listed):
 
 ```oc:cli
-oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db.getSiblingDB("rocketchat").getUsers()'
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh "mongodb://rootuser:rootpassword@localhost:27017/admin" --eval 'db.getSiblingDB("rocketchat").getUsers()'
 ```
 
 - Now that the application user exists again, Rocket.Chat can authenticate successfully. Scale `rocketchat-[username]` to 1 pod:
@@ -98,23 +88,13 @@ Now that we notice all messages and configuration is gone whenever pods cycle, l
 - Recreate the Rocket.Chat application user, since MongoDB's data directory was reset:
 
 ```oc:cli
-oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db = db.getSiblingDB("rocketchat");
-        try { db.dropUser("rocketchat"); } catch(e) {}
-        db.createUser({
-          user: "rocketchat",
-          pwd: "rocketchatpass",
-          roles: [{ role: "readWrite", db: "rocketchat" }]
-        })'
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh "mongodb://rootuser:rootpassword@localhost:27017/admin" --eval 'db = db.getSiblingDB("rocketchat"); try { db.dropUser("rocketchat"); } catch(e) {} db.createUser({ user: "rocketchat", pwd: "rocketchatpass", roles: [{ role: "readWrite", db: "rocketchat" }]})'
 ```
 
 - Verify the user exists (the output should show the rocketchat user listed):
 
 ```oc:cli
-oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db.getSiblingDB("rocketchat").getUsers()'
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh "mongodb://rootuser:rootpassword@localhost:27017/admin" --eval 'db.getSiblingDB("rocketchat").getUsers()'
 ```
 
 - Now that the application user exists again, Rocket.Chat can authenticate succesfully. Scale `rocketchat-[username]` to 1 pod:

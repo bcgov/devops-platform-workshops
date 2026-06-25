@@ -335,7 +335,7 @@ Expected output from the above command:
 deployment.apps/rocketchat-[username] updated
 ```
 
-Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time)
+Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time).
 
 
 ### Sensitive Configurations
