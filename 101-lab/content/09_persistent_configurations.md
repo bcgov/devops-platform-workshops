@@ -124,7 +124,7 @@ metadata:
 ```
 oc -n [-dev] describe secret rocketchat-[username]-secret
 Name:         rocketchat-[username]-secret
-Namespace:    [namespace]
+Namespace:    [-dev]
 Labels:       <none>
 Annotations:  <none>
 

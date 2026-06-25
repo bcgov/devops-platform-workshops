@@ -8,7 +8,7 @@ A Pod can be extended beyond the normal operation of the container by allowing d
 
 [Video walkthrough](https://youtu.be/552gtIZfEu4)
 
-**Note: The written instructions below have been updated since the above video was recorded. The video is still useful for understanding the overall process,but please make sure to follow the steps in the written instructions.**
+**Note: The written instructions below have been updated since the above video was recorded. The video is still useful for understanding the overall process, but please make sure to follow the steps in the written instructions.**
 
 ## Init Containers
 Init containers are specialized containers that run before app containers in a pod. Init containers can contain utilities or setup scripts not present in an app image.
@@ -47,19 +47,19 @@ __Objective__: Create an init container
 
 ```YAML
 initContainers:
-        - name: init
-          image: docker.io/giantswarm/tiny-tools
-          command:
-            - /bin/sh
-            - '-c'
-            - >-
-              c=$(curl -X POST -H 'Content-Type: application/json' --data
-              '{"text":"Say Hello"}'
-              YOUR_WEBHOOK_URL)
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          imagePullPolicy: Always
+  - name: init
+    image: docker.io/giantswarm/tiny-tools
+    command:
+      - /bin/sh
+      - '-c'
+      - >-
+        c=$(curl -X POST -H 'Content-Type: application/json' --data
+        '{"text":"Say Hello"}'
+        YOUR_WEBHOOK_URL)
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    imagePullPolicy: Always
 ```
 **Be careful when pasting your Webhook URL into the YAML above, you will need the ) after your URL.** 
 - Save your changes to the YAML. It should look similar to this: 
@@ -85,30 +85,30 @@ oc -n [-dev] logs rocketchat-[username]-[pod-id] -c init
 Lifecycle hooks can be configured to start and stop a container properly. The lifecycle hook is tied directly to each container. Next we will add a similar pre and post hook as the `initContainer` to demonstrate when it executes in your rocketchat deployment. 
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
-    - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing 'YOUR_WEBHOOK_URL' below with the webhook URL from the earlier step, add the following section of YAML under the first item in `spec: -> template: -> spec: -> containers -> resources:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
+    - If you wish to perform this from the cli with the `oc` tool, type `oc -n [-dev] edit deployment/rocketchat-[username]`
+- After replacing 'YOUR_WEBHOOK_URL' below with the webhook URL from the earlier step, add the following section of YAML under `spec: -> template: -> spec: -> containers:` as a sibling to `resources:`. Again, pay careful attention to the YAML indentation and remember to add in your webhook URL. 
 ```YAML
 lifecycle:
-            postStart:
-              exec:
-                command:
-                  - /bin/sh
-                  - '-c'
-                  - |
-                    (wget --header="Content-Type: application/json" \
-                    --post-data='{"text": "'"$HOSTNAME"' is at the postStart phase, hooray!"}' \
-                    -O- YOUR_WEBHOOK_URL \
-                    >/dev/null 2>&1 || true) &
-            preStop:
-              exec:
-                command:
-                  - /bin/sh
-                  - '-c'
-                  - |
-                    (wget --header="Content-Type: application/json" \
-                    --post-data='{"text": "'"$HOSTNAME"' is just about to STOP!"}' \
-                    -O- YOUR_WEBHOOK_URL \
-                    >/dev/null 2>&1 || true) &      
+  postStart:
+    exec:
+      command:
+        - /bin/sh
+        - '-c'
+        - |
+          (wget --header="Content-Type: application/json" \
+          --post-data='{"text": "'"$HOSTNAME"' is at the postStart phase, hooray!"}' \
+          -O- YOUR_WEBHOOK_URL \
+          >/dev/null 2>&1 || true) &
+  preStop:
+    exec:
+      command:
+        - /bin/sh
+        - '-c'
+        - |
+          (wget --header="Content-Type: application/json" \
+          --post-data='{"text": "'"$HOSTNAME"' is just about to STOP!"}' \
+          -O- YOUR_WEBHOOK_URL \
+          >/dev/null 2>&1 || true) &     
 ```
 -  Save your changes to the YAML. It should now look similar to this: 
 
@@ -120,17 +120,18 @@ lifecycle:
 It may be necessary, from time to time, to override the initial command/entrypoint of a container image. Generally this is used for troubleshooting purposes, or to override a vendor provided image. 
 
 - From the Web Console, navigate to the `rocketchat-[username]` deployment and click on `YAML` tab
-    - If you wish to perform this from the cli with the `oc` tool, type `oc edit deployment/rocketchat-[username]`
-- After replacing 'YOUR_WEBHOOK_URL' with your WebHook URL, add the following section of code under the first item in `spec: -> template: -> spec: -> containers -> resources:`
+    - If you wish to perform this from the cli with the `oc` tool, type `oc -n [-dev] edit deployment/rocketchat-[username]`
+- After replacing 'YOUR_WEBHOOK_URL' with your WebHook URL, add the following section of code under `spec: -> template: -> spec: -> containers:` as a sibling to `resources`.
 
 ```YAML
 command:
-            - /bin/sh
-            - '-c'
-            - |
-              wget --header="Content-Type: application/json" \
-              --post-data='{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
-              -O- YOUR_WEBHOOK_URL
+  - /bin/sh
+  - '-c'
+  - |
+    wget --header="Content-Type: application/json" \
+    --post-data='{"text": "'"$HOSTNAME"' is AN OVERRIDING COMMAND!"}' \
+    -O- YOUR_WEBHOOK_URL
+
 ```
 
 After saving, your rocketchat deployment YAML should look similar to this (some sections have been collapsed for easier viewing):
