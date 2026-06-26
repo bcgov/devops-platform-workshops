@@ -108,7 +108,7 @@ lifecycle:
                     (wget --header="Content-Type: application/json" \
                     --post-data='{"text": "'"$HOSTNAME"' is just about to STOP!"}' \
                     -O- YOUR_WEBHOOK_URL \
-                    >/dev/null 2>&1 || true) &   
+                    >/dev/null 2>&1 || true) &       
 ```
 -  Save your changes to the YAML. It should now look similar to this: 
 
