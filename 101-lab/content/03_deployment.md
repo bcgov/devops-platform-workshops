@@ -213,17 +213,7 @@ MONGODB_APP_LABEL        The label to use for the app                           
   - From the CLI, `-l` flag will add a label `ocp101=participant` to your deployment.
 
 ```oc:cli
-oc -n [-dev] process -f \
-https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
--p MONGODB_ROOT_USER=rootuser \
--p MONGODB_ROOT_PASSWORD=rootpassword \
--p MONGODB_APP_USER=rocketchat \
--p MONGODB_APP_PASSWORD=rocketchatpass \
--p MONGODB_DATABASE=rocketchat \
--p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username] \
--l ocp101=participant \
--l app=rocketchat-[username] | oc -n [-dev] create -f - --dry-run=client
+oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_ROOT_USER=rootuser -p MONGODB_ROOT_PASSWORD=rootpassword -p MONGODB_APP_USER=rocketchat -p MONGODB_APP_PASSWORD=rocketchatpass -p MONGODB_DATABASE=rocketchat -p MONGODB_NAME=mongodb-[username] -p MONGODB_APP_LABEL=rocketchat-[username] -l ocp101=participant -l app=rocketchat-[username] | oc -n [-dev] create -f - --dry-run=client
 ```
 
 > When you ran the cli command you should get an output like this:
@@ -237,17 +227,7 @@ service/mongodb-[username] created (dry run)
 Now, let's run the command for real by removing the dry run. 
 
 ```oc:cli
-oc -n [-dev] process -f \
-https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml \
--p MONGODB_ROOT_USER=rootuser \
--p MONGODB_ROOT_PASSWORD=rootpassword \
--p MONGODB_APP_USER=rocketchat \
--p MONGODB_APP_PASSWORD=rocketchatpass \
--p MONGODB_DATABASE=rocketchat \
--p MONGODB_NAME=mongodb-[username] \
--p MONGODB_APP_LABEL=rocketchat-[username] \
--l ocp101=participant \
--l app=rocketchat-[username] | oc -n [-dev] create -f - 
+oc -n [-dev] process -f https://raw.githubusercontent.com/bcgov/devops-platform-workshops/master/101-lab/mongo-ephemeral-template.yaml -p MONGODB_ROOT_USER=rootuser -p MONGODB_ROOT_PASSWORD=rootpassword -p MONGODB_APP_USER=rocketchat -p MONGODB_APP_PASSWORD=rocketchatpass -p MONGODB_DATABASE=rocketchat -p MONGODB_NAME=mongodb-[username] -p MONGODB_APP_LABEL=rocketchat-[username] -l ocp101=participant -l app=rocketchat-[username] | oc -n [-dev] create -f -
 
 ```
 
@@ -276,12 +256,7 @@ Note: We authenticate to the admin database with root credentials (rootuser/root
 - Create the RocketChat database user (authenticating as root):
 
 ```oc:cli
-oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db.getSiblingDB("rocketchat").createUser({
-  user: "rocketchat",
-  pwd: "rocketchatpass",
-  roles: [{ role: "readWrite", db: "rocketchat" }]})'
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh "mongodb://rootuser:rootpassword@localhost:27017/admin" --eval 'db.getSiblingDB("rocketchat").createUser({ user: "rocketchat", pwd: "rocketchatpass", roles: [{ role: "readWrite", db: "rocketchat" }]})'
 ```
 
 - Expected output:
@@ -293,9 +268,7 @@ oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
 - Verify the user was created:
 
 ```oc:cli
-oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rootuser:rootpassword@localhost:27017/admin" \
---eval 'db.getSiblingDB("rocketchat").getUsers()'
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh "mongodb://rootuser:rootpassword@localhost:27017/admin" --eval 'db.getSiblingDB("rocketchat").getUsers()'
 ```
 
 - Expected output:
@@ -317,9 +290,7 @@ users: [
 
 - Test that the application can authenticate: 
 ```oc:cli
-oc -n [-dev] exec deployment/mongodb-[username] -- mongosh \
-"mongodb://rocketchat:rocketchatpass@localhost:27017/rocketchat" \
---eval 'db.adminCommand("ping")'
+oc -n [-dev] exec deployment/mongodb-[username] -- mongosh "mongodb://rocketchat:rocketchatpass@localhost:27017/rocketchat" --eval 'db.adminCommand("ping")'
 ```
 
 - Expected output:
@@ -356,9 +327,7 @@ This is shown in the image below (**note that you need to replace [username] wit
 
 Alternatively, you can use the CLI to apply the environment variables:
 ```
-oc -n [-dev] set env deployment/rocketchat-[username] \
-  "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat" \
-  "ROOT_URL=http://rocketchat-[username]:3000"
+oc -n [-dev] set env deployment/rocketchat-[username] "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-27017/rocketchat" "ROOT_URL=http://rocketchat-3000"
 ```
 
 Expected output from the above command:
@@ -366,7 +335,7 @@ Expected output from the above command:
 deployment.apps/rocketchat-[username] updated
 ```
 
-Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time)
+Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time).
 
 
 ### Sensitive Configurations

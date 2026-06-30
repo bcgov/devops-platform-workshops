@@ -11,7 +11,7 @@ Currently CPU and memory metrics are supported, with additional arbitrary metric
 
 [Video walkthrough](https://youtu.be/ot-pE495JLE) 
 
-**Note: The video above shows webhook creation in an older version of RocketChat. It’s still useful for understanding the overall process, but the written instructions below should be followed, as they match the current version of RocketChat used in this lab.**
+**Note: The video above shows webhook creation in an older version of RocketChat. It’s still useful for understanding the overall process, but the written instructions below should be followed as they match the current version of RocketChat used in this lab.**
 
 ## Autoscaling Pods
 This lab will provide a simple demonstration of autoscaling based on CPU, as this is configurable in the Web Console. 
@@ -38,7 +38,7 @@ oc -n [-dev] autoscale deployment/rocketchat-[username] --min 1 --max 10 --cpu-p
 
   - Enter a name (e.g. 'loadtest')
 
-  - Set 'Post to Channel' as #general
+  - Set 'Post to Channel' as '#general'
 
   - Set 'Post as'  as 'rocket.cat'
 
@@ -52,13 +52,7 @@ oc -n [-dev] autoscale deployment/rocketchat-[username] --min 1 --max 10 --cpu-p
   - Paste the command below into your terminal, replace the URL at the end with the URL from your clipboard, and run it to begin the load test:
 
 ```oc:cli
-printf '{"text":"Example message","attachments":[{"title":"Rocket.Chat","title_link":"https://rocket.chat","text":"Rocket.Chat, the best open source chat","image_url":"https://rocket.chat/images/mockup.png","color":"#764FA5"}]}' \
-  > /tmp/rocketchat-post-msg.json && \
-ab -p /tmp/rocketchat-post-msg.json \
-   -n 10000 \
-   -c 10 \
-   -T "application/json" \
-   http://rocketchat-[username]-[namespace].apps.silver.devops.gov.bc.ca/hooks/[integration]/[token]
+printf '{"text":"Example message","attachments":[{"title":"Rocket.Chat","title_link":"https://rocket.chat","text":"Rocket.Chat, the best open source chat","image_url":"https://rocket.chat/images/mockup.png","color":"#764FA5"}]}' > rocketchat-post-msg.json && ab -p rocketchat-post-msg.json -n 10000 -c 10 -T "application/json" http://rocketchat-[username]-[-dev].apps.silver.devops.gov.bc.ca/hooks/[integration]/[token]
   ```
 
 - In the home page of Rocket.Chat, under 'Join rooms' click on 'Open directory', then choose the channel #general. Click the blue 'Join' button in the bottom-right. You should see lots of new messages posted to the #general channel from the loadtest.

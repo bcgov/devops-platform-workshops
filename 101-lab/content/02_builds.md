@@ -1,7 +1,7 @@
 # Builds
 In this lab, you will import the pre-built Rocket.Chat Docker image for use in your OpenShift environment. Although this section is called 'builds', we've temporarily removed image building from this section for now. 
 
-<kbd>[![Video Walkthrough Thumbnail](././images/02_builds_thumb.png)](https://youtu.be/uObexFEm2oI)<kbd>
+<kbd>[![Video Walkthrough Thumbnail](././images/02_builds_thumb.png)](https://youtu.be/uObexFEm2oI)</kbd>
 
 [Video walkthrough](https://youtu.be/uObexFEm2oI)
 
@@ -27,10 +27,7 @@ oc project [-tools]
 - With the `oc` cli, import the Rocket.Chat image:
 
 ```oc:cli
-oc -n [-tools] import-image rocketchat-[username]:8.0.1 \
-    --from=docker.io/rocketchat/rocket.chat:8.0.1 \
-    --confirm \
-    --reference-policy=local
+oc -n [-tools] import-image rocketchat-[username]:8.0.1 --from=docker.io/rocketchat/rocket.chat:8.0.1 --confirm --reference-policy=local
 ```
 - It may take a few minutes to import the Rocket.Chat image.
 
