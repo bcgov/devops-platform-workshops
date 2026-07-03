@@ -17,7 +17,7 @@ We offer this course in two modes, 'live training' or 'self-paced'.
 
 If you're attending the live training, we'll run through some background information in a 1-day workshop before the lab begins. 
 
-For the self-paced training, you can view the slides and recordings of them being presented [here](https://docs.google.com/presentation/d/1VNxqtRRECNd4uzZZslpLsdKYYXN70Gpu-jCLCD1yF9Y/edit?usp=sharinghere). 
+For the self-paced training, you can view the slides [here](https://bcgov.sharepoint.com/:p:/r/teams/10207-TeamInternalDocs/Shared%20Documents/OpenShift/OpenShift%20101%20Workshop%201.0.pptx?d=wad273e8de44e47448970c6694bc2becf&csf=1&web=1&e=0sIjldF9Y/edit?usp=sharinghere). 
 
 The lab materials have been designed so that you generally follow a happy path for a simple two-tier deployment. There will be many intentional bugs along the way that will have you encounter real-life troubleshooting techniques.
 
@@ -27,9 +27,7 @@ The live training has several live lab sessions scheduled for participants. Thes
 
 ### Lab channels
 
-If you register for live training, a rocketchat channel will be created for your cohort. This can be found in the [channel directory](https://chat.developer.gov.bc.ca/directory/channels) and the course are named in this format, based on the starting date `ocp101-YYYY-MM-DD`. 
-
-For the self-paced training, please join the [#openshift-101-selfpaced](https://chat.developer.gov.bc.ca/channel/openshift-101-selfpaced) rocketchat channel. Refer to the first post in each channel, which can also be found in the 'pinned posts' section.
+For the self-paced training, please join the [#openshift-training-101-selfpaced](https://teams.microsoft.com/l/channel/19%3Ac23ca1334c58477abf82a3ef3c56987c%40thread.tacv2/OpenShift-training-101-selfpaced?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc) MSTeams channel. 
 
 ### Problems
 
