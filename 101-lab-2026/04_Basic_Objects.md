@@ -8,7 +8,7 @@ We'll use the `deployment` object in OpenShift to run our container. OpenShift w
 
 We'll use a `configmap` object to apply additional configuration to the pods created by our deployment.
 
-We'll also create the other objects needed to allow the pod to be accessed from outside OpenShift, a: 
+We'll also create the other objects needed to allow the pod communicate, including a: 
 - `service`
 - `route` 
 - `network policy` 
