@@ -4,7 +4,7 @@ The BC Platform Services [Product Registry](https://registry.developer.gov.bc.ca
 
 ## Purpose of the registry
 
-The registry links the people responsible for maintaining the software product with the set of namespaces where the computing work is done. Since these are usually just alphanumeric codes, it's much easier to be prompted about the name of the project and people involved instead of just a set characters such as `d8f105-dev`. This helps the Platform Services Team to identify the key contacts for each product and how to reach them when needed. 
+The registry links the people responsible for maintaining the software product with the set of namespaces where the computing work is done. Since these are usually just alphanumeric codes, it's much easier to be prompted about the name of the project and people involved instead of just a set characters such as `d8f105-dev`. This helps the Platform Services Team to identify the key contacts for each product and how to reach them when needed. It also helps ensure there is always someone from the product time with the necessary access in OpenShift. 
 
 ## The provisioner 
 
@@ -13,7 +13,7 @@ The registry isn't just a list of contact information. It can interact with Open
 - Adjusting resource quotas for CPU, RAM and storage
 - Creating and deleting products and their associated namespaces in OpenShift  
 
-In short, changes made in the registry can trigger changes in OpenShift. 
+In short, changes made in the Product Registry can trigger changes in OpenShift. 
 
 ## Contact details
 
@@ -49,6 +49,7 @@ Admin access to your namespace is automatically granted to the product owner and
 
 - After your request is submitted, the provisioner will begin interacting with OpenShift to create your product set and grant the necessary access. This may take a few minutes.
 
+- Take note of your six character 'license-plate'. The name of each namespace in your product set will start with these six characters, followed by the suffix `-dev`, `-test`, `-tools` or `-prod`
 ## Quota change
 
 Once your product set has been created, let's edit some of the resources. If you needed additional CPU, memory or storage resources, this may require review and explanation to ensure resources are allocated efficiently. 
@@ -58,12 +59,15 @@ Each product set comes with four 'namespaces' - development (dev), test, tools a
 - Scroll down and click the `Quotas(request)` section
 - We'll leave 'development' and 'tools' at the default values
 - Edit the test namespace and production namespace to these values:
+
+**Test**
 ```
-Test
 CPU(core): 0
 Memory(GiB): 0
 Storage(GiB): 0
-Production
+```
+```
+**Production**
 CPU(core): 0
 Memory(GiB): 0
 Storage(GiB): 0

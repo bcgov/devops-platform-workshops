@@ -4,7 +4,7 @@ In this section, we'll create a very simple web page and run it on OpenShift by 
 
 We'll use an existing container image of `python` and run it inside a pod on OpenShift. A container image is a read only file that contains all the code, libraries and dependencies to run an application or its components.  
 
-We'll use the `deployment` object in OpenShift to run our container. OpenShift will create a 'pod' to run the container and give it instructions and resources. The 'deployment' acts as a recipe for creating pods. Often multiple replicas run simultaneously.  
+We'll use the `deployment` object in OpenShift to run our container. OpenShift will create a 'pod' to run the container image and give it instructions and resources. The 'deployment' acts as a recipe for creating pods. Often multiple replicas run simultaneously.  
 
 We'll use a `configmap` object to apply additional configuration to the pods created by our deployment.
 
@@ -109,8 +109,6 @@ Finally, let's make a network policy to allow traffic to our pod so we can see o
 
 This time, we'll create the YAML file for the Network Policy using the `oc apply` command. 
 
-
-
 ```
 cat <<EOF | oc apply -f -
 apiVersion: networking.k8s.io/v1
@@ -131,3 +129,5 @@ spec:
     - podSelector: {}
 EOF
 ```
+
+## Delete objects created in this section

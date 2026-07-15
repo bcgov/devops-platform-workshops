@@ -10,7 +10,7 @@ In this training, we'll use the the Gold cluster, so the link is:
 https://console.apps.gold.devops.gov.bc.ca
 
 
-## Log in, view your namespace
+## Log in, view your namespaces
 
 - Log in to the gold cluster using your IDIR account
 
