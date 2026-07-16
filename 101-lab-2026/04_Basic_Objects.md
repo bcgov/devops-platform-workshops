@@ -60,7 +60,9 @@ This will create a deployment and generate our pod, but it won't work just yet. 
 
 ## Create a configmap
 
-Note at the bottom of the YAML we just created, it references a `configmap` named `html-page`. This `configmap` doesn't exist yet. That's what caused our error. So, let's create it. The purpose of this `configmap` will be to hold our basic html file for our web server to run. 
+ Configmaps can be used for tasks like adding environment variable to a container, mounting a whole file for configuration or to store settings distinct settings for your different environemnts (dev, test, prod). 
+
+Note at the bottom of the YAML we just created, it references a `configmap` named `html-page`. This `configmap` doesn't exist yet. That's what caused our error. So, let's create it. The purpose of this `configmap` will be to mount a basic html file for our web server to run.
 
 Click the `+` icon to create a new object from YAML. Paste in the following YAML and create the object:
 
@@ -129,5 +131,7 @@ spec:
     - podSelector: {}
 EOF
 ```
+
+## Resource tuning? 
 
 ## Delete objects created in this section
