@@ -6,7 +6,10 @@
 - oc version
 - oc projects
 - oc project
-- oc -h 
+flags
+- oc -h , 
+combine with other commands for detailed help
+-n
 
 - oc describe 
 - oc explain

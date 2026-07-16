@@ -4,4 +4,4 @@ So far in this lab, we've made a deployment that created only a single pod. In p
 
 ## Deployment with replicas
 
-## Database replciation with StatefulSets
+## Database replication with StatefulSets

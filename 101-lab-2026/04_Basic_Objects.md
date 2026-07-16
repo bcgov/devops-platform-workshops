@@ -132,6 +132,9 @@ spec:
 EOF
 ```
 
+
 ## Resource tuning? 
+- perhaps setting really high resources in the deployment, forcing an error, troubleshooting by lowering resources... READ MESSAGE! 
+
 
 ## Delete objects created in this section
