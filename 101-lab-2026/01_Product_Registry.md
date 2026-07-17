@@ -31,7 +31,7 @@ It is important to keep these details up to date so that this access is issued a
 <kbd>![Request a new product button](./images/01_RequestANewProduct.png)</kbd>
 - In the product description set the following items: 
 ```
-Temporary Product Set: checked
+Temporary Product Set: **checked**
 Product name: OpenShift 101 Training
 Product description: Training product set 
 Ministry: *choose your ministry*

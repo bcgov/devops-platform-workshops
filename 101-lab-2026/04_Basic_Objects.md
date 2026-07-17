@@ -79,6 +79,7 @@ data:
     </html>
 ```
 
+
 After a few moments, our `deployment` will restart, this time with the configmap available. 
 
 ## More objects
