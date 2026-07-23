@@ -327,7 +327,7 @@ This is shown in the image below (**note that you need to replace [username] wit
 
 Alternatively, you can use the CLI to apply the environment variables:
 ```
-oc -n [-dev] set env deployment/rocketchat-[username] "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-27017/rocketchat" "ROOT_URL=http://rocketchat-3000"
+oc -n [-dev] set env deployment/rocketchat-[username] "MONGO_URL=mongodb://rocketchat:rocketchatpass@mongodb-[username]:27017/rocketchat" "ROOT_URL=http://rocketchat-[username]:3000"
 ```
 
 Expected output from the above command:
