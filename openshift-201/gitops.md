@@ -83,6 +83,11 @@ Therefore, do not use your GitOps repository for your application code.
 ### Log in to GitHub
 Log in to GitHub in order to access your new Git repository and the associated project in Argo CD.  Argo CD uses SSO and can be accessed by either GitHub IDs or IDIRs.  For the purposes of this exercise, we will use the GitHub ID for both.
 
+Make sure that you're a member of these github organizations: 
+
+-[bcgov](https://github.com/orgs/bcgov/sso)
+-[bcgov-c](https://github.com/orgs/bcgov-c/sso) 
+
 
 ### Getting started
 The GitOpsTeam is your vehicle for GitOps configuration.  Start by downloading a copy of the [GitOpsTeam template](gitops_files/gitopsteam_template.yaml).
@@ -120,7 +125,7 @@ oc apply -n [-tools] -f gitopsteam_template.yaml
 export LICENSEPLATE=abc123
 ```
 
-Verify that you can access the [Argo CD UI](https://gitops-shared.apps.silver.devops.gov.bc.ca).  Unless you already have access from another project, there will be no apps listed.
+Verify that you can access the [Argo CD UI](https://gitops-shared.apps.gold.devops.gov.bc.ca) - replace `gold` with the appropriate cluster name if you're working in a different cluster. Unless you already have access from another project, there will be no apps listed.
 
 ### Review your Argo CD projects
 There are two Argo CD projects associated with each GitOpsTeam.  The name of the first one is your license plate; this is the default project.  The second is named LICENSEPLATE-nonprod.  This project has access to your dev, test, and tools namespaces, but not prod.  If your organization limits access to production environments and you have developers that should only have access to non-prod resources, add them to the 'nonprod' list under 'projectMembers'.
