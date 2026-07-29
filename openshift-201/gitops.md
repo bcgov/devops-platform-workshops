@@ -86,8 +86,13 @@ Log in to GitHub in order to access your new Git repository and the associated p
 Make sure that you're a member of these github organizations: 
 
 - [bcgov](https://github.com/orgs/bcgov/sso)
-- [bcgov-c](https://github.com/orgs/bcgov-c/sso) 
+- [bcgov-c](https://github.com/orgs/bcgov-c/sso)
 
+If you're using WSL, or working with the git command line for the first time, you may also need to set up a token:
+- On GitHub.com: Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token (classic).
+- Give the token a name, an expiry, and check the box for repo scope (that covers cloning private repos).
+- Copy the token immediately — you only see it once. You may wish to save this somewhere in a file on your machine.
+- Next to the token on github.com, click Configure SSO and set to bcgov-c
 
 ### Getting started
 The GitOpsTeam is your vehicle for GitOps configuration.  Start by downloading a copy of the [GitOpsTeam template](gitops_files/gitopsteam_template.yaml).
