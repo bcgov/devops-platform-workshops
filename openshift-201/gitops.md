@@ -111,7 +111,8 @@ The GitOpsTeam defines the users that will have access to the GitOps repository 
 * In your terminal, make sure you are in the same directory that your GitOpsTeam template is located, for example:
 
 ```
-cd ~/Downloads
+Mac: cd ~/Downloads
+WSL: cd downloads 
 ```
 * Apply the file, replacing [-tools] with your tools namespace.
 
@@ -508,7 +509,7 @@ spec:
 
 Copy the 'spec' for the existing application by clicking on the app, then the Details button, then the Manifest tab.  This only shows the spec.  You can copy and paste this below the snippet above, making sure to properly indent the fields.
 
-Save the file to `argocd_apps/app.app1.yaml`.  Add, commit, and push the new directory.
+Save the file to `argocd_apps/app.app1.yaml`.  Add, commit, and push the new directory. Add you name and email if prompted. 
 ```
 git add .
 git commit -a -m "Add argocd_apps"
