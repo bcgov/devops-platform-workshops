@@ -85,8 +85,8 @@ Log in to GitHub in order to access your new Git repository and the associated p
 
 Make sure that you're a member of these github organizations: 
 
--[bcgov](https://github.com/orgs/bcgov/sso)
--[bcgov-c](https://github.com/orgs/bcgov-c/sso) 
+- [bcgov](https://github.com/orgs/bcgov/sso)
+- [bcgov-c](https://github.com/orgs/bcgov-c/sso) 
 
 
 ### Getting started
