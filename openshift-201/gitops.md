@@ -213,7 +213,7 @@ Click the 'Sync' button.  You will be prompted for confirmation in the right sid
 In the OpenShift console, go to the ConfigMaps listing for your dev namespace.  You should see the 'app1' ConfigMap listed there.  Click on the ConfigMap to view it.
 
 #### Update your app
-Update the YAML manifest `configmap.app1.yaml` for the ConfigMap, adding another key/value pair.
+Update your local version of YAML manifest `configmap.app1.yaml` for the ConfigMap, adding another key/value pair.
 ```
   foo: bar
   boo: far
