@@ -134,7 +134,7 @@ spec:
             - name: TIMELIMIT
               value: "1200"
           command: ["/opt/rh/httpd24/root/usr/bin/ab"]
-          args: ["-dSrk", "-c", "$(CONCURRENCY)", "-n", "$(REQUESTS)", "-t", "$(TIMELIMIT)", "https://$(SERVICE_HOST):$(SERVICE_PORT)/index.html"]
+          args: ["-dSrk", "-c", "$(CONCURRENCY)", "-t", "$(TIMELIMIT)", "-n", "$(REQUESTS)", "https://$(SERVICE_HOST):$(SERVICE_PORT)/index.html"]
           resources:
             requests:
               memory: "256Mi"  
