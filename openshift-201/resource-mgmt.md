@@ -128,13 +128,13 @@ spec:
             - name: SERVICE_PORT
               value: "443"
             - name: REQUESTS
-              value: "1000000"
+              value: "3000000"
             - name: CONCURRENCY
               value: "300"
             - name: TIMELIMIT
-              value: "3600"
+              value: "1200"
           command: ["/opt/rh/httpd24/root/usr/bin/ab"]
-          args: ["-dSrk", "-c", "$(CONCURRENCY)", "-n", "$(REQUESTS)", "https://$(SERVICE_HOST):$(SERVICE_PORT)/index.html"]
+          args: ["-dSrk", "-c", "$(CONCURRENCY)", "-n", "$(REQUESTS)", "-t", "$(TIMELIMIT)", "https://$(SERVICE_HOST):$(SERVICE_PORT)/index.html"]
           resources:
             requests:
               memory: "256Mi"  
