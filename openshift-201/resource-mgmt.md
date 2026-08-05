@@ -149,13 +149,13 @@ spec:
 ```
 <!-- Note for Matt: we'll need to figure out another way to limit the time **Important:** because we used a 'job' to run this load test, it is time limited to 3600 seconds - one hour. The ensures that our load test does not keep running unnecessarily beyond the time we need it. -->
 
-**Important:** This job runs a large number of request, which might take quite some time to finish. Please make sure to shutdown the job once you complete this section. You can simply delete it by `oc delete job load-test-job`.
+**Important:** This job runs a large number of requests and has a runtime of 20 minutes. Once it completes, the job and pod will remain in your namespace until removed - delete it with `oc delete job load-test-job`.
 
-From the web console, change to Developer view and navigate to the Observe tab. From the Dashboard dropdown list, pick `Kubernetes / Compute Resources / Workload`. Then in the `Workload` dropdown, select your nginx deployment. You should see the load-test pod traffic increasing CPU and memory usage metrics for the nginx workload.
+From the web console, change to Developer view and navigate to the Observe tab. From the Dashboard dropdown list, pick `Kubernetes / Compute Resources / Workload`. Then in the `Workload` dropdown, select your nginx deployment. You should see the load-test pod traffic increasing CPU and memory usage metrics for the nginx workload. After a few minutes of running the load test, you should see a CPU usage similar to the photo below. 
 
 ![cpu load](images/resource-mgmt/pod-load-cpu.png) 
 
-From the web console, select your hello-world-nginx pod and navigate to the Metrics tab. We can see the traffic we are sending our pod is affecting the CPU quite a bit. In this example we can see the actual CPU usage is well over the request we set and over 100% of the limit we set.
+From the web console, select your hello-world-nginx pod and navigate to the Metrics tab. We can see the traffic we are sending our pod is affecting the CPU quite a bit. In this example we can see the actual CPU usage climbs steadily as load ramps up, then plateaus just under the CPU limit as the pod gets throttled.
 
 ![cpu quota](images/resource-mgmt/pod-load-cpu-quota.png)
 
@@ -168,6 +168,8 @@ You can create a custom PromQL query to view the CPU throttling by using this qu
 ```GraphQL
 sum(increase(container_cpu_cfs_throttled_periods_total{namespace="ad204f-dev", pod="hello-world-nginx-d598fbd96-45rqw", container!="", cluster=""}[5m])) by (container) /sum(increase(container_cpu_cfs_periods_total{namespace="ad204f-dev", pod="hello-world-nginx-d598fbd96-45rqw", container!="", cluster=""}[5m])) by (container)
 ```
+
+This query calculates the fraction of time the container was throttled over the last 5 minutes, as a ratio between 0 and 1 — based on how often the container hit its CPU quota and got paused by the kernel. A result near 0 means the pod is rarely hitting its limit; a result near 1, like you should expect to see here once the load test has been running for a few minutes, means it's being throttled almost constantly.
 
 We can see this load test isn't affecting the memory much on this pod and our values are probably set correct for this type of load and application running in the pod.
 
