@@ -22,7 +22,7 @@ A pod definition can include both resource requests and resource limits:
 
 * If the memory allocated by all of the processes in a container exceeds the memory limit, the node Out of Memory (OOM) killer will immediately select and kill a process in the container.
 
-Resource requests should be defined for each container in a Deployment, DeploymentConfig, StatefulSet, BuildConfig, or CronJob. CPU limits are not required and are generally best left unset for performance reasons. Memory limits are not required, but are still a good idea to set. If a container shows `resources: {}`, no resource requests or limits have been defined for that container.
+Resource requests should be defined for each container in a Deployment, DeploymentConfig, StatefulSet, BuildConfig, or CronJob. CPU limits are not required and are generally best left unset for performance reasons. Memory limits are not required, but are still a good idea to set. If a container's Deployment YAML shows `resources: {}`, no resource requests or limits have been explicitly set in that template. This does not mean that the running pod has no resource requests or limits. The project's `default-limits` LimitRange applies default values when the pod is created.
 
 Let's create a deployment to test! 
 
@@ -205,11 +205,11 @@ Memory is an incompressible resource, so in low memory situations, containers th
 * BestEffort containers are treated with the lowest priority. Processes in these containers are first to be terminated if the system runs out of memory.
 
 
-Do a `oc describe pod <podname>` and see what the value of `QoS Class:` is. Try setting the limits and requests to the same value for the hello world nginx deployment. Once the pod re-deploys check the QoS Class value again.
+Run `oc describe pod <podname>` and see what the value of `QoS Class:` is. Try setting the limits and requests to the same value for the hello world nginx deployment. Once the pod re-deploys check the QoS Class value again.
 
 ## Understanding eviction process
 
-When a node in a OpenShift cluster is running out of memory or disk, it activates a flag signaling that it is under pressure. This blocks any new allocation in the node and starts the eviction process.
+When a node in an OpenShift cluster is running out of memory or disk, it activates a flag signaling that it is under pressure. This blocks any new allocation in the node and starts the eviction process.
 
 At that moment, kubelet starts to reclaim resources, killing containers and declaring pods as failed until the resource usage is under the eviction threshold again.
 
@@ -330,7 +330,7 @@ The following table describes some compute resources that can be restricted by a
 
 Quota attributes can track either resource requests or resource limits for all pods in the project. By default, quota attributes track resource requests. Instead, to track resource limits, prefix the compute resource name with limits, for example, limits.cpu.
 
-The following listing show a ResourceQuota resource defined using YAML syntax. This example specifies quotas for both the number of resources and the use of compute resources:
+The following listing shows a ResourceQuota resource defined using YAML syntax. This example specifies quotas for both the number of resources and the use of compute resources:
 
 ```yaml
 apiVersion: v1
