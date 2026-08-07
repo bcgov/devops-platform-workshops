@@ -22,7 +22,7 @@ A pod definition can include both resource requests and resource limits:
 
 * If the memory allocated by all of the processes in a container exceeds the memory limit, the node Out of Memory (OOM) killer will immediately select and kill a process in the container.
 
-Resource request and resource limits should be defined for each container in either a Deployment, DeploymentConfiguration, StatefulSets, BuildConfigs, and CronJob. If requests and limits have not been defined, then you will find a `resources: {}` line for each container.
+Resource requests should be defined for each container in a Deployment, DeploymentConfig, StatefulSet, BuildConfig, or CronJob. CPU limits are not required and are generally best left unset for performance reasons. Memory limits are not required, but are still a good idea to set. If a container's Deployment YAML shows `resources: {}`, no resource requests or limits have been explicitly set in that template. This does not mean that the running pod has no resource requests or limits. The project's `default-limits` LimitRange applies default values when the pod is created.
 
 Let's create a deployment to test! 
 
@@ -75,7 +75,9 @@ oc set resources deployment hello-world-nginx --requests cpu=15m,memory=25Mi --l
 
 This will cause the pod to re-deploy with updated resources.
 
-If a resource quota applies to a resource request, then the pod should define a resource request. If a resource quota applies to a resource limit, then the pod should also define a resource limit. We recommend ALWAYS defining resource requests and limits for all workloads.
+If a resource quota applies to a resource request, then the pod must define a resource request. If a resource quota applies to a resource limit, then the pod must also define a resource limit. We recommend always defining resource requests for all workloads. CPU limits are not required and are generally best left unset for performance reasons. Memory limits are also not required, but are a good idea to set.
+
+**Note:** We're intentionally setting a CPU limit here so that we can demonstrate what pod throttling looks like.
 
 ## Generate traffic and observe 
 
@@ -128,13 +130,13 @@ spec:
             - name: SERVICE_PORT
               value: "443"
             - name: REQUESTS
-              value: "1000000"
+              value: "3000000"
             - name: CONCURRENCY
               value: "300"
             - name: TIMELIMIT
-              value: "3600"
+              value: "1200"
           command: ["/opt/rh/httpd24/root/usr/bin/ab"]
-          args: ["-dSrk", "-c", "$(CONCURRENCY)", "-n", "$(REQUESTS)", "https://$(SERVICE_HOST):$(SERVICE_PORT)/index.html"]
+          args: ["-dSrk", "-c", "$(CONCURRENCY)", "-t", "$(TIMELIMIT)", "-n", "$(REQUESTS)", "https://$(SERVICE_HOST):$(SERVICE_PORT)/index.html"]
           resources:
             requests:
               memory: "256Mi"  
@@ -149,17 +151,19 @@ spec:
 ```
 <!-- Note for Matt: we'll need to figure out another way to limit the time **Important:** because we used a 'job' to run this load test, it is time limited to 3600 seconds - one hour. The ensures that our load test does not keep running unnecessarily beyond the time we need it. -->
 
-**Important:** This job runs a large number of request, which might take quite some time to finish. Please make sure to shutdown the job once you complete this section. You can simply delete it by `oc delete job load-test-job`.
+**Important:** 
+* This job runs a large number of requests and has a runtime of 20 minutes. Once it completes, the job and pod will remain in your namespace until removed. Delete it with `oc delete job load-test-job`.
+* When planning a load test for your own application on OpenShift, follow the [load test guidelines](https://developer.gov.bc.ca/docs/default/component/platform-developer-docs/docs/automation-and-resiliency/prepare-to-load-test-application-on-openshift/) and get your load test approved before running it. OpenShift is a shared platform, and unapproved load testing can affect other applications on the cluster. For this specific lab only, using the provided `load-test-job` configuration and parameters, prior approval is not required.
 
-From the web console, change to Developer view and navigate to the Observe tab. From the Dashboard dropdown list, pick `Kubernetes / Compute Resources / Workload`. Then in the `Workload` dropdown, select your nginx deployment. You should see the load-test pod traffic increasing CPU and memory usage metrics for the nginx workload.
+From the web console, change to Developer view and navigate to the Observe tab. From the Dashboard dropdown list, pick `Kubernetes / Compute Resources / Workload`. Then in the `Workload` dropdown, select your nginx deployment. You should see the load-test pod traffic increasing CPU and memory usage metrics for the nginx workload. After a few minutes of running the load test, you should see a CPU usage similar to the photo below. 
 
 ![cpu load](images/resource-mgmt/pod-load-cpu.png) 
 
-From the web console, select your hello-world-nginx pod and navigate to the Metrics tab. We can see the traffic we are sending our pod is affecting the CPU quite a bit. In this example we can see the actual CPU usage is well over the request we set and over 100% of the limit we set.
+From the web console, select your hello-world-nginx pod and navigate to the Metrics tab. We can see the traffic we are sending our pod is affecting the CPU quite a bit. In this example we can see the actual CPU usage climbs steadily as load ramps up, then plateaus just under the CPU limit.
 
 ![cpu quota](images/resource-mgmt/pod-load-cpu-quota.png)
 
-Because the actual CPU usage is higher than our CPU limit, OpenShift/Kubernetes will throttle the available CPU to our pod. This would affect the performance of our web server and cause slow response times in our application.
+We see the plateau because OpenShift/Kubernetes is throttling available CPU to our pod. This would affect the performance of our web server and cause slow response times in our application.
 
 ![cpu throttle](images/resource-mgmt/pod-load-cpu-throttle.png)
 
@@ -168,6 +172,8 @@ You can create a custom PromQL query to view the CPU throttling by using this qu
 ```GraphQL
 sum(increase(container_cpu_cfs_throttled_periods_total{namespace="ad204f-dev", pod="hello-world-nginx-d598fbd96-45rqw", container!="", cluster=""}[5m])) by (container) /sum(increase(container_cpu_cfs_periods_total{namespace="ad204f-dev", pod="hello-world-nginx-d598fbd96-45rqw", container!="", cluster=""}[5m])) by (container)
 ```
+
+This query calculates the fraction of time the container was throttled over the last 5 minutes, as a ratio between 0 and 1 — based on how often the container hit its CPU quota and got paused by the kernel. A result near 0 means the pod is rarely hitting its limit; a result near 1, like you should expect to see here once the load test has been running for a few minutes, means it's being throttled almost constantly.
 
 We can see this load test isn't affecting the memory much on this pod and our values are probably set correct for this type of load and application running in the pod.
 
@@ -199,11 +205,11 @@ Memory is an incompressible resource, so in low memory situations, containers th
 * BestEffort containers are treated with the lowest priority. Processes in these containers are first to be terminated if the system runs out of memory.
 
 
-Do a `oc describe pod <podname>` and see what the value of `QoS Class:` is. Try setting the limits and requests to the same value for the hello world nginx deployment. Once the pod re-deploys check the QoS Class value again.
+Run `oc describe pod <podname>` and see what the value of `QoS Class:` is. Try setting the limits and requests to the same value for the hello world nginx deployment. Once the pod re-deploys check the QoS Class value again.
 
 ## Understanding eviction process
 
-When a node in a OpenShift cluster is running out of memory or disk, it activates a flag signaling that it is under pressure. This blocks any new allocation in the node and starts the eviction process.
+When a node in an OpenShift cluster is running out of memory or disk, it activates a flag signaling that it is under pressure. This blocks any new allocation in the node and starts the eviction process.
 
 At that moment, kubelet starts to reclaim resources, killing containers and declaring pods as failed until the resource usage is under the eviction threshold again.
 
@@ -324,7 +330,7 @@ The following table describes some compute resources that can be restricted by a
 
 Quota attributes can track either resource requests or resource limits for all pods in the project. By default, quota attributes track resource requests. Instead, to track resource limits, prefix the compute resource name with limits, for example, limits.cpu.
 
-The following listing show a ResourceQuota resource defined using YAML syntax. This example specifies quotas for both the number of resources and the use of compute resources:
+The following listing shows a ResourceQuota resource defined using YAML syntax. This example specifies quotas for both the number of resources and the use of compute resources:
 
 ```yaml
 apiVersion: v1
@@ -523,11 +529,12 @@ App projects in the BC Gov clusters have a default-limits LimitRange that users 
 spec:
   limits:
   - default:
-      cpu: 250m
-      memory: 1Gi
+      memory: 4Gi
     defaultRequest:
       cpu: 50m
       memory: 256Mi
+    max: 
+      memory: 16Gi
     type: Container
 ```
 
