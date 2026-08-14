@@ -1,7 +1,7 @@
 # OpenShift 201 Training Labs
 Welcome to the OpenShift 201 Training Labs. 
 The lab materials in this folder are designed to accompany the OpenShift 201 Workshop.
-You may want to reference the [OpenShift 201 Workshop Slides](https://docs.google.com/presentation/d/1h1123AfJx5k9shYZc6JpHdpKbJSt_qcdDf9V_We9qNc) as you work through the lab. Recordings of live sessions are available in the title slide of each section. 
+You may want to reference the [OpenShift 201 Workshop Slides](../README.md) as you work through the lab. Recordings of live sessions are available in the title slide of each section. 
 
 
 ### Prerequisites:
