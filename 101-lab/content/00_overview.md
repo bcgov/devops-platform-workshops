@@ -17,7 +17,7 @@ We offer this course in two modes, 'live training' or 'self-paced'.
 
 If you're attending the live training, we'll run through some background information in a 1-day workshop before the lab begins. 
 
-For the self-paced training, you can view the slides [here](https://bcgov.sharepoint.com/:p:/r/teams/10207-TeamInternalDocs/Shared%20Documents/OpenShift/OpenShift%20101%20Workshop%201.0.pptx?d=wad273e8de44e47448970c6694bc2becf&csf=1&web=1&e=0sIjldF9Y/edit?usp=sharinghere). 
+For the self-paced training, you can view the slides [here](../../README.md).
 
 The lab materials have been designed so that you generally follow a happy path for a simple two-tier deployment. There will be many intentional bugs along the way that will have you encounter real-life troubleshooting techniques.
 
