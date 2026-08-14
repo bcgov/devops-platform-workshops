@@ -75,8 +75,6 @@ oc set resources deployment hello-world-nginx --requests cpu=15m,memory=25Mi --l
 
 This will cause the pod to re-deploy with updated resources.
 
-If a resource quota applies to a resource request, then the pod must define a resource request. If a resource quota applies to a resource limit, then the pod must also define a resource limit. We recommend always defining resource requests for all workloads. CPU limits are not required and are generally best left unset for performance reasons. Memory limits are also not required, but are a good idea to set.
-
 **Note:** We're intentionally setting a CPU limit here so that we can demonstrate what pod throttling looks like.
 
 ## Generate traffic and observe 
