@@ -22,7 +22,7 @@ A pod definition can include both resource requests and resource limits:
 
 * If the memory allocated by all of the processes in a container exceeds the memory limit, the node Out of Memory (OOM) killer will immediately select and kill a process in the container.
 
-Resource requests should be defined for each container in a Deployment, DeploymentConfig, StatefulSet, BuildConfig, or CronJob. CPU limits are not required and are generally best left unset for performance reasons. Memory limits are not required, but are still a good idea to set. If a container's Deployment YAML shows `resources: {}`, no resource requests or limits have been explicitly set in that template. This does not mean that the running pod has no resource requests or limits. The project's `default-limits` LimitRange applies default values when the pod is created.
+Resource requests should be defined for each container in a Deployment, DeploymentConfig, StatefulSet, BuildConfig, or CronJob. CPU limits are not required and are generally best left unset for performance reasons. Memory limits are not required, but are still a good idea to set. If a container's Deployment YAML shows `resources: {}`, no resource requests or limits have been explicitly set in that template. This does not mean that the running pod has no resource requests or limits. In this case, the project's `default-limits` LimitRange applies default values when the pod is created.
 
 Let's create a deployment to test! 
 
@@ -240,11 +240,11 @@ Determine risk appetite for eviction or throttling. If the risk appetite is low,
 
 Set container CPU/memory request based on the above. The more accurately the request represents the application CPU/memory usage, the better. If the request is too high, cluster and quota usage will be inefficient. If the request is too low, the chances of application eviction increase.
 
-4. Set container CPU/memory limit.
+4. Set container memory limit.
 
-Setting a limit has the effect of immediately killing a container process or CPU throttling if the combined CPU or memory usage of all processes in the container exceeds the limit, and is therefore a mixed blessing. On the one hand, it may make unanticipated excess CPU/memory usage obvious early ("fail fast"); on the other hand it also terminates processes abruptly.
+Setting a memory limit has the effect of immediately killing a container process if the memory usage of all processes in the container exceeds the limit, and is therefore a mixed blessing. On the one hand, it may make unanticipated excess memory usage obvious early ("fail fast"); on the other hand it also terminates processes abruptly.
 
-Limits should not be set to less than the expected peak container CPU/memory usage plus a percentage safety margin.
+Memory limits should not be set to less than the expected peak container memory usage plus a percentage safety margin.
 
 5. Ensure application is tuned
 
