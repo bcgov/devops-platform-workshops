@@ -23,7 +23,7 @@ The main advantage of using S2I is the ease of use for developers.  OpenShift pr
 
 In the following exercise, you will manage application builds with OpenShift, using the source strategy with a Git input source.
 
-The following commands are used to create a new application.  The `myapp` application created is a simple Java Sprint Boot app that will display a message based on environment variables.
+The following commands are used to create a new application.  The `myapp` application created is a simple NodeJS app that will display a message based on environment variables.
 
 
 ### Create a new application 
@@ -36,7 +36,8 @@ https://github.com/BCDevOps/devops-platform-workshops
 You should see output similar to the follow:
 <pre>
 ...<em>output omitted</em>...
-imagestream.image.openshift.io "myapp" created
+    imagestream.image.openshift.io "node" created
+    imagestream.image.openshift.io "myapp" created
     buildconfig.build.openshift.io "myapp" created
     deployment.apps "myapp" created
     service "myapp" created
@@ -87,7 +88,7 @@ myapp-1-build           0/1     Completed   0          10m
 myapp-85c7dc4569-njqlb  1/1     Running     0          36s
 ```
 
-> Note: sometime the build would take longer time. This might result in the replicaController being upset about where it complains about the image configuration being empty. When this happen, you won't see the deployment go through successfully. So if you are seeing the error and you are sure the image is ready, scale down the deployment:
+> Note: sometime the build would take longer time. When the deployment trys up to spin up the pod, the image it not yet ready. This might result in the replicaController being upset where it complains about the image configuration being empty. When this happen, you won't see the deployment go through successfully. So if you are seeing the error and you are sure the image is ready, scale down the deployment:
 
 ```bash
 # scale down so deployment will pick up the image later on
