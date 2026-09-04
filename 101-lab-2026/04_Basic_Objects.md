@@ -53,7 +53,6 @@ spec:
       - name: html-volume
         configMap:
           name: html-page
-EOF
 ```
 
 This will create a deployment and generate our pod, but it won't work just yet. Click on your deployment's name in the topology menu, then again on the name in the right pane. Click the 'pods' tab. Notice that pod is not running. If you click the 'logs' menu, you can see some information about why that might be. 
