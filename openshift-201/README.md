@@ -31,10 +31,10 @@ Please join the [OpenShift 201 Self-Paced](https://teams.microsoft.com/l/channel
 
 The Openshift 201 Lab is divided into the following topics:
 * [OpenShift Gitops](./gitops.md)
+* [Resource Management](./resource-mgmt.md) 
 * [Network Policy & ACS](./network-policy.md)
 * [Application Logging with Loki](./logging.md)
 * [Best Practices for Image Management](./image-management.md)
-* [Resource Management](./resource-mgmt.md) 
 * [Pod Auto Scaling](./rh201-pod-auto-scale.md)
 * [Post Outage Checkup](./post-outage-checkup.md)
 
