@@ -98,7 +98,7 @@ oc get pods
 # --------------------------------------------------
 
 # Delete a specific PVC
-oc delete pvc <pvc-name>
+oc delete pvc [pvc-name]
 
 # Or, after reviewing ALL PVCs in the namespace:
 oc delete pvc --all
@@ -112,7 +112,7 @@ oc delete pvc --all
 oc get pods
 
 # Delete a specific pod
-oc delete pod <pod-name>
+oc delete pod [pod-name]
 
 # If all remaining pods have been reviewed:
 oc delete pods --all
