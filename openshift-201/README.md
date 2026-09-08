@@ -37,6 +37,7 @@ The Openshift 201 Lab is divided into the following topics:
 * [Best Practices for Image Management](./image-management.md)
 * [Pod Auto Scaling](./rh201-pod-auto-scale.md)
 * [Post Outage Checkup](./post-outage-checkup.md)
+* [Wrap up](./decommission.md)
 
 Archived sections: 
 * Openshift Pipelines (you can choose to do either one)
