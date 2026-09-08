@@ -77,8 +77,8 @@ oc delete pdb,vpa,hpa --all
 oc get pvc
 
 # There are different ways to backup data, for example, copy data from a pod to your local
+# You don't have to run this step as there is no data from the training section that needs to be persisted
 oc rsync [pod-name]:/path/to/data ./backup-data
-
 
 # --------------------------------------------------
 # Scale down workloads
@@ -103,7 +103,6 @@ oc delete pvc [pvc-name]
 # Or, after reviewing ALL PVCs in the namespace:
 oc delete pvc --all
 
-
 # --------------------------------------------------
 # Remove remaining pods
 # --------------------------------------------------
@@ -116,7 +115,6 @@ oc delete pod [pod-name]
 
 # If all remaining pods have been reviewed:
 oc delete pods --all
-
 
 # --------------------------------------------------
 # Final verification
