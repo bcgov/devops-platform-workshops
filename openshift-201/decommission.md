@@ -10,10 +10,8 @@ This training material is based on [this instruction](https://developer.gov.bc.c
 - [Disable CI/CD Automation](#disable-cicd-automation)
 - [Clean Up OpenShift Resources](#clean-up-openshift-resources)
 - [Clean Up Dependent Services](#clean-up-dependent-services)
-- [Decommission GitHub Resources](#decommission-github-resources)
 - [Delete the Application from the Product Registry](#delete-the-application-from-the-product-registry)
-- [Complete Final Cleanup](#complete-final-cleanup)
-- [Decommissioning Checklist](#decommissioning-checklist)
+
 
 ## Review Data and Application Dependencies
 
@@ -140,6 +138,8 @@ Clean up services associated with the application, as applicable. For the contex
 - Vault: Preserve any secrets that are required for retained data or future access
 - ACS: Review application-related ACS access and remove access that is no longer required
 - ArgoCD: After auto-sync has been disabled and the application has been removed from OpenShift, remove the ArgoCD Application/Project when appropriate
+- GitHub: Update any related GitHub README to reflect the current state of the project, archive the repos and disable Github actions, webhooks, etc.
+- Other resources outside of OpenShift: Check for any other resources/services, such as S3 Object storage, TLS certificate service, SSO and CHES/CHEFS integrations, and so on. To make sure the resources there have been cancelled or updated.
 
 
 ## Delete the Application from the Product Registry
