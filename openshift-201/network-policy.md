@@ -22,7 +22,7 @@ For a connection from a source pod to a destination pod to be allowed, both the 
 
 By using network policies declarative YAML this code becomes part of your application, ensuring the consistency of “single source of truth” from your codebase.
 
-**Note:** The BC Gov OpenShift clusters are configured with OVN-kubernetes networking. In Silver and Gold clusters Egress Network Policies are not enforced. It's good to understand the options but we currently can't lab and test Egress configurations.
+**Note:** The BC Gov OpenShift clusters are configured with OVN-kubernetes networking. In Silver and Gold clusters Egress Network Policies are not enforced. 
 
 ## Lab Prep
 
