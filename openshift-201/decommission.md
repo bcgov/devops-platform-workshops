@@ -39,86 +39,89 @@ Now we can move on to deleting the resources in your namespaces. In this course,
 
 ```bash
 # --------------------------------------------------
-# Review resources
+# In the tools namespace, review resources
 # --------------------------------------------------
-# Repeat all steps for any namespaces you used, replacing [namespace] with the namespace name.
+
+# Application builds and images
+oc -n [-tools] get buildconfigs,imageStreams
+
+# Delete all builds and images. --all flag will delete all resources, in the namespace of the specified resource types
+oc -n [-tools] delete buildconfigs,imageStreams --all
+
+# --------------------------------------------------
+# In the dev namespace, review resources
+# (note that you'll need to do the same if there are resources created in test and prod namespaces)
+# --------------------------------------------------
 
 # Application workloads
-oc -n [namespace] get deployments,statefulsets,jobs,cronjobs
+oc -n [-dev] get deployments,statefulsets,jobs,cronjobs
 
 # HA objects
-oc -n [namespace] get pdb,hpa,vpa
+oc -n [-dev] get pdb,hpa,vpa
 
 # Persistent storage
-oc -n [namespace] get pvc
+oc -n [-dev] get pvc
 
 # --------------------------------------------------
-# For tools namespace, check on the builds and images
+# Delete HA objects: PodDisruptionBudget, HorizontalPodAutoscaler, VerticalPodAutoscaler
+# If they are left in place, you won't be able to scale down workloads that are protected by them
 # --------------------------------------------------
 
-oc -n [namespace] get buildconfigs,imageStreams
-
-oc -n [namespace] delete buildconfigs,imageStreams --all
-
-# --------------------------------------------------
-# Delete HA objects
-# --------------------------------------------------
-
-# --all flag will delete all resources, in the namespace of the specified resource types
-oc -n [namespace] delete pdb,vpa,hpa --all
+# Delete all the 
+oc -n [-dev] delete pdb,vpa,hpa --all
 
 # --------------------------------------------------
 # Review persistent storage and Back up data
 # --------------------------------------------------
 
 # List PVCs
-oc -n [namespace] get pvc
+oc -n [-dev] get pvc
 
 # There are different ways to backup data, for example, copy data from a pod to your local
 # You don't have to run this step as there is no data from the training section that needs to be persisted
-oc -n [namespace] rsync [pod-name]:/path/to/data ./backup-data
+oc -n [-dev] rsync [pod-name]:/path/to/data ./backup-data
 
 # --------------------------------------------------
 # Scale down workloads
 # --------------------------------------------------
 
 # Scale all Deployments to zero
-oc -n [namespace] scale deployment --all --replicas=0
+oc -n [-dev] scale deployment --all --replicas=0
 
 # Scale all StatefulSets to zero
-oc -n [namespace] scale statefulset --all --replicas=0
+oc -n [-dev] scale statefulset --all --replicas=0
 
 # Check that application pods have stopped
-oc -n [namespace] get pods
+oc -n [-dev] get pods
 
 # --------------------------------------------------
 # Delete persistent storage
 # --------------------------------------------------
 
 # Delete a specific PVC
-oc -n [namespace] delete pvc [pvc-name]
+oc -n [-dev] delete pvc [pvc-name]
 
 # Or, after reviewing ALL PVCs in the namespace:
-oc -n [namespace] delete pvc --all
+oc -n [-dev] delete pvc --all
 
 # --------------------------------------------------
 # Remove remaining pods
 # --------------------------------------------------
 
 # Check for remaining pods
-oc -n [namespace] get pods
+oc -n [-dev] get pods
 
 # Delete a specific pod
-oc -n [namespace] delete pod [pod-name]
+oc -n [-dev] delete pod [pod-name]
 
 # If all remaining pods have been reviewed:
-oc -n [namespace] delete pods --all
+oc -n [-dev] delete pods --all
 
 # --------------------------------------------------
 # Final verification
 # --------------------------------------------------
 
-oc -n [namespace] get all,deployments,statefulsets,cronjobs,pvc,pdb,hpa,vpa
+oc -n [-dev] get all,deployments,statefulsets,cronjobs,pvc,pdb,hpa,vpa
 
 ```
 
