@@ -35,92 +35,90 @@ In ArgoCD, find your application and:
 
 ## Clean Up OpenShift Resources
 
-Now we can move on to deleting the resources in your namespaces. You will need to do the following for all 4 namespaces in the product set:
+Now we can move on to deleting the resources in your namespaces. In this course, we only used the `-tools` and `-dev` namespaces, so repeat the steps for these two namespaces. For retiring an actual product, you'd need to do this for all namespaces that you've used:
 
 ```bash
 # --------------------------------------------------
 # Review resources
 # --------------------------------------------------
-
-# Set the namespace
-oc project [license-plate]-tools/dev/test/prod
+# Repeat all steps for any namespaces you used, replacing [namespace] with the namespace name.
 
 # Application workloads
-oc get deployments,statefulsets,jobs,cronjobs
+oc -n [namespace] get deployments,statefulsets,jobs,cronjobs
 
 # HA objects
-oc get pdb,hpa,vpa
+oc -n [namespace] get pdb,hpa,vpa
 
 # Persistent storage
-oc get pvc
+oc -n [namespace] get pvc
 
 # --------------------------------------------------
 # For tools namespace, check on the builds and images
 # --------------------------------------------------
 
-oc get buildconfigs,imageStreams
+oc -n [namespace] get buildconfigs,imageStreams
 
-oc delete buildconfigs,imageStreams --all
+oc -n [namespace] delete buildconfigs,imageStreams --all
 
 # --------------------------------------------------
 # Delete HA objects
 # --------------------------------------------------
 
 # --all flag will delete all resources, in the namespace of the specified resource types
-oc delete pdb,vpa,hpa --all
+oc -n [namespace] delete pdb,vpa,hpa --all
 
 # --------------------------------------------------
 # Review persistent storage and Back up data
 # --------------------------------------------------
 
 # List PVCs
-oc get pvc
+oc -n [namespace] get pvc
 
 # There are different ways to backup data, for example, copy data from a pod to your local
 # You don't have to run this step as there is no data from the training section that needs to be persisted
-oc rsync [pod-name]:/path/to/data ./backup-data
+oc -n [namespace] rsync [pod-name]:/path/to/data ./backup-data
 
 # --------------------------------------------------
 # Scale down workloads
 # --------------------------------------------------
 
 # Scale all Deployments to zero
-oc scale deployment --all --replicas=0
+oc -n [namespace] scale deployment --all --replicas=0
 
 # Scale all StatefulSets to zero
-oc scale statefulset --all --replicas=0
+oc -n [namespace] scale statefulset --all --replicas=0
 
 # Check that application pods have stopped
-oc get pods
+oc -n [namespace] get pods
 
 # --------------------------------------------------
 # Delete persistent storage
 # --------------------------------------------------
 
 # Delete a specific PVC
-oc delete pvc [pvc-name]
+oc -n [namespace] delete pvc [pvc-name]
 
 # Or, after reviewing ALL PVCs in the namespace:
-oc delete pvc --all
+oc -n [namespace] delete pvc --all
 
 # --------------------------------------------------
 # Remove remaining pods
 # --------------------------------------------------
 
 # Check for remaining pods
-oc get pods
+oc -n [namespace] get pods
 
 # Delete a specific pod
-oc delete pod [pod-name]
+oc -n [namespace] delete pod [pod-name]
 
 # If all remaining pods have been reviewed:
-oc delete pods --all
+oc -n [namespace] delete pods --all
 
 # --------------------------------------------------
 # Final verification
 # --------------------------------------------------
 
-oc get all,deployments,statefulsets,cronjobs,pvc,pdb,hpa,vpa
+oc -n [namespace] get all,deployments,statefulsets,cronjobs,pvc,pdb,hpa,vpa
 
 ```
 
