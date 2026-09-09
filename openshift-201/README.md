@@ -21,7 +21,7 @@ Here are some things to note when creating the product set request on Registry:
 - Check the box to choose a 'Temporary product set'. Your project will be deleted after 30 days, so don't create this until right before you plan to start working on the lab.
 - Name the product set as "201 selfpaced training <your_name>". That way it's very clear for us to recognize it during support later on.
 - Choose `Gold` for the hosting tier. You don't need GoldDR for 201 so leave that part unchecked.
-- In the Team Members section, make sure to assign yourself as the `Primary Technical Lead (TL)` which will automatically grant you access to the platform services and tools. You will need a different person to be the `Product Owner`, in this case, either put down one of the training facilitator's name or your actual product owner is fine.
+- In the Team Members section, make sure to assign yourself as the `Primary Technical Lead (TL)` which will automatically grant you access to the platform services and tools. You will need a different person to be the `Product Owner`, in this case, either put down one of the training facilitator's name or your actual product owner's details.
 - Now you should be all set to submit the request! An email of confirmantion will be in your email inbox very soon.
 
 Please join the [OpenShift 201 Self-Paced](https://teams.microsoft.com/l/channel/19%3A1c50fd046a6a46b680aee153013e4bdc%40thread.tacv2/OpenShift-training-201-selfpaced?groupId=a80418da-c27b-406e-89ab-7695b61924d8&tenantId=6fdb5200-3d0d-4a8a-b036-d3685e359adc) MSTeams channel, you can ask questions or help other participants in this channel. 
