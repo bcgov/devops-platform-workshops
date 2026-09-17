@@ -84,6 +84,60 @@ deployment.apps/rocketchat-[username] resource requirements updated
 
 - The pod will show as running for a few minutes and then display an error
 
+## Network policies (self-paced training)
+
+**Note: if you're doing the live training in the d8f105-dev and d8f105-tools namespaces, skip this step**
+
+In your dev namespace, create the following three network policies. You can do this by selecting your dev namespace in the web console. Click on the '+add' menu option. Paste a block of YAML above into window, and replace all instances `[-dev]` in the YAML with your `-dev` namespace name and `[licenseplate]` with the six character licenseplate name found at the start of each of your namespace names. Repeat for each network policy.
+
+```
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-openshift-ingress
+  namespace: [-dev]
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              network.openshift.io/policy-group: ingress
+  policyTypes:
+    - Ingress
+```
+```
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-same-namespace
+  namespace: [-dev]
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - podSelector: {}
+  policyTypes:
+    - Ingress
+```
+```
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: intra-namespace-comms
+  namespace: [-dev]
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              environment: tools
+              name: [licenseplate]
+  policyTypes:
+    - Ingress
+```
+
 ## __Objective 1__: Identify ImagePull Problem
 
 **This step only needs to be completed once for the shared namespace that the lab class is working in. If somebody else has completed this step already and you're not experiencing the ImagePull error, move on to _Objective 2_**. 
@@ -445,61 +499,6 @@ oc -n [-dev] get deployment/rocketchat-[username] -o json | jq '.spec.template.s
     "value": "http://rocketchat-[username]:3000"
   }
 ]
-```
-
-
-## Network policies (self-paced training)
-
-**Note: if you're doing the live training in the d8f105-dev and d8f105-tools namespaces, skip this step**
-
-In your dev namespace, create the following three network policies. You can do this by selecting your dev namespace in the web console. Click on the '+add' menu option. Paste a block of YAML above into window, and edit the namespace name and/or licenseplate placeholders to match your namespace. Repeat for each network policy.
-
-```
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-from-openshift-ingress
-  namespace: [-dev]
-spec:
-  podSelector: {}
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              network.openshift.io/policy-group: ingress
-  policyTypes:
-    - Ingress
-```
-```
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-same-namespace
-  namespace: [-dev]
-spec:
-  podSelector: {}
-  ingress:
-    - from:
-        - podSelector: {}
-  policyTypes:
-    - Ingress
-```
-```
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: intra-namespace-comms
-  namespace: [-dev]
-spec:
-  podSelector: {}
-  ingress:
-    - from:
-        - namespaceSelector:
-            matchLabels:
-              environment: tools
-              name: [licenseplate]
-  policyTypes:
-    - Ingress
 ```
 
 ## Create a Route for your Rocket.Chat App
