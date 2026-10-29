@@ -147,7 +147,7 @@ project. Admin users manage service accounts and will need to grant rolebindings
 
 Note that since only admin users have access to manage rolebindings in a namespace, the following action will need to be done by DevOps in the team. Reach out to the team if you don't have access to do so! 
 
-- Navigate to `Topology` and click on the deployment to investigate further
+- Navigate to `Workloads->Topology` and click on the deployment to investigate further
 
 <kbd>![](./images/03_deploy_image_04.png)</kbd>
 
@@ -196,7 +196,7 @@ oc -n [-dev] set image deployment/rocketchat-[username] rocketchat-[username]=ro
 
 ## __Objective 3__: Identify CrashLoopBackOff problem
 
-Clicking on your rocketchat deployment in `Topology`, you will likely see two errors:
+Clicking on your rocketchat deployment in `Workloads>Topology`, you will likely see two errors:
 
 <kbd>![](./images/03_deploy_image_08i.png)</kbd>
 
@@ -293,7 +293,7 @@ service/mongodb-[username] created
 ```
 
 ### Verify MongoDB is up
-  - Find the mongodb deployment by going back to `Topology`
+  - Find the mongodb deployment by going back to `Workloads>Topology`
   - Wait until MongoDB has been successfully deployed.
   - MongoDB will generate a lot of logs. Since MongoDB comes with a readiness probe, check for pod/container readiness to know when it is up and ready.
   
@@ -359,7 +359,7 @@ You should see ```{ ok: 1 }``` from the ping command, which means the user was c
 By default your RocketChat deployment has no environment variables defined. So while RocketChat is trying to start and 
 a database has been deployed, the app does not know how or where to connect to MongoDB. We will need to add environment variables to the deployment.
 
-- In the Web Console, navigate to `Topology` and select your rocketchat deployment
+- In the Web Console, navigate to `Workloads->Topology` and select your rocketchat deployment
 - Click on the name of your rocketchat-[username] deployment in the right-hand menu pane
 - Click the `Environment` tab. It should look like this:
 <kbd>![](./images/03_deploy_env_02.png)</kbd>
@@ -389,7 +389,7 @@ Expected output from the above command:
 deployment.apps/rocketchat-[username] updated
 ```
 
-Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time).
+Navigate to `Workloads>Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time).
 
 
 ### Sensitive Configurations
@@ -516,7 +516,7 @@ Expected output from the above command:
 route.route.openshift.io/rocketchat-[username] created
 ```
 
-After creating the route you may access your application via the 'developer' view, navigating to the 'topology' menu and clicking on the link to follow your route!
+After creating the route you may access your application via 'workloads'->'topology' menu and clicking on the link to follow your route!
 
 <kbd>![rocketchat](./images/03_deploy_route.png)</kbd>
 
@@ -524,12 +524,12 @@ If you wish to create an insecure (http) route in OpenShift, you can do this by 
 
 ### Web Console
 Alternatively, you can use the web console to create or manage routes. 
-  - Choose the 'Administrator' view
   - Select 'Networking' in the left menu, then 'Routes'
   - Select `Create Route`
   - Customize the name of the route, such as `rocketchat-[username]`
   - Ensure the service it points to is your particular service
-  - After creating the route you may access your application via the 'developer' view, navigating to the 'topology' menu and clicking on the link to follow your route! 
+  - After creating the route you may access your application via 'workloads'->'topology' menu and clicking on the link to follow your route!
+
 
 <kbd>![rocketchat](./images/03_deploy_route.png)</kbd>
 

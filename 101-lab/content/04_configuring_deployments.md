@@ -36,7 +36,7 @@ The default deployment provides a `RollingUpdate` deployment strategy, which wai
     <kbd>![Rocketchat deployment details screen showing YAML tab with Recreate strategy](./images/04_deploy_strategy_02.png)</kbd>
   - Now make a small change to the deployment to trigger a new deploy (for testing):
     - `oc -n [-dev] set env deployment/rocketchat-[username] TEST=BAR`
-  - Go back to Topology and observe the behaviour. You should notice that the old pod is killed before a new one is created.
+  - Go back to Workloads>Topology and observe the behaviour. You should notice that the old pod is killed before a new one is created.
   - Change your deployment strategy back to `RollingUpdate` by using the Actions menu or by editing the YAML directly.
 
 Next page - [Resource Management](./05_resource_management.md)
