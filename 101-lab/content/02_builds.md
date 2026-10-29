@@ -68,7 +68,7 @@ oc -n [-tools] get imagestream rocketchat-[username]
 - The output of the previous command should be similar to:
 ```oc:cli
 NAME                    IMAGE REPOSITORY                                                                 TAGS               UPDATED
-rocketchat-[username]   image-registry.apps.silver.devops.gov.bc.ca/[-tools]/rocketchat-[username]       8.0.1,dev,latest   54 seconds ago
+rocketchat-[username]   image-registry.apps.silver.devops.gov.bc.ca/[-tools]/rocketchat-[username]       8.0.1              54 seconds ago
 ```
 
 - Run the following command to verify the 8.0.1 tag exists:
