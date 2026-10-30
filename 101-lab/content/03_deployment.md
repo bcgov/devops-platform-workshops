@@ -391,6 +391,13 @@ deployment.apps/rocketchat-[username] updated
 
 Navigate to `Topology` and investigate your RocketChat Deployment. It should be redeploying (successfully this time).
 
+**Note**: Don't confuse `ROOT_URL` (R-O-O-T) with an OpenShift route (R-O-U-T-E).
+
+- A **route** is an OpenShift object that gives your app a public web address. You'll create one later in this module.
+- `ROOT_URL` is a Rocket.Chat setting that tells the app what its own web address is.
+
+For now, `ROOT_URL` uses a temporary internal address. After you create your route, you'll change `ROOT_URL` to the route's address.
+
 
 ### Sensitive Configurations
 
@@ -533,14 +540,14 @@ Alternatively, you can use the web console to create or manage routes.
 
 <kbd>![rocketchat](./images/03_deploy_route.png)</kbd>
 
-## Update ROOT_URL with the Actual Route
+## Set Rocket.Chat's `ROOT_URL` to Your Route's Address
 
-Once you have created your route, update the ROOT_URL environment variable to match the actual external URL. 
+Once you have created your route, update the `ROOT_URL` environment variable to match the actual external URL. 
 
 This is necessary because:
 
-- We initially set ROOT_URL to ```http://rocketchat-[username]:3000``` (internal service name).
-- Modern RocketChat needs ROOT_URL to match the actual external URL users will access.
+- We initially set `ROOT_URL` to ```http://rocketchat-[username]:3000``` (internal service name).
+- Modern RocketChat needs `ROOT_URL` to match the actual external URL users will access.
 - This prevents routing errors.
 
 First, verify the route exists:
