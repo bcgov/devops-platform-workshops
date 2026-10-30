@@ -546,7 +546,7 @@ Once you have created your route, update the `ROOT_URL` environment variable to 
 
 This is necessary because:
 
-- We initially set `ROOT_URL` to ```http://rocketchat-[username]:3000``` (internal service name).
+- We initially set `ROOT_URL` to `http://rocketchat-[username]:3000` (internal service name).
 - Modern RocketChat needs `ROOT_URL` to match the actual external URL users will access.
 - This prevents routing errors.
 
@@ -562,26 +562,26 @@ NAME                   HOST/PORT                                                
 rocketchat-[username]  rocketchat-[username]-[-dev].apps.silver.devops.gov.bc.ca        rocketchat-[username]   3000-tcp   edge/Redirect  None
 ```
 
-Get the actual route URL:
+Get your route's hostname and save it in a variable called `ROUTE_HOST`:
 ```oc:cli
-ROUTE_URL=$(oc -n [-dev] get route rocketchat-[username] -o jsonpath='{.spec.host}')
+ROUTE_HOST=$(oc -n [-dev] get route rocketchat-[username] -o jsonpath='{.spec.host}')
 ```
 
-Verify the ROUTE_URL variable is not empty:
+Verify the `ROUTE_HOST` variable is not empty:
 ```oc:cli
-echo "Route URL is: ${ROUTE_URL}"
+echo "Route host is: ${ROUTE_HOST}"
 ```
 
 Expected output:
 
 ```
-Route URL is: rocketchat-[username]-[-dev].apps.silver.devops.gov.bc.ca
+Route host is: rocketchat-[username]-[-dev].apps.silver.devops.gov.bc.ca
 ```
 
-If the route URL looks correct, update the ROOT_URL environment variable:
+If the route host looks correct, update the `ROOT_URL` environment variable:
 
 ```oc:cli
-oc -n [-dev] set env deployment/rocketchat-[username] "ROOT_URL=https://${ROUTE_URL}"
+oc -n [-dev] set env deployment/rocketchat-[username] "ROOT_URL=https://${ROUTE_HOST}"
 ```
 
 Expected output:
