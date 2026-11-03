@@ -30,10 +30,10 @@ The following commands are used to create a new application.  The `myapp` applic
 ```bash
 oc -n [-dev] new-app --name myapp \
 --context-dir=openshift-201/materials/image-management/sample-app-nodejs \
-https://github.com/BCDevOps/devops-platform-workshops
+https://github.com/bcgov/devops-platform-workshops
 ```
 
-You should see output similar to the follow:
+This command may take a minute to run. You should see output similar to the follow:
 <pre>
 ...<em>output omitted</em>...
     imagestream.image.openshift.io "node" created
@@ -57,7 +57,7 @@ As you can see there are a few resources create with the `new-app` command.  One
 
 
 ### Follow Build
-Use the `oc logs` command to check the build logs from the `myapp` build:
+Use the `oc logs` command to check the build logs from the `myapp` build (this may take a minute to run):
 ```bash
 oc -n [-dev] logs -f bc/myapp
 ```
@@ -133,7 +133,7 @@ Environment variables can be set directly on your `Deployment` or `DeploymentCon
 #### Setting Environment Variable
 We can set the `NAME` environment variable on our `myapp` deployment by performing the following:
 ```bash
-oc -n [-dev] set env deployment/myapp NAME='<YOUR_NAME_HERE>'
+oc -n [-dev] set env deployment/myapp NAME='[YOUR_NAME_HERE]'
 ```
 
 This should automatically redeploy the app.
@@ -153,7 +153,7 @@ We should now see our name when calling our `hello` endpoint
 ```bash
 curl http://$MY_HOST
 
-Hello world from YOUR_NAME_HERE
+Hello world from [YOUR_NAME_HERE]
 ```
 
 ### ConfigMap
@@ -189,7 +189,7 @@ We should now see our message when calling our `hello` endpoint
 ```bash
 curl http://$MY_HOST
 
-Hello world from [YOUR_NAME_HERE]. Message received = Containers are fun
+Hello world from [YOUR_NAME_HERE] Containers are fun
 ```
 
 ### Secret
@@ -224,7 +224,7 @@ We should now see our message when calling our `hello` endpoint
 ```bash
 curl http://$MY_HOST
 
-Hello world from [YOUR_NAME_HERE]. Message received = Containers are fun with secret message: Shh... It is a secret
+Hello world from [YOUR_NAME_HERE] Containers are fun Shh... It is a secret
 ```
 
 > Note: scale down the application to save resources with `oc scale deployment/myapp --replicas=0`.
@@ -459,4 +459,4 @@ Now you can update the deployment to use the ImageStreamTag `hello-world:v1.1` d
 
 > Note: scale down the application to save resources with `oc -n [-dev] scale deployment/hello-world --replicas=0`.
 
-Next topic - [Pod Auto Scaling](https://github.com/BCDevOps/devops-platform-workshops/blob/master/openshift-201/rh201-pod-auto-scale.md)
+Next topic - [Pod Auto Scaling](https://github.com/bcgov/devops-platform-workshops/blob/master/openshift-201/rh201-pod-auto-scale.md)

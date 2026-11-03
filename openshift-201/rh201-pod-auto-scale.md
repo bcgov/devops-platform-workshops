@@ -502,4 +502,4 @@ There are some more advanced options with pod affinity and anti-affinity and com
 
 * https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
 
-Next topic - [Post Outage Checkup](https://github.com/BCDevOps/devops-platform-workshops/blob/master/openshift-201/post-outage-checkup.md)
+Next topic - [Post Outage Checkup](https://github.com/bcgov/devops-platform-workshops/blob/master/openshift-201/post-outage-checkup.md)
