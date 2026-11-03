@@ -536,7 +536,7 @@ spec:
     type: Container
 ```
 
-Next topic - [Network Policy & ACS](https://github.com/BCDevOps/devops-platform-workshops/blob/master/openshift-201/network-policy.md)
+Next topic - [Network Policy & ACS](https://github.com/bcgov/devops-platform-workshops/blob/master/openshift-201/network-policy.md)
 
 ## Further Reading
 
