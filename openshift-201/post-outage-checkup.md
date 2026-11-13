@@ -15,11 +15,10 @@ We will setup a sample application and proceed with what steps should be taken a
 ```bash
 oc -n [-dev] new-app --name crash-app \
 --context-dir=openshift-201/materials/post-outage-checkup/crash-app-nodejs \
-https://github.com/BCDevOps/devops-platform-workshops
-
+https://github.com/bcgov/devops-platform-workshops
 ```
 
-You should see output similar to the follow:
+This command may take a minute to run. You should see output similar to the following:
 <pre>
 ...<em>output omitted</em>...
     imagestream.image.openshift.io "crash-app" created
@@ -45,7 +44,7 @@ or run `oc -n [-dev] get routes crash-app` and copy the host name.
 
 
 ### Follow Build
-Use the `oc logs` command to check the build logs from the `crash-app` build:
+Use the `oc logs` command to check the build logs from the `crash-app` build (this may take a minute to run):
 ```bash
 oc -n [-dev] logs -f bc/crash-app
 ```
@@ -160,7 +159,7 @@ curl http://$MY_HOST
 Hello world from crash app
 ```
 
-> Note: scale down the application to save resources with `oc scale deployment/crash-app --replicas=0`.
+> Note: scale down the application to save resources with `oc -n [-dev] scale deployment/crash-app --replicas=0`.
 
 ## Checklist
 It is a good idea to create a checklist that has specifics for your application. We recommend that you create an issue template in github for your application which details all the specific things that you'll need to check to feel secure that your app is up and running after an outage.

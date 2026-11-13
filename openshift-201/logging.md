@@ -17,10 +17,10 @@ We will setup a sample application that will produce a log entry every 5 seconds
 ```bash
  oc -n [-dev] new-app --name logging-app \
  --context-dir=openshift-201/materials/logging \
- https://github.com/BCDevOps/devops-platform-workshops
+ https://github.com/bcgov/devops-platform-workshops
 ```
 
-You should see output similar to the follow:
+This command may take a minute to run. You should see output similar to the follow:
 
 ```text
 ...output omitted...
@@ -34,7 +34,7 @@ You should see output similar to the follow:
 
 ### Follow Build
 
-Use the `oc -n [-dev] logs` command to check the build logs from the `logging-app` build:
+Use the `oc -n [-dev] logs` command to check the build logs from the `logging-app` build (this may take a minute to run):
 
 ```bash
 oc -n [-dev] logs -f bc/logging-app
@@ -216,4 +216,4 @@ imagestream.image.openshift.io "logging-app" deleted
 alertingrule.loki.grafana.com "logging-app-alerts" deleted
 ```
 
-Next topic - [Best Practices of Image Management](https://github.com/BCDevOps/devops-platform-workshops/blob/master/openshift-201/image-management.md)
+Next topic - [Best Practices of Image Management](https://github.com/bcgov/devops-platform-workshops/blob/master/openshift-201/image-management.md)
