@@ -1,7 +1,7 @@
 ## OpenShift 101 
-- [Slide deck](https://bcgov.sharepoint.com/:p:/t/10207/IQDXfhnyiZyrTrhGuXmeFkDZAf5RhI-orOzTEVxkGjPS8yg?e=vmeCNF)
+- [Slide deck](https://bcgov.sharepoint.com/:p:/t/10207/IQArty0XalSRRqYMvFzBZ4bLAU1o3_cG04zIkWGuAhsjh6o?e=RoU3pl)
 - [Lab Exercises](101-lab/content/README.md)
 
 ## OpenShift 201 
-- [Slide deck](https://bcgov.sharepoint.com/:p:/t/10207/IQBKfot6DZ3YQLrB253NJHcWAWjlSI9scvhoP_SqDSMlu3M?e=beSvnb)
+- [Slide deck](https://bcgov.sharepoint.com/:p:/t/10207/IQC1FcDg1De7T4dRgLA2MZmBAUsDX_vN3Kn1y6SNuMXn4x8?e=zIW4lG)
 - [Lab Exercises](openshift-201/README.md)
