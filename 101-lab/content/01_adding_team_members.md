@@ -21,25 +21,32 @@ You can skip the remaining steps in this section if you're doing the self-paced 
 
 When the lab begins, our volunteer admins will navigate to each project and assign everyone else the appropriate permissions. 
 
-<kbd>![](./images/01_projects.png)</kbd>
+- Navigate to the `User Management -> RoleBindings` menu
 
-- Once in the project, switch to `Developer view` and then navigate to `Project -> Project Access`
+- Click the `Create RoleBinding` button 
 
-- Select `Add Access` at the bottom
+- Fill out the wizard fields as below:
 
-<kbd>![](./images/01_add_access.png)</kbd>
+```
+Rolebinding 
+Name: any unique name, IDIR email can be used here
+Namespace *select the desired namespace*
+Role
+Role name: edit (or admin or view)
+Subject: User 
+Subject name: IDIR email in lowercase
+```
+- Click `create` the bottom of the wizard
 
-- Add each user based on their GitHub id, granting 'edit' access. Please note that we are using SSO with GitHub login at the moment, don't forget the suffix `@github`!
-
-<kbd>![](./images/01_edit.png)</kbd>
-
-- Select `Save`
-
-
-This can also be done on the CLI with the `oc` utility: 
+Alternatively, this can also be done on the CLI with the `oc` utility: 
 
 ```
 oc -n [namespace] policy add-role-to-user [role] [username]
+```
+A great advantage of the command line for adding multiple users is that these can be chained together by adding users with a space seperating them:
+
+```
+oc -n [namespace] policy add-role-to-user [role] [username1] [username2] [username3] [username29]
 ```
 
 ## Roles
